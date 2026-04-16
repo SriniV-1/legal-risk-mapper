@@ -1,0 +1,35 @@
+PRIVACY POLICY — MedTrack Application
+Effective Date: January 1, 2024
+
+1. INFORMATION WE COLLECT
+We collect personally identifiable information (PII) including your name, email, location
+data, biometric data from our health sensors, and browsing behavior across our platform.
+We use cookies and tracking technologies to monitor your activity.
+
+2. HOW WE USE YOUR DATA
+Your personal data and health information may be shared with third-party research partners
+and pharmaceutical companies. We may sell anonymized user data. We retain all data
+indefinitely unless required otherwise by applicable law.
+
+3. HIPAA NOTICE
+Our platform processes protected health information. We must comply with HIPAA requirements
+for covered entities. In the event of a data breach, we will notify affected users within
+60 days as required by applicable regulations.
+
+4. CCPA RIGHTS
+California residents may opt-out of the sale of their personal information pursuant to
+the California Consumer Privacy Act (CCPA). Contact privacy@medtrack.example to exercise
+your rights.
+
+5. GDPR (EU USERS)
+For EU users, we process personal data under legitimate interest as deemed appropriate by
+our legal team. Data may be transferred to the United States without adequate safeguards.
+Users may request deletion, subject to retention requirements under applicable law.
+
+6. SECURITY
+We use industry-standard encryption to protect your data. However, no system is completely
+secure, and we disclaim any liability for unauthorized access or data breaches.
+
+7. POLICY CHANGES
+We may update this policy from time to time at our sole discretion without prior notice.
+Your continued use of the application constitutes acceptance of the updated terms.

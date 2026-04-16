@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legal Risk Mapper — Hybrid AI Contract Analyzer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ─────────────────────────────────────────── HEADER ─────────────────────────────────────────── -->
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-icon">⚖</div>
+      <div class="brand-text">
+        <h1>Legal Risk Mapper</h1>
+        <span class="brand-tag">Hybrid AI contract & policy risk analysis</span>
+      </div>
+    </div>
+    <div class="health-pill" id="healthPill">
+      <span class="health-dot"></span>
+      <span id="healthLabel">Checking backend…</span>
+    </div>
+  </div>
+</header>
+
+<!-- ─────────────────────────────────────────── MAIN ─────────────────────────────────────────── -->
+<main class="container">
+
+  <!-- ============ INPUT CARD ============ -->
+  <section class="card input-card">
+    <div class="card-header">
+      <div>
+        <h2 class="card-title">Document Input</h2>
+        <p class="card-subtitle">Paste text, upload a file, or try a sample contract</p>
+      </div>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="tab-bar" id="inputTabs" role="tablist">
+      <button class="tab active" data-tab="text" role="tab">
+        <span class="tab-icon">✎</span> Paste Text
+      </button>
+      <button class="tab" data-tab="file" role="tab">
+        <span class="tab-icon">↑</span> Upload File
+      </button>
+      <button class="tab" data-tab="sample" role="tab">
+        <span class="tab-icon">✦</span> Samples
+      </button>
+    </div>
+
+    <!-- PASTE TAB -->
+    <div class="tab-content active" id="tab-text">
+      <label class="field-label" for="docTitle">Document title <span class="optional">(optional)</span></label>
+      <input type="text" id="docTitle" placeholder="e.g. SaaS Service Agreement" />
+
+      <label class="field-label" for="textInput">Contract / Policy / Business Text</label>
+      <textarea id="textInput" rows="14"
+        placeholder="Paste your contract, terms of service, privacy policy, or business description here…"></textarea>
+    </div>
+
+    <!-- FILE TAB -->
+    <div class="tab-content" id="tab-file">
+      <div class="dropzone" id="dropzone">
+        <div class="drop-icon">📄</div>
+        <div class="drop-title">Drag & drop a <code>.txt</code> file here</div>
+        <div class="drop-hint">or</div>
+        <label class="btn btn-outline" for="fileInput">Choose file</label>
+        <input type="file" id="fileInput" accept=".txt,.md" hidden />
+        <div class="drop-filename" id="fileName">No file selected</div>
+      </div>
+    </div>
+
+    <!-- SAMPLES TAB -->
+    <div class="tab-content" id="tab-sample">
+      <div class="sample-grid">
+        <button class="sample-card" data-sample="contract">
+          <div class="sample-icon">📋</div>
+          <div class="sample-title">SaaS Contract</div>
+          <div class="sample-desc">Hostile service agreement with liability shifts and auto-renewal</div>
+        </button>
+        <button class="sample-card" data-sample="privacy">
+          <div class="sample-icon">🔒</div>
+          <div class="sample-title">Privacy Policy</div>
+          <div class="sample-desc">App privacy policy with data sharing and tracking</div>
+        </button>
+        <button class="sample-card" data-sample="startup">
+          <div class="sample-icon">🚀</div>
+          <div class="sample-title">Startup Pitch</div>
+          <div class="sample-desc">Business description with compliance and privacy risks</div>
+        </button>
+        <button class="sample-card" data-sample="sneaky">
+          <div class="sample-icon">🧠</div>
+          <div class="sample-title">Paraphrased Contract</div>
+          <div class="sample-desc">Tests the semantic layer — no obvious legal keywords</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Action bar -->
+    <div class="action-bar">
+      <div class="action-left">
+        <button class="btn btn-primary btn-lg" id="analyzeBtn">
+          <span class="btn-icon-svg">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16" y2="16"/>
+            </svg>
+          </span>
+          Analyze Risk
+        </button>
+        <button class="btn btn-ghost" id="clearBtn">Clear</button>
+      </div>
+      <div class="action-right">
+        <span class="char-count" id="charCount">0 characters</span>
+      </div>
+    </div>
+
+    <div class="error-box hidden" id="errorBox"></div>
+  </section>
+
+  <!-- ============ RESULTS SECTION ============ -->
+  <section class="results-section hidden" id="resultsSection">
+
+    <!-- Hero stats -->
+    <div class="hero-card">
+      <div class="hero-top">
+        <div class="hero-left">
+          <div class="hero-label">Overall Risk Level</div>
+          <div class="hero-badge" id="overallBadge">—</div>
+          <div class="hero-doctitle" id="heroDocTitle"></div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat stat-total">
+            <div class="stat-num" id="statTotal">0</div>
+            <div class="stat-label">Total Risks</div>
+          </div>
+          <div class="stat stat-high">
+            <div class="stat-num" id="statHigh">0</div>
+            <div class="stat-label">High</div>
+          </div>
+          <div class="stat stat-med">
+            <div class="stat-num" id="statMed">0</div>
+            <div class="stat-label">Medium</div>
+          </div>
+          <div class="stat stat-low">
+            <div class="stat-num" id="statLow">0</div>
+            <div class="stat-label">Low</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="card chart-card">
+        <h3 class="chart-title">Risks by Category</h3>
+        <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+      </div>
+      <div class="card chart-card">
+        <h3 class="chart-title">Severity Breakdown</h3>
+        <div class="chart-wrap"><canvas id="severityChart"></canvas></div>
+      </div>
+      <div class="card chart-card">
+        <h3 class="chart-title">Detection Layer</h3>
+        <div class="chart-wrap"><canvas id="sourceChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Filter toolbar -->
+    <div class="filter-toolbar card">
+      <div class="filter-group">
+        <span class="filter-label">Severity</span>
+        <button class="filter-btn active" data-filter-sev="all">All</button>
+        <button class="filter-btn high" data-filter-sev="High">● High</button>
+        <button class="filter-btn med" data-filter-sev="Medium">● Medium</button>
+        <button class="filter-btn low" data-filter-sev="Low">● Low</button>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Source</span>
+        <button class="filter-btn active" data-filter-src="all">All</button>
+        <button class="filter-btn" data-filter-src="hybrid">Confirmed</button>
+        <button class="filter-btn" data-filter-src="regex">Pattern</button>
+        <button class="filter-btn" data-filter-src="semantic">Semantic</button>
+      </div>
+      <div class="filter-group filter-view">
+        <span class="filter-label">View</span>
+        <button class="filter-btn active" data-view="grouped">Grouped</button>
+        <button class="filter-btn" data-view="list">Flat list</button>
+      </div>
+    </div>
+
+    <!-- Risk list -->
+    <div id="riskContainer"></div>
+
+    <!-- Notes -->
+    <div class="notes-card" id="notesCard"></div>
+  </section>
+
+  <!-- Loader -->
+  <div class="loader-overlay hidden" id="loaderOverlay">
+    <div class="loader-box">
+      <div class="spinner"></div>
+      <div class="loader-title">Analyzing document…</div>
+      <div class="loader-hint" id="loaderHint">Running hybrid NLP pipeline</div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  Legal Risk Mapper v2 — Hybrid regex + semantic analysis. Not legal advice. Always consult a qualified attorney.
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

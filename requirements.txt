@@ -1,0 +1,22 @@
+# Legal Risk Mapper v2 — Dependencies
+# Install with: pip install -r requirements.txt
+
+# ── Core API ──────────────────────────────────────────────────────────────────
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+python-multipart==0.0.9       # required for file uploads in FastAPI
+pydantic==2.7.0
+
+# ── NLP / ML (hybrid semantic layer) ─────────────────────────────────────────
+# Runs fully locally. No external API calls.
+sentence-transformers>=2.7.0  # all-MiniLM-L6-v2 (~80 MB, 384-dim)
+spacy>=3.7.0                  # clause segmentation
+numpy>=1.24.0                 # cosine sim + embedding math
+# After installing spacy, also run:
+#   python -m spacy download en_core_web_sm
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+requests==2.31.0              # used by scripts/test_api.py
+
+# ── Optional: PDF support ─────────────────────────────────────────────────────
+# pymupdf==1.24.0             # fast PDF text extraction

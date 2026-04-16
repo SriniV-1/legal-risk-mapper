@@ -1,0 +1,43 @@
+SERVICE AGREEMENT
+
+This Service Agreement ("Agreement") is entered into between Acme Software Inc. ("Company")
+and the undersigned customer ("Client").
+
+1. SERVICES
+Company will provide software-as-a-service access to its platform. Services are provided
+AS-IS without any warranty of fitness for a particular purpose or merchantability.
+
+2. PAYMENT TERMS
+Client shall pay all invoices within Net 30 days. Unpaid balances accrue interest at 18%
+per annum. Company may unilaterally change pricing at any time with 7 days notice.
+
+3. AUTO-RENEWAL
+This Agreement automatically renews annually unless cancelled in writing 90 days prior to
+renewal. Early termination fee of 75% of remaining contract value applies.
+
+4. LIABILITY
+IN NO EVENT SHALL COMPANY BE LIABLE FOR CONSEQUENTIAL, INCIDENTAL, OR PUNITIVE DAMAGES.
+Client shall indemnify and hold harmless Company from any third-party claims arising from
+Client's use of the services. Company's total liability is limited to fees paid in the
+prior calendar month.
+
+5. DATA PROCESSING
+Company collects personal data including usage metrics and user information. This data
+may be shared with third-party analytics providers. Company may sell aggregated user data
+for market research purposes.
+
+6. COMPLIANCE
+Client must comply with all applicable laws and regulations, including export control
+requirements. Client is solely responsible for ensuring GDPR compliance for any EU
+personal data processed through the platform.
+
+7. MODIFICATIONS
+Company reserves the right to modify these terms at its sole discretion at any time
+without notice. Continued use constitutes acceptance.
+
+8. FORCE MAJEURE
+Neither party shall be liable for delays caused by force majeure events including acts
+of God, government action, or other events beyond reasonable control.
+
+9. GOVERNING LAW
+This Agreement shall be governed by applicable law as deemed appropriate by Company.
