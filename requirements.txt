@@ -15,8 +15,13 @@ numpy>=1.24.0                 # cosine sim + embedding math
 # After installing spacy, also run:
 #   python -m spacy download en_core_web_sm
 
+# ── Corpus Pipeline (Phase 1) ────────────────────────────────────────────────
+supabase>=2.0.0               # Supabase Python client (wraps postgrest-py)
+python-dotenv>=1.0.0          # .env file loading
+requests>=2.31.0              # EDGAR scraping + test scripts
+
 # ── Testing ───────────────────────────────────────────────────────────────────
-requests==2.31.0              # used by scripts/test_api.py
+# requests already listed above
 
 # ── Optional: PDF support ─────────────────────────────────────────────────────
 # pymupdf==1.24.0             # fast PDF text extraction
