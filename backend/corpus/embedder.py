@@ -31,7 +31,7 @@ def _get_model():
     from sentence_transformers import SentenceTransformer
     log.info("Loading embedding model: %s", EMBEDDING_MODEL)
     _model = SentenceTransformer(EMBEDDING_MODEL)
-    log.info("Model loaded. Dimension: %d", _model.get_sentence_embedding_dimension())
+    log.info("Model loaded. Dimension: %d", _model.get_embedding_dimension())
     return _model
 
 

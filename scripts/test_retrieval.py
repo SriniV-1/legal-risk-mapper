@@ -12,6 +12,9 @@ import sys
 import time
 import logging
 
+from dotenv import load_dotenv
+load_dotenv()
+
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
 from backend.corpus.retrieval import retrieve_similar
@@ -94,7 +97,13 @@ def main():
     except Exception as e:
         print(f"\nWarning: Could not get corpus stats: {e}")
 
-    print(f"\nRunning {len(SAMPLE_QUERIES)} retrieval queries...\n")
+    # Warm up: load model once so first query latency isn't penalized
+    print("\nWarming up embedding model...")
+    from backend.corpus.embedder import encode_single
+    encode_single("warmup")
+    print("Model ready.\n")
+
+    print(f"Running {len(SAMPLE_QUERIES)} retrieval queries...\n")
 
     total_time = 0.0
     type_matches = 0

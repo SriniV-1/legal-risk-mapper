@@ -61,10 +61,22 @@ _session.headers.update({
 })
 
 
-def _get(url: str, **kwargs) -> requests.Response:
-    _limiter.wait()
-    resp = _session.get(url, timeout=30, **kwargs)
-    resp.raise_for_status()
+def _get(url: str, retries: int = 3, **kwargs) -> requests.Response:
+    for attempt in range(retries):
+        _limiter.wait()
+        try:
+            resp = _session.get(url, timeout=30, **kwargs)
+            if resp.status_code == 500:
+                log.warning("HTTP 500 from %s (attempt %d/%d)", url[:80], attempt + 1, retries)
+                time.sleep(2 ** attempt)
+                continue
+            resp.raise_for_status()
+            return resp
+        except requests.ConnectionError as e:
+            log.warning("Connection error (attempt %d/%d): %s", attempt + 1, retries, e)
+            time.sleep(2 ** attempt)
+            if attempt == retries - 1:
+                raise
     return resp
 
 
