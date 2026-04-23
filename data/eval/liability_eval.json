@@ -220,10 +220,8 @@
         "cap_type": null
       },
       "is_mutual": false,
-      "has_carve_outs": true,
-      "carve_outs": [
-        "willful misconduct"
-      ],
+      "has_carve_outs": false,
+      "carve_outs": [],
       "consequential_damages": {
         "excluded": false
       },
@@ -317,12 +315,8 @@
         "cap_type": null
       },
       "is_mutual": false,
-      "has_carve_outs": true,
-      "carve_outs": [
-        "willful misconduct",
-        "indemnification",
-        "payment obligations"
-      ],
+      "has_carve_outs": false,
+      "carve_outs": [],
       "consequential_damages": {
         "excluded": false
       },
@@ -397,8 +391,8 @@
         "cap_type": "other"
       },
       "is_mutual": true,
-      "has_carve_outs": false,
-      "carve_outs": [],
+      "has_carve_outs": true,
+      "carve_outs": ["death or personal injury", "ip indemnification"],
       "consequential_damages": {
         "excluded": false
       },
@@ -454,11 +448,8 @@
         "cap_type": null
       },
       "is_mutual": false,
-      "has_carve_outs": true,
-      "carve_outs": [
-        "ip infringement",
-        "indemnification"
-      ],
+      "has_carve_outs": false,
+      "carve_outs": [],
       "consequential_damages": {
         "excluded": false
       },

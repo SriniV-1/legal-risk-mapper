@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field
 
 class LiabilityCapInfo(BaseModel):
     """Structured representation of a liability cap."""
-    has_cap: bool = Field(description="Whether the clause contains an explicit liability cap")
+    has_cap: bool = Field(default=False, description="Whether the clause contains an explicit liability cap")
     cap_amount: Optional[str] = Field(default=None, description="The cap amount or formula, e.g. '2x annual fees', '$1,000,000', 'total fees paid in prior 12 months'")
     cap_source_text: Optional[str] = Field(default=None, description="Exact quote from the clause describing the cap")
     cap_type: Optional[str] = Field(default=None, description="Type of cap: 'fixed_amount', 'multiple_of_fees', 'fees_paid_period', 'per_incident', 'other'")
