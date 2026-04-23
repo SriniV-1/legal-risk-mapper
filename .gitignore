@@ -8,5 +8,6 @@ node_modules/
 dist/
 data/cache/
 data/corpus_raw/
+data/*.log
 .DS_Store
 *.pkl

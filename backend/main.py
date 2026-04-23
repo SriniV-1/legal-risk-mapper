@@ -1,8 +1,9 @@
 """
 Legal Risk Mapper — FastAPI Backend
 Endpoints:
-  POST /analyze  → analyze text for legal risks
-  GET  /health   → service health check
+  POST /analyze    → analyze text for legal risks
+  POST /benchmark  → benchmark a clause against EDGAR market data
+  GET  /health     → service health check
 """
 import io
 import logging
@@ -12,11 +13,13 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
 
 from backend.models.schemas import (
     AnalyzeRequest, AnalyzeResponse, HealthResponse, RiskItem
 )
 from backend.services.risk_analyzer import analyze_risks, compute_overall_risk
+from backend.benchmarking.schemas import BenchmarkResult
 
 # ── Logging ──────────────────────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(name)s | %(message)s")
@@ -152,6 +155,32 @@ async def analyze_upload(
     except Exception as e:
         logger.exception("Upload analysis failed")
         raise HTTPException(status_code=500, detail=f"Analysis error: {str(e)}")
+
+
+class BenchmarkRequest(BaseModel):
+    text: str = Field(min_length=30, description="Clause text to benchmark against the market")
+    clause_type: str = Field(default="liability", description="Clause category (currently: liability)")
+
+
+@app.post("/benchmark", response_model=BenchmarkResult, tags=["Benchmarking"])
+def benchmark_clause(request: BenchmarkRequest):
+    """
+    Benchmark a contract clause against real SEC EDGAR filings.
+
+    Extracts structured data from the clause, retrieves similar clauses from the
+    corpus, and computes market statistics (field distributions, percentiles,
+    and 5 cited real-world examples).
+    """
+    logger.info(
+        f"Benchmarking clause | type={request.clause_type!r} | chars={len(request.text)}"
+    )
+    try:
+        from backend.benchmarking.benchmarker import benchmark_clause as _benchmark
+        result = _benchmark(request.text, clause_type=request.clause_type)
+        return result
+    except Exception as e:
+        logger.exception("Benchmarking failed")
+        raise HTTPException(status_code=500, detail=f"Benchmarking error: {str(e)}")
 
 
 @app.exception_handler(422)
