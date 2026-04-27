@@ -3,6 +3,7 @@ Legal Risk Mapper — FastAPI Backend
 Endpoints:
   POST /analyze    → analyze text for legal risks
   POST /benchmark  → benchmark a clause against EDGAR market data
+  POST /redline    → generate grounded redline suggestions
   GET  /health     → service health check
 """
 import io
@@ -20,6 +21,7 @@ from backend.models.schemas import (
 )
 from backend.services.risk_analyzer import analyze_risks, compute_overall_risk
 from backend.benchmarking.schemas import BenchmarkResult
+from backend.redline.schemas import RedlineResult
 
 # ── Logging ──────────────────────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(name)s | %(message)s")
@@ -181,6 +183,35 @@ def benchmark_clause(request: BenchmarkRequest):
     except Exception as e:
         logger.exception("Benchmarking failed")
         raise HTTPException(status_code=500, detail=f"Benchmarking error: {str(e)}")
+
+
+class RedlineRequest(BaseModel):
+    text: str = Field(min_length=30, description="Clause text to generate redlines for")
+    clause_type: str = Field(default="liability", description="Clause category (currently: liability)")
+
+
+@app.post("/redline", response_model=RedlineResult, tags=["Redline"])
+def generate_redlines(request: RedlineRequest):
+    """
+    Generate grounded redline suggestions for a contract clause.
+
+    Runs the full pipeline: benchmark the clause against EDGAR market data,
+    then generate edit suggestions citing specific market statistics and
+    real SEC filings.
+    """
+    logger.info(
+        f"Generating redlines | type={request.clause_type!r} | chars={len(request.text)}"
+    )
+    try:
+        from backend.benchmarking.benchmarker import benchmark_clause as _benchmark
+        from backend.redline.generator import generate_redlines as _generate
+
+        benchmark = _benchmark(request.text, clause_type=request.clause_type)
+        result = _generate(request.text, benchmark)
+        return result
+    except Exception as e:
+        logger.exception("Redline generation failed")
+        raise HTTPException(status_code=500, detail=f"Redline error: {str(e)}")
 
 
 @app.exception_handler(422)
