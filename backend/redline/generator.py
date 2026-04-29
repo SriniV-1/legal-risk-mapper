@@ -144,16 +144,22 @@ def generate_redlines(
             model_used=model,
         )
 
-    # Parse suggestions
+    # Parse suggestions (coerce None → "" for all string fields)
     suggestions = []
     for s in data.get("suggestions", []):
+        if not isinstance(s, dict):
+            continue
+        original = s.get("original_text") or ""
+        proposed = s.get("proposed_text") or ""
+        if not original and not proposed:
+            continue
         suggestions.append(RedlineSuggestion(
-            original_text=s.get("original_text", ""),
-            proposed_text=s.get("proposed_text", ""),
-            justification=s.get("justification", ""),
-            market_citation=s.get("market_citation", ""),
-            risk_addressed=s.get("risk_addressed", ""),
-            priority=s.get("priority", "medium"),
+            original_text=original,
+            proposed_text=proposed,
+            justification=s.get("justification") or "",
+            market_citation=s.get("market_citation") or "",
+            risk_addressed=s.get("risk_addressed") or "",
+            priority=s.get("priority") or "medium",
         ))
 
     result = RedlineResult(

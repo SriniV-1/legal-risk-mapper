@@ -1,0 +1,90 @@
+[
+  {
+    "id": "strong_mutual",
+    "description": "Strong mutual clause with carve-outs",
+    "benchmark_time": 35.03,
+    "redline_time": 41.19,
+    "total_time": 76.22,
+    "extraction_success": true,
+    "market_sample_size": 13,
+    "num_suggestions": 3,
+    "cited_examples": 5
+  },
+  {
+    "id": "weak_onesided",
+    "description": "Weak one-sided clause, short cap period",
+    "benchmark_time": 24.0,
+    "redline_time": 35.6,
+    "total_time": 59.6,
+    "extraction_success": true,
+    "market_sample_size": 17,
+    "num_suggestions": 3,
+    "cited_examples": 5
+  },
+  {
+    "id": "no_cap",
+    "description": "Indemnification without cap",
+    "benchmark_time": 20.17,
+    "redline_time": 34.05,
+    "total_time": 54.22,
+    "extraction_success": true,
+    "market_sample_size": 11,
+    "num_suggestions": 2,
+    "cited_examples": 5
+  },
+  {
+    "id": "warranty_disclaimer",
+    "description": "AS-IS warranty disclaimer",
+    "benchmark_time": 18.85,
+    "redline_time": 29.82,
+    "total_time": 48.67,
+    "extraction_success": true,
+    "market_sample_size": 11,
+    "num_suggestions": 3,
+    "cited_examples": 5
+  },
+  {
+    "id": "complex_cap",
+    "description": "Complex cap with multiple formulas",
+    "benchmark_time": 22.17,
+    "redline_time": 36.18,
+    "total_time": 58.35,
+    "extraction_success": true,
+    "market_sample_size": 14,
+    "num_suggestions": 3,
+    "cited_examples": 5
+  },
+  {
+    "id": "minimal",
+    "description": "Minimal liability language",
+    "benchmark_time": 17.98,
+    "redline_time": 34.22,
+    "total_time": 52.2,
+    "extraction_success": true,
+    "market_sample_size": 15,
+    "num_suggestions": 3,
+    "cited_examples": 5
+  },
+  {
+    "id": "consequential_only",
+    "description": "Only consequential damages exclusion",
+    "benchmark_time": 21.04,
+    "redline_time": 36.09,
+    "total_time": 57.13,
+    "extraction_success": true,
+    "market_sample_size": 6,
+    "num_suggestions": 3,
+    "cited_examples": 5
+  },
+  {
+    "id": "mixed_indemnification",
+    "description": "Mixed indemnification and limitation",
+    "benchmark_time": 24.83,
+    "redline_time": 28.56,
+    "total_time": 53.4,
+    "extraction_success": true,
+    "market_sample_size": 12,
+    "num_suggestions": 2,
+    "cited_examples": 5
+  }
+]

@@ -48,6 +48,9 @@ User Clause (text)
 | Retrieval MRR@5 | **0.917** | > 0.70 |
 | Retrieval NDCG@5 | **0.987** | > 0.75 |
 | Retrieval latency | 0.243s avg | < 2.0s |
+| E2E latency (local 8B) | 57.5s avg | ~3-5s with Sonnet |
+| E2E extraction success | 100% (8/8 test clauses) | > 90% |
+| Cost per clause (local) | **$0.00** | ~$0.007 with Sonnet |
 
 **Per-field extraction results (42 hand-labeled examples):**
 
