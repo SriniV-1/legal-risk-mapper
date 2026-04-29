@@ -195,6 +195,7 @@ clearBtn.addEventListener("click", () => {
   fileNameEl.textContent = "No file selected";
   fileInput.value = "";
   resultsSection.classList.add("hidden");
+  benchmarkSection.classList.add("hidden");
   hideError();
 });
 
@@ -505,11 +506,226 @@ document.querySelectorAll("[data-view]").forEach((btn) => {
 // ─────────────────────────────────────────────────────────────────────────────
 //  HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
-function showLoader() { loaderOverlay.classList.remove("hidden"); analyzeBtn.disabled = true; }
-function hideLoader() { loaderOverlay.classList.add("hidden"); analyzeBtn.disabled = false; }
+function showLoader(hint) {
+  loaderOverlay.classList.remove("hidden");
+  analyzeBtn.disabled = true;
+  $("benchmarkBtn").disabled = true;
+  if (hint) $("loaderHint").textContent = hint;
+}
+function hideLoader() {
+  loaderOverlay.classList.add("hidden");
+  analyzeBtn.disabled = false;
+  $("benchmarkBtn").disabled = false;
+  $("loaderHint").textContent = "Running hybrid NLP pipeline";
+}
 function showError(msg) { errorBox.textContent = "⚠ " + msg; errorBox.classList.remove("hidden"); }
 function hideError() { errorBox.classList.add("hidden"); }
 function escHtml(str) {
   return String(str)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  BENCHMARK & REDLINE
+// ─────────────────────────────────────────────────────────────────────────────
+const benchmarkBtn = $("benchmarkBtn");
+const benchmarkSection = $("benchmarkSection");
+
+benchmarkBtn.addEventListener("click", runBenchmark);
+
+async function runBenchmark() {
+  hideError();
+  const text = textInput.value.trim();
+  if (text.length < 30) return showError("Please enter at least 30 characters of clause text to benchmark.");
+
+  showLoader("Benchmarking against SEC EDGAR corpus...");
+  try {
+    // Call benchmark endpoint
+    const benchRes = await fetch(`${API_BASE}/benchmark`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, clause_type: "liability" }),
+    });
+    if (!benchRes.ok) {
+      const err = await benchRes.json().catch(() => ({ detail: benchRes.statusText }));
+      throw new Error(err.detail || "Benchmark failed");
+    }
+    const benchmark = await benchRes.json();
+
+    // Update loader hint for redline step
+    $("loaderHint").textContent = "Generating redline suggestions...";
+
+    // Call redline endpoint
+    const redlineRes = await fetch(`${API_BASE}/redline`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, clause_type: "liability" }),
+    });
+    if (!redlineRes.ok) {
+      const err = await redlineRes.json().catch(() => ({ detail: redlineRes.statusText }));
+      throw new Error(err.detail || "Redline generation failed");
+    }
+    const redline = await redlineRes.json();
+
+    renderBenchmarkResults(benchmark, redline);
+  } catch (err) {
+    showError(`Benchmark error: ${err.message}\n\nMake sure Ollama is running (ollama serve) and the backend is on port 8000.`);
+  } finally {
+    hideLoader();
+  }
+}
+
+function renderBenchmarkResults(benchmark, redline) {
+  // Hero stats
+  $("benchSampleSize").textContent = benchmark.sample_size;
+  $("benchSubtitle").textContent = `Based on ${benchmark.sample_size} similar liability clauses from SEC EDGAR`;
+  $("benchExamples").textContent = benchmark.cited_examples.length;
+  $("benchRedlines").textContent = redline.suggestions.length;
+
+  // User extraction
+  renderExtraction(benchmark.user_extraction);
+
+  // Market distributions
+  renderDistributions(benchmark.field_distributions, benchmark.user_extraction, benchmark.user_percentiles);
+
+  // Cited examples
+  renderCitedExamples(benchmark.cited_examples);
+
+  // Redline suggestions
+  renderRedlines(redline);
+
+  benchmarkSection.classList.remove("hidden");
+  resultsSection.classList.add("hidden");
+  benchmarkSection.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function renderExtraction(ext) {
+  const grid = $("extractionGrid");
+  if (!ext) {
+    grid.innerHTML = '<div class="extraction-item"><div class="extraction-value">Extraction failed</div></div>';
+    return;
+  }
+
+  const fields = [
+    { label: "Liability Cap", value: ext.liability_cap?.has_cap },
+    { label: "Cap Type", value: ext.liability_cap?.cap_type || "—" },
+    { label: "Mutual", value: ext.is_mutual },
+    { label: "Carve-Outs", value: ext.has_carve_outs },
+    { label: "Consequential Excluded", value: ext.consequential_damages?.excluded },
+    { label: "Indemnification", value: ext.has_indemnification },
+    { label: "Warranty Disclaimer", value: ext.has_warranty_disclaimer },
+    { label: "Confidence", value: ext.extraction_confidence != null ? (ext.extraction_confidence * 100).toFixed(0) + "%" : "—" },
+  ];
+
+  grid.innerHTML = fields.map((f) => {
+    const isBoolean = typeof f.value === "boolean";
+    const displayVal = isBoolean ? (f.value ? "Yes" : "No") : f.value;
+    const valClass = isBoolean ? (f.value ? "true" : "false") : "";
+    return `
+      <div class="extraction-item">
+        <div class="extraction-label">${escHtml(f.label)}</div>
+        <div class="extraction-value ${valClass}">${escHtml(String(displayVal))}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderDistributions(dists, userExt, percentiles) {
+  const container = $("distributionBars");
+  const fieldLabels = {
+    has_cap: "Liability Cap",
+    is_mutual: "Mutual Limitation",
+    has_carve_outs: "Carve-Outs",
+    consequential_excluded: "Consequential Excluded",
+    has_indemnification: "Indemnification",
+    has_warranty_disclaimer: "Warranty Disclaimer",
+  };
+
+  const getUserVal = (field) => {
+    if (!userExt) return null;
+    if (field === "has_cap") return userExt.liability_cap?.has_cap;
+    if (field === "consequential_excluded") return userExt.consequential_damages?.excluded;
+    return userExt[field];
+  };
+
+  const rows = Object.entries(dists)
+    .filter(([k, v]) => v.total > 0 && !v.value_counts?.length && fieldLabels[k])
+    .map(([fieldName, dist]) => {
+      const userVal = getUserVal(fieldName);
+      const pct = dist.true_pct;
+      const userIndicator = userVal === true
+        ? '<span class="dist-user-indicator has">You have this</span>'
+        : userVal === false
+        ? '<span class="dist-user-indicator lacks">You lack this</span>'
+        : '';
+
+      return `
+        <div class="dist-row">
+          <div class="dist-label">${fieldLabels[fieldName] || fieldName}</div>
+          <div class="dist-bar-wrap">
+            <div class="dist-bar-fill market" style="width: ${Math.max(pct, 3)}%">${pct.toFixed(0)}%</div>
+          </div>
+          <div class="dist-pct">${dist.true_count}/${dist.total}</div>
+          ${userIndicator}
+        </div>
+      `;
+    });
+
+  container.innerHTML = rows.join("");
+}
+
+function renderCitedExamples(examples) {
+  const container = $("citedExamples");
+  if (!examples.length) {
+    container.innerHTML = '<p style="color:var(--text-muted)">No cited examples available.</p>';
+    return;
+  }
+
+  container.innerHTML = examples.map((ex) => {
+    const simPct = (ex.similarity * 100).toFixed(1);
+    const link = ex.exhibit_url
+      ? `<a class="cited-link" href="${escHtml(ex.exhibit_url)}" target="_blank" rel="noopener">View SEC Filing &rarr;</a>`
+      : '';
+
+    return `
+      <div class="cited-example">
+        <div class="cited-header">
+          <span class="cited-company">${escHtml(ex.company || ex.contract_id)}</span>
+          <div class="cited-meta">
+            ${ex.filed_date ? `<span>${escHtml(ex.filed_date)}</span>` : ''}
+            <span class="cited-sim">${simPct}% match</span>
+          </div>
+        </div>
+        <div class="cited-snippet">${escHtml(ex.text_snippet)}</div>
+        ${link}
+      </div>
+    `;
+  }).join("");
+}
+
+function renderRedlines(redline) {
+  $("redlineSummary").textContent = redline.summary || "";
+  const container = $("redlineSuggestions");
+
+  if (!redline.suggestions.length) {
+    container.innerHTML = '<p style="color:var(--text-muted)">No redline suggestions. Your clause aligns with market norms.</p>';
+    return;
+  }
+
+  container.innerHTML = redline.suggestions.map((s) => `
+    <div class="redline-item ${s.priority}">
+      <div class="redline-header">
+        <span class="redline-priority ${s.priority}">${escHtml(s.priority)}</span>
+        <span class="redline-risk">${escHtml(s.risk_addressed)}</span>
+      </div>
+      <div class="redline-diff">
+        <div class="redline-diff-label">Original</div>
+        <div class="redline-original">${escHtml(s.original_text)}</div>
+        <div class="redline-diff-label">Proposed</div>
+        <div class="redline-proposed">${escHtml(s.proposed_text)}</div>
+      </div>
+      <div class="redline-justification">${escHtml(s.justification)}</div>
+      ${s.market_citation ? `<div class="redline-citation">${escHtml(s.market_citation)}</div>` : ''}
+    </div>
+  `).join("");
 }

@@ -111,6 +111,14 @@
           </span>
           Analyze Risk
         </button>
+        <button class="btn btn-accent btn-lg" id="benchmarkBtn">
+          <span class="btn-icon-svg">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 5-10"/>
+            </svg>
+          </span>
+          Benchmark &amp; Redline
+        </button>
         <button class="btn btn-ghost" id="clearBtn">Clear</button>
       </div>
       <div class="action-right">
@@ -197,6 +205,58 @@
 
     <!-- Notes -->
     <div class="notes-card" id="notesCard"></div>
+  </section>
+
+  <!-- ============ BENCHMARK + REDLINE RESULTS ============ -->
+  <section class="results-section hidden" id="benchmarkSection">
+
+    <!-- Benchmark hero -->
+    <div class="hero-card benchmark-hero">
+      <div class="hero-top">
+        <div class="hero-left">
+          <div class="hero-label">Market Benchmark</div>
+          <div class="hero-badge benchmark-badge" id="benchSampleSize">-</div>
+          <div class="hero-doctitle" id="benchSubtitle">Similar clauses from SEC EDGAR filings</div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-num" id="benchExamples">0</div>
+            <div class="stat-label">Cited Examples</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num" id="benchRedlines">0</div>
+            <div class="stat-label">Suggestions</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User extraction summary -->
+    <div class="card" id="extractionCard">
+      <h3 class="section-title">Your Clause Extraction</h3>
+      <div class="extraction-grid" id="extractionGrid"></div>
+    </div>
+
+    <!-- Market distributions -->
+    <div class="card" id="distributionCard">
+      <h3 class="section-title">Market Comparison</h3>
+      <p class="section-subtitle">How your clause compares to similar clauses in real SEC filings</p>
+      <div id="distributionBars"></div>
+    </div>
+
+    <!-- Cited examples -->
+    <div class="card" id="citedCard">
+      <h3 class="section-title">Cited SEC Filings</h3>
+      <div id="citedExamples"></div>
+    </div>
+
+    <!-- Redline suggestions -->
+    <div class="card" id="redlineCard">
+      <h3 class="section-title">Redline Suggestions</h3>
+      <p class="section-subtitle" id="redlineSummary"></p>
+      <div id="redlineSuggestions"></div>
+    </div>
+
   </section>
 
   <!-- Loader -->
