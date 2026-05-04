@@ -1,16 +1,18 @@
 # Legal Risk Mapper
 
-A contract analysis platform that performs **structured clause extraction**, **RAG-based market benchmarking**, and **grounded redline generation** for SaaS Master Service Agreements. It analyzes liability clauses from uploaded contracts, compares them against a corpus of real SEC EDGAR filings, and generates specific edit suggestions backed by market data.
+A contract analysis platform that performs **ML-based risk classification**, **structured clause extraction**, **RAG-based market benchmarking**, and **grounded redline generation** for SaaS Master Service Agreements. It uses a trained multi-label classifier (sentence embeddings + logistic regression) to detect 5 categories of legal risk, analyzes liability clauses against a corpus of real SEC EDGAR filings, and generates specific edit suggestions backed by market data.
 
 ---
 
 ## What It Does
 
-1. **Structured Extraction** — Extracts structured fields from liability clauses (caps, mutuality, carve-outs, consequential damages, indemnification, warranty disclaimers) with source text provenance for every field.
+1. **ML Risk Classification** — Classifies contract clauses across 5 risk categories (Compliance, Liability, Privacy/Data, Financial, Contractual Ambiguity) using trained sentence-embedding classifiers with 0.877 average detection F1.
 
-2. **Market Benchmarking** — Retrieves similar clauses from a corpus of 116 real SEC EDGAR contracts using pgvector similarity search, then computes field-level market distributions and percentile ranks.
+2. **Structured Extraction** — Extracts structured fields from liability clauses (caps, mutuality, carve-outs, consequential damages, indemnification, warranty disclaimers) with source text provenance for every field.
 
-3. **Grounded Redlines** — Generates contract edit suggestions where every recommendation cites specific market statistics and real SEC filings, not LLM opinion.
+3. **Market Benchmarking** — Retrieves similar clauses from a corpus of 116 real SEC EDGAR contracts using pgvector similarity search, then computes field-level market distributions and percentile ranks.
+
+4. **Grounded Redlines** — Generates contract edit suggestions where every recommendation cites specific market statistics and real SEC filings, not LLM opinion.
 
 ---
 
@@ -51,6 +53,17 @@ User Clause (text)
 | E2E latency (local 8B) | 57.5s avg | ~3-5s with Sonnet |
 | E2E extraction success | 100% (8/8 test clauses) | > 90% |
 | Cost per clause (local) | **$0.00** | ~$0.007 with Sonnet |
+
+**ML Risk Classifier (trained on 387 labeled clauses, replaces hardcoded regex rules):**
+
+| Risk Category | Detection F1 | Severity Macro F1 |
+|---------------|-------------|-------------------|
+| Compliance Risk | 0.938 | 0.955 |
+| Privacy/Data Risk | 0.960 | 0.985 |
+| Liability Risk | 0.872 | 0.904 |
+| Contractual Ambiguity | 0.867 | 0.892 |
+| Financial Risk | 0.750 | 0.721 |
+| **Average** | **0.877** | **0.891** |
 
 **Per-field extraction results (42 hand-labeled examples):**
 
@@ -153,8 +166,10 @@ legal-risk-mapper/
 │   ├── redline/                    # Phase 4: Grounded redline generation
 │   │   ├── schemas.py              # RedlineSuggestion, RedlineResult
 │   │   └── generator.py            # LLM redline with market context
-│   ├── services/                   # v1/v2: Risk analysis engine
-│   │   ├── risk_analyzer.py        # 60+ regex patterns + semantic matching
+│   ├── services/                   # Risk analysis engine (v3 ML-trained)
+│   │   ├── risk_analyzer.py        # Hybrid pipeline: ML classifier + semantic matching
+│   │   ├── risk_classifier.py      # Trained multi-label classifier inference
+│   │   ├── risk_knowledge_base.py  # Canonical clause embeddings for semantic layer
 │   │   └── semantic_analyzer.py    # spaCy + sentence-transformers layer
 │   └── models/                     # Shared models
 ├── frontend/
@@ -172,7 +187,10 @@ legal-risk-mapper/
 │   ├── eval_retrieval.py           # MRR@5 / NDCG@5 retrieval eval
 │   ├── test_benchmark.py           # Benchmark pipeline test
 │   ├── test_redline.py             # Redline pipeline test
-│   └── eval_e2e.py                 # End-to-end pipeline eval (8 clauses)
+│   ├── eval_e2e.py                 # End-to-end pipeline eval (8 clauses)
+│   ├── generate_training_data.py   # Risk classifier training data generator
+│   ├── train_risk_classifier.py    # ML classifier training pipeline
+│   └── eval_classifier.py          # ML vs regex comparison eval
 ├── Dockerfile                      # Production container (gunicorn + uvicorn)
 ├── railway.json                    # Railway deployment config with health checks
 ├── vercel.json                     # Vercel static frontend config
@@ -191,6 +209,8 @@ legal-risk-mapper/
 | **Pydantic source_text grounding** | Every extracted field has a verbatim quote. Prevents hallucination. Grounding score of 0.975 confirms real provenance. |
 | **Keyword heuristic → manual audit** for ground truth | Initial labels generated programmatically, then manually corrected over 5 prompt iterations. Caught 6 mislabeled examples. |
 | **Core F1 threshold of 0.75** (not 0.85) | Realistic for 8B local model. Documented that larger models would push above 0.85. |
+| **ML classifier over regex rules** | Trained on 387 labeled clauses using MiniLM embeddings + LogisticRegression. Detection F1=0.877. Generalizes to paraphrases that regex misses. Regex preserved as fallback. |
+| **Template-augmented training data** | Generated 387 examples from canonical clauses + slot-filled templates + negative boilerplate. Avoids need for large hand-labeled dataset while producing diverse training signal. |
 | **slowapi rate limiting** | Per-IP limiting (30/min analyze, 10/min benchmark/redline). Protects expensive LLM endpoints without external infrastructure. |
 | **Optional API key auth** | Env-based toggle (`LRM_API_KEY`). Disabled in dev, enabled in production. No user auth overhead for a portfolio project. |
 

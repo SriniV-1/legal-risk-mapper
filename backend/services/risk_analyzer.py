@@ -1,28 +1,29 @@
 """
 Core risk analysis engine — HYBRID pipeline.
 
-Architecture (v2):
+Architecture (v3 — ML-trained):
   1. spaCy clause segmentation  (backend/services/semantic_analyzer.py)
-  2. Per-clause regex pattern matching  (this file — RISK_RULES below)
+  2. ML classifier: per-clause multi-label risk classification using
+     sentence embeddings + trained LogisticRegression classifiers
+     (backend/services/risk_classifier.py)
   3. Per-clause semantic similarity matching against a curated canonical
      knowledge base  (backend/services/semantic_analyzer.py)
-  4. Intelligent merge: regex + semantic hits on the same clause are
+  4. Intelligent merge: ML classifier + semantic hits on the same clause are
      combined into a single, boosted-confidence risk
-  5. TF-IDF frequency boost (scoring layer, regex side)
-  6. Severity escalation when multiple categories cluster in one clause
-  7. Template-based AI-like explanation generation
+  5. Severity escalation when multiple categories cluster in one clause
+  6. Template-based explanation generation
      (backend/services/explanation_engine.py)
 
-The regex layer is preserved verbatim (all 60+ rules below). The semantic
-layer is additive: it catches paraphrases that regex misses. When both
-layers agree, the merged risk gets a confidence boost.
+The ML classifier replaces the hardcoded regex rules as the primary
+detection layer. Regex rules are preserved as a FALLBACK — if the trained
+model is unavailable, the system degrades gracefully to regex-only mode.
 
 Graceful degradation:
-  • If sentence-transformers is unavailable → semantic layer returns [],
-    system behaves like the pure regex version.
-  • If spaCy is unavailable → clause segmentation falls back to a regex
-    sentence splitter (see text_utils.extract_sentences).
+  • If ML classifier unavailable → falls back to regex rules
+  • If sentence-transformers unavailable → semantic layer returns []
+  • If spaCy unavailable → regex sentence splitter fallback
 """
+import logging
 import re
 from typing import List, Dict, Tuple
 
@@ -31,7 +32,10 @@ from backend.utils.text_utils import (
     compute_tfidf_boost, deduplicate_risks
 )
 from backend.services import semantic_analyzer
+from backend.services import risk_classifier
 from backend.services.explanation_engine import generate_explanation
+
+logger = logging.getLogger("lrm.analyzer")
 
 
 # ─────────────────────────────────────────────
@@ -304,6 +308,8 @@ def _finalize_scoring(risk: Dict) -> None:
 
     sources = risk.get("sources") or ["regex"]
     has_regex = "regex" in sources
+    has_ml = "ml_classifier" in sources
+    has_primary = has_regex or has_ml
     has_semantic = "semantic" in sources
     sim = risk.get("semantic_similarity") or 0.0
     old_score = risk.get("score", 0.0) or 0.0   # 0..1 from detection layer
@@ -312,10 +318,15 @@ def _finalize_scoring(risk: Dict) -> None:
     primary = _BASE_INTENSITY.get(risk.get("severity", "Medium"), 55)
 
     # Agreement bonus: both layers confirm → strong evidence.
-    if has_regex and has_semantic:
+    if has_primary and has_semantic:
         primary += 12
+    # ML classifier confidence bonus (high-confidence predictions get a bump)
+    elif has_ml and not has_semantic:
+        ml_conf = risk.get("ml_confidence", 0.5)
+        if ml_conf >= 0.75:
+            primary += 6
     # Semantic-only penalty when similarity is in the weak band.
-    elif has_semantic and not has_regex and sim < 0.58:
+    elif has_semantic and not has_primary and sim < 0.58:
         primary -= 12
 
     # TF-IDF echo (the detection layer already folded a boost into old_score;
@@ -381,27 +392,27 @@ def _find_matches_in_clause(
 
 
 def _merge_regex_and_semantic(
-    regex_risks: List[Dict], semantic_risks: List[Dict]
+    primary_risks: List[Dict], semantic_risks: List[Dict]
 ) -> List[Dict]:
     """
     Intelligent hybrid merge.
 
     Policy:
-      • If a (clause_idx, risk_type) pair has BOTH a regex and a semantic
-        hit → merge into one risk. The merged score is a weighted blend
-        plus a +0.08 agreement bonus (capped at 1.0). Severity can be
-        escalated from Medium → High when semantic similarity is strong.
+      • If a (clause_idx, risk_type) pair has BOTH a primary (ML or regex)
+        and a semantic hit → merge into one risk. The merged score is a
+        weighted blend plus a +0.08 agreement bonus (capped at 1.0).
+        Severity can be escalated from Medium → High on strong agreement.
       • Otherwise, keep each risk as a standalone finding.
 
     Why this works:
-      • Regex gives precision (exact legal terms of art)
-      • Semantics gives recall (paraphrased variants)
+      • Primary layer (ML classifier or regex) gives category precision
+      • Semantics gives recall (paraphrased variants, canonical matching)
       • Agreement between the two is stronger evidence than either alone.
     """
     merged: Dict[Tuple[int, str], Dict] = {}
 
-    # Seed with regex risks
-    for r in regex_risks:
+    # Seed with primary risks (ML classifier or regex)
+    for r in primary_risks:
         key = (r["clause_idx"], r["risk_type"])
         if key not in merged:
             merged[key] = r
@@ -486,6 +497,45 @@ def _escalate_cross_category(risks: List[Dict]) -> List[Dict]:
     return risks
 
 
+def _classify_clauses_ml(clauses: List[str]) -> List[Dict]:
+    """
+    Run the ML classifier over all clauses and convert predictions
+    into risk dicts compatible with the merge pipeline.
+
+    Each prediction becomes a risk dict with the same shape as regex results:
+      clause_idx, risk_type, severity, text_snippet, score, keywords_matched, sources
+    """
+    batch_results = risk_classifier.classify_clauses_batch(clauses)
+
+    ml_risks: List[Dict] = []
+    for idx, (clause, predictions) in enumerate(zip(clauses, batch_results)):
+        for pred in predictions:
+            snippet = clause if len(clause) <= 300 else clause[:297] + "..."
+
+            # Map classifier confidence to 0-1 score compatible with the
+            # existing merge and scoring pipeline
+            base_score = {"Low": 0.45, "Medium": 0.65, "High": 0.85}.get(
+                pred["severity"], 0.55
+            )
+            # Blend base_score with classifier confidence
+            score = 0.5 * base_score + 0.5 * pred["confidence"]
+
+            ml_risks.append({
+                "clause_idx": idx,
+                "risk_type": pred["risk_type"],
+                "severity": pred["severity"],
+                "text_snippet": snippet,
+                "explanation": "",  # filled by explanation engine later
+                "score": round(score, 3),
+                "keywords_matched": [],  # ML doesn't produce keywords
+                "sources": ["ml_classifier"],
+                "ml_confidence": pred["confidence"],
+                "ml_risk_probability": pred["risk_probability"],
+            })
+
+    return ml_risks
+
+
 def analyze_risks(text: str) -> List[Dict]:
     """
     Main HYBRID analysis pipeline.
@@ -493,9 +543,9 @@ def analyze_risks(text: str) -> List[Dict]:
     Steps:
       1. Clean input
       2. Segment into clauses (spaCy → regex fallback)
-      3. Run regex rules PER CLAUSE (not on full text)
+      3. Run ML classifier PER CLAUSE (falls back to regex if unavailable)
       4. Run semantic similarity analysis per clause
-      5. Merge regex + semantic hits intelligently
+      5. Merge ML/regex + semantic hits intelligently
       6. Deduplicate near-identical snippets
       7. Cross-category severity escalation
       8. Generate dynamic explanations from templates
@@ -510,19 +560,24 @@ def analyze_risks(text: str) -> List[Dict]:
     if not clauses:
         return []
 
-    # Step 2: Per-clause regex scan
-    regex_risks: List[Dict] = []
-    for idx, clause in enumerate(clauses):
-        for risk_type, rules in RISK_RULES.items():
-            regex_risks.extend(
-                _find_matches_in_clause(clause, idx, rules, risk_type)
-            )
+    # Step 2: Primary detection — ML classifier (preferred) or regex fallback
+    if risk_classifier.is_available():
+        logger.info("Using ML classifier for risk detection")
+        primary_risks = _classify_clauses_ml(clauses)
+    else:
+        logger.info("ML classifier unavailable — falling back to regex rules")
+        primary_risks: List[Dict] = []
+        for idx, clause in enumerate(clauses):
+            for risk_type, rules in RISK_RULES.items():
+                primary_risks.extend(
+                    _find_matches_in_clause(clause, idx, rules, risk_type)
+                )
 
     # Step 3: Semantic scan (may return [] if embeddings unavailable)
     semantic_risks = semantic_analyzer.semantic_analyze(clauses)
 
-    # Step 4: Hybrid merge
-    merged = _merge_regex_and_semantic(regex_risks, semantic_risks)
+    # Step 4: Hybrid merge (works identically whether primary is ML or regex)
+    merged = _merge_regex_and_semantic(primary_risks, semantic_risks)
 
     # Step 5: Snippet-similarity dedup (safety net across clauses)
     merged = deduplicate_risks(merged)

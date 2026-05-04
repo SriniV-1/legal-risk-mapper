@@ -1,0 +1,4259 @@
+[
+  {
+    "text": "THE AGGREGATE LIABILITY OF PLATFORM ARISING OUT OF OR RELATED TO THIS AGREEMENT SHALL NOT EXCEED THE FEES PAID BY LICENSEE IN THE THREE (3) MONTHS PRECEDING THE CLAIM.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "By continuing to access the platform after modifications are posted, Customer agrees to be bound by the revised terms without further notice or consent.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Recipient consents to the collection and processing of sensitive personal data, including health information, financial records, and biometric data, in connection with the Services.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Warranty claims must be submitted in writing within ninety (90) days of discovering the defect.",
+    "labels": {
+      "Liability Risk": "Low",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "We collect and analyze your browsing history, search queries, purchase patterns, and location data to build a profile of your interests and preferences for targeted advertising.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Company reserves the right to withhold payment or offset amounts owed to Recipient against any disputed claims or outstanding obligations.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Performance standards are based on generally accepted industry practices as applied to services of a similar nature and scope.",
+    "labels": {
+      "Contractual Ambiguity": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "We use third-party analytics services, including Google Analytics, to collect information about your use of the Service.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "THE AGGREGATE LIABILITY OF LICENSOR ARISING OUT OF OR RELATED TO THIS AGREEMENT SHALL NOT EXCEED THE FEES PAID BY RECIPIENT IN THE THE PRECEDING TWELVE MONTHS PRECEDING THE CLAIM.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "All invoices are due and payable within thirty (30) days of the date of invoice. Payment shall be made by wire transfer or ACH to the account designated by Contractor.",
+    "labels": {
+      "Financial Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Platform warrants that the Services will conform in all material respects to the specifications set forth in the applicable documentation for a period of twelve (12) months from the date of delivery.",
+    "labels": {
+      "Liability Risk": "Low",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensor may modify, update, or discontinue these terms at any time, with changes becoming effective immediately upon posting to Supplier's website.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Funds held in escrow shall be released upon mutual written agreement of the parties or upon final resolution of any dispute.",
+    "labels": {
+      "Financial Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Customer must comply with all applicable laws, regulations, rules, and requirements in connection with its use of the Services, including without limitation all export control laws and economic sanctions regulations.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "A material breach of this Agreement shall be determined by the non-breaching party in good faith, taking into account all relevant circumstances.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Service Provider warrants that the Services will conform in all material respects to the specifications set forth in the applicable documentation for a period of twenty-four (24) months from the date of delivery.",
+    "labels": {
+      "Liability Risk": "Low",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "We collect and analyze your browsing history, search queries, purchase patterns, and location data to build a profile of your interests and preferences for targeted advertising.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Obligations are subject to such conditions and limitations as the Provider may establish from time to time.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": "Medium"
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Subscriber shall bear all costs associated with maintaining regulatory compliance, including HIPAA, and shall indemnify Licensor for any regulatory fines arising from Licensee's non-compliance.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": "High",
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "By continuing to access the platform after modifications are posted, Customer agrees to be bound by the revised terms without further notice or consent.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "In the event of a conflict between this Agreement and any applicable law, regulation, or governmental requirement, Buyer shall comply with the applicable law.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "User records and personal information are retained for the duration of the account and for twelve (12) months following account termination, unless a longer retention period is required by law.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Data collected through the Services is retained in accordance with Vendor's data retention policy, which may be updated from time to time.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "User records and personal information are retained for the duration of the account and for the initial term following account termination, unless a longer retention period is required by law.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "End User shall use the Services in accordance with all applicable regulatory requirements and industry standards.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Funds held in escrow shall be released upon mutual written agreement of the parties or upon final resolution of any dispute.",
+    "labels": {
+      "Financial Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties agree to maintain the confidentiality of all proprietary information exchanged under this Agreement for a period of three years following termination.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "In the event of a conflict between this Agreement and any applicable law, regulation, or governmental requirement, Buyer shall comply with the applicable law.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Vendor may, at its sole discretion, suspend, restrict, or terminate Client's access to the Services at any time and for any reason, with or without notice.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Subscriber assumes full responsibility for any consequences arising from its use of the platform and waives all rights to pursue legal action against Platform.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Subscriber represents and warrants that it shall comply with all applicable economic sanctions laws and regulations, including those administered by the Office of Foreign Assets Control (OFAC).",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Supplier may unilaterally increase the subscription fee by up to 15% at each renewal period without requiring Recipient's consent.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Recipient consents to the collection and processing of sensitive personal data, including health information, financial records, and biometric data, in connection with the Services.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "If any claim is brought against Service Provider as a result of Licensee's actions or omissions, Customer shall bear all costs of defense, including reasonable attorneys' fees, and any resulting judgments or settlements.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties shall observe all laws, regulations, and administrative requirements applicable to the performance of this agreement.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "This Agreement may not be modified except by a written instrument signed by both parties.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Overdue amounts shall bear interest at the rate of the prime rate plus 2% per month from the due date until paid in full, plus all costs of collection, including reasonable attorneys' fees.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Customer represents and warrants that it shall comply with all applicable economic sanctions laws and regulations, including those administered by the Office of Foreign Assets Control (OFAC).",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Client shall reimburse Company for reasonable, pre-approved out-of-pocket expenses incurred in connection with the Services.",
+    "labels": {
+      "Financial Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Customer agrees to a minimum purchase commitment of $1,000,000 per year during the term of this Agreement.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Performance standards are based on generally accepted industry practices as applied to services of a similar nature and scope.",
+    "labels": {
+      "Contractual Ambiguity": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Customer shall indemnify, defend, and hold harmless Company and its officers, directors, employees, and agents from and against any and all claims, damages, losses, liabilities, costs, and expenses arising out of or relating to Customer's use of the Services.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "All amounts are denominated in U.S. dollars. Currency conversion risks are borne by Client for payments made in other currencies.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Subscriber shall indemnify Company against all claims and shall comply with applicable export control laws. This obligation survives termination of the Agreement indefinitely.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": "High",
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "Platform shall provide Licensee with reasonable access to technical support during normal business hours.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "No waiver of any provision of this Agreement shall be effective unless in writing and signed by the party against whom the waiver is sought to be enforced.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Platform processes personally identifiable information (PII) on behalf of Subscriber. Licensee is the data controller and Platform acts as the data processor.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensor may modify, update, or discontinue these terms at any time, with changes becoming effective immediately upon posting to Supplier's website.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Vendor reserves the right to withhold payment or offset amounts owed to Client against any disputed claims or outstanding obligations.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensee must obtain and maintain all licenses, permits, and regulatory approvals required for its use of the Services in each applicable jurisdiction.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The receiving party agrees to make the disclosing party whole for any losses, damages, or costs incurred as a result of any breach of this Agreement.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Customer shall defend, indemnify, and hold harmless the Provider from any and all claims, damages, losses, and expenses arising from use of the services.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": "High",
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "User records and personal information are retained for the duration of the account and for the initial term following account termination, unless a longer retention period is required by law.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "THE SERVICES ARE PROVIDED \"AS IS\" AND \"AS AVAILABLE\" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensor SHALL HAVE NO LIABILITY WHATSOEVER FOR ANY DAMAGE, LOSS, OR EXPENSE ARISING OUT OF BUYER'S USE OF THE SERVICES, REGARDLESS OF THE THEORY OF LIABILITY.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The scope of Services includes, without limitation, such activities as the parties may mutually determine to be appropriate.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The receiving party agrees to make the disclosing party whole for any losses, damages, or costs incurred as a result of any breach of this Agreement.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Customer is solely responsible for ensuring compliance with all applicable data protection laws including GDPR, CCPA, and similar regulations.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "The Services are designed to assist User in meeting its compliance obligations, but do not guarantee compliance with any specific regulation.",
+    "labels": {
+      "Compliance Risk": "Low",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Personal data may be transferred to and stored on servers located in countries outside your country of residence.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": "High",
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "The Services will be delivered on a commercially reasonable basis within a reasonable timeframe, subject to Provider's standard processes and procedures.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "We may sell, license, or otherwise transfer your personal data to third-party data brokers and analytics partners for monetization purposes.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The initial term of this Agreement is twelve (12) months, commencing on the Effective Date.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Late payments shall accrue interest at the rate of the lesser of 1.5% or the maximum rate per month, or the maximum rate permitted by applicable law, whichever is less.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "This Agreement, including but not limited to the terms and conditions set forth herein, constitutes the entire agreement between the parties.",
+    "labels": {
+      "Contractual Ambiguity": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Your information may be shared with affiliated companies, business partners, advertising networks, and service providers for marketing purposes.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": "High",
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "The receiving party agrees to make the disclosing party whole for any losses, damages, or costs incurred as a result of breach.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": "High",
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Customer shall comply with all applicable data protection laws, including the General Data Protection Regulation (GDPR), the California Consumer Privacy Act (CCPA), and any similar regulations in force in the relevant jurisdiction.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "You may opt out of marketing communications at any time by clicking the unsubscribe link in any promotional email or by contacting us at the address provided.",
+    "labels": {
+      "Privacy/Data Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Supplier may, at its sole discretion, suspend, restrict, or terminate User's access to the Services at any time and for any reason, with or without notice.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "This Agreement shall automatically renew unless terminated by Licensee upon ninety (90) days notice. Early termination fees apply. Contractor may adjust pricing at its sole discretion upon renewal.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": "High",
+      "Contractual Ambiguity": "High"
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "Your personal information may be shared with affiliated companies, business partners, advertising networks, and analytics providers for the purposes of marketing, product improvement, and targeted advertising.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Each party shall maintain appropriate records as required by applicable regulatory authorities.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Any dispute arising under this Agreement shall be resolved by binding arbitration in accordance with the rules of the American Arbitration Association.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Material breaches must be addressed within a reasonable period, where materiality shall be determined in good faith by the non-breaching party.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": "Medium"
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "The parties agree to cooperate in the transition of Services upon termination of this Agreement.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "The parties acknowledge that this Agreement does not create a partnership, joint venture, or agency relationship between them.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Continued use of the service after changes are made constitutes acceptance of the modified terms.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": "High"
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Termination of this Agreement prior to the end of the initial term shall incur an early termination penalty equal to the remaining contract value for the unexpired portion of the term.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "We may sell, license, or otherwise transfer your personal data to third-party data brokers and analytics partners for monetization purposes.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Services shall be performed in compliance with regulatory requirements applicable to Provider's industry.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Service Provider shall assign qualified personnel to perform the Services described herein.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "The warranties set forth in this Agreement are the exclusive warranties provided by Company, and no other warranties, express or implied, are made.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Provider may modify its data collection and sharing practices at any time as it deems appropriate. Personal information may be shared with third-party advertising partners without additional notice.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": "High",
+      "Financial Risk": null,
+      "Contractual Ambiguity": "High"
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "Subscriber shall comply with all applicable data protection laws, including the General Data Protection Regulation (GDPR), the California Consumer Privacy Act (CCPA), and any similar regulations in force in the relevant jurisdiction.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "All payments made under this agreement are final and non-refundable under any circumstances, including early termination or dissatisfaction.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": "High",
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "We may collect, store, and process information about you including your identity, location, device, and behavior across our services.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": "High",
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Provider shall deliver monthly usage reports to Customer in a format reasonably acceptable to Customer.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Provider reserves the right to adjust pricing, fees, and billing terms at any time upon ten (10) business days written notice to Customer.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The initial term of this Agreement is twelve (12) months, commencing on the Effective Date.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "The scope of services includes, without limitation, such activities as the parties may mutually determine to be appropriate.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": "Medium"
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Customer must obtain and maintain all licenses, permits, and regulatory approvals required for its use of the Services in each applicable jurisdiction.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Service Provider may modify, update, or discontinue these terms at any time, with changes becoming effective immediately upon posting to Vendor's website.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Vendor shall maintain commercially reasonable security measures to protect Buyer data during the term of this Agreement.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "The Service uses industry-standard encryption (TLS 1.2 or higher) to protect data in transit between your device and our servers.",
+    "labels": {
+      "Privacy/Data Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensee shall indemnify, defend, and hold harmless Platform and its officers, directors, employees, and agents from and against any and all claims, damages, losses, liabilities, costs, and expenses arising out of or relating to Recipient's use of the Services.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensee shall use commercially reasonable efforts to maintain compliance with applicable industry guidelines.",
+    "labels": {
+      "Compliance Risk": "Low",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "If any claim is brought against Service Provider as a result of End User's actions or omissions, Customer shall bear all costs of defense, including reasonable attorneys' fees, and any resulting judgments or settlements.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Each party shall comply with all applicable anti-bribery and anti-corruption laws, including the U.S. Foreign Corrupt Practices Act (FCPA) and the UK Bribery Act 2010.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Each party shall comply with all anti-money laundering laws and regulations, including the Bank Secrecy Act and applicable Know Your Customer requirements.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Contractor SHALL HAVE NO LIABILITY WHATSOEVER FOR ANY DAMAGE, LOSS, OR EXPENSE ARISING OUT OF LICENSEE'S USE OF THE SERVICES, REGARDLESS OF THE THEORY OF LIABILITY.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Except as expressly set forth herein, Vendor makes no representations or warranties of any kind, whether express, implied, or statutory.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Buyer acknowledges that it has read and understands the terms of this Agreement.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "User shall use the Services in accordance with all applicable regulatory requirements and industry standards.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Any notices required or permitted under this Agreement shall be in writing and delivered by certified mail, overnight courier, or email to the addresses set forth on the signature page.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "User data, including personal information and usage patterns, may be disclosed to law enforcement or government authorities upon receipt of a valid legal request, without prior notice to the user.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The scope of Services includes, without limitation, such activities as the parties may mutually determine to be appropriate.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Service Provider processes personally identifiable information (PII) on behalf of Client. Subscriber is the data controller and Licensor acts as the data processor.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Service Provider may change its compliance requirements from time to time as it deems appropriate, and End User must comply with all such changes at its own expense.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": "Medium",
+      "Contractual Ambiguity": "High"
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "The Customer commits to a minimum annual purchase volume, regardless of actual usage or need.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": "Medium",
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Customer shall pay all undisputed invoices in accordance with the payment terms set forth in Schedule B.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Each party shall comply with all anti-bribery, anti-corruption, and economic sanctions laws including the FCPA, UK Bribery Act, and OFAC regulations.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "We collect personal data including biometric identifiers. This data may be shared with third parties. All payments for data processing services are non-refundable.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": "High",
+      "Financial Risk": "Medium",
+      "Contractual Ambiguity": null
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "In the event of early termination by End User, User shall pay a cancellation fee equal to three months of the then-current subscription fee plus any outstanding balance.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Subscriber commits to a minimum annual spend of $500,000, regardless of actual usage. Unused credits do not roll over to the next period.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Neither party shall be liable for any damages arising from the other party's negligence or failure to comply with its obligations under this Agreement.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties acknowledge that industry standards may evolve over the term of this Agreement.",
+    "labels": {
+      "Compliance Risk": "Low",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The warranties set forth in this Agreement are the exclusive warranties provided by Company, and no other warranties, express or implied, are made.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties shall observe all laws, statutes, regulations, and administrative requirements applicable to the performance of their obligations under this Agreement.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Service collects biometric identifiers, including facial geometry and fingerprint data, for authentication and identity verification purposes.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Service Provider reserves the right to determine, in its sole discretion, whether Subscriber's use of the Services violates the terms of this Agreement.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Except as expressly set forth herein, Platform makes no representations or warranties of any kind, whether express, implied, or statutory.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Platform SHALL HAVE NO LIABILITY WHATSOEVER FOR ANY DAMAGE, LOSS, OR EXPENSE ARISING OUT OF CUSTOMER'S USE OF THE SERVICES, REGARDLESS OF THE THEORY OF LIABILITY.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "All amounts are denominated in U.S. dollars. Currency conversion risks are borne by Recipient for payments made in other currencies.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Services may be subject to export control restrictions under the Export Administration Regulations (EAR) and the International Traffic in Arms Regulations (ITAR). Subscriber shall not export or re-export any technical data or services in violation thereof.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "This Agreement, including but not limited to the terms and conditions set forth herein, constitutes the entire agreement between the parties.",
+    "labels": {
+      "Contractual Ambiguity": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Services will be delivered on a commercially reasonable basis within a reasonable timeframe, subject to Platform's standard processes and procedures.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "User records and personal information are retained indefinitely unless the user actively requests deletion.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": "Medium",
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Recipient must comply with all applicable laws, regulations, rules, and requirements in connection with its use of the Services, including without limitation all export control laws and economic sanctions regulations.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Provider shall provide Customer with reasonable access to technical support during normal business hours.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "The term 'material adverse change' shall have the meaning customarily attributed to such term in agreements of this type.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties shall cooperate in good faith to implement the terms of this Agreement and resolve any issues that may arise.",
+    "labels": {
+      "Contractual Ambiguity": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Service collects biometric identifiers, including facial geometry and fingerprint data, for authentication and identity verification purposes.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensee shall ensure that its use of the Services complies with PCI-DSS requirements for the processing, storage, and transmission of payment card data.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Customer shall designate a primary contact for purposes of communication under this Agreement.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "This Agreement may not be modified except by a written instrument signed by both parties.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Provider shall assign qualified personnel to perform the Services described herein.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Each party shall comply with all applicable anti-bribery and anti-corruption laws, including the U.S. Foreign Corrupt Practices Act (FCPA) and the UK Bribery Act 2010.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "All invoices are due and payable within thirty (30) days of the date of invoice. Payment shall be made by wire transfer or ACH to the account designated by Licensor.",
+    "labels": {
+      "Financial Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "User acknowledges that it has read and understands the terms of this Agreement.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "THE SERVICES ARE PROVIDED AS-IS. Vendor MAKES NO WARRANTIES AND SHALL HAVE NO LIABILITY. Recipient AGREES TO PAY ALL FEES FOR THE MINIMUM COMMITMENT PERIOD REGARDLESS OF SERVICE QUALITY.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": "High",
+      "Privacy/Data Risk": null,
+      "Financial Risk": "High",
+      "Contractual Ambiguity": null
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "Customer acknowledges that it has read and understands the terms of this Agreement.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Non-refundable setup fees of the total fees paid are due upon execution of this Agreement.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties shall negotiate in good faith to resolve any disputes arising under this Agreement, using customary commercial practices.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Data collected through the Services is retained in accordance with Company's data retention policy, which may be updated from time to time.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Company shall provide Buyer with reasonable access to technical support during normal business hours.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "THE SERVICES ARE PROVIDED AS-IS. Vendor MAKES NO WARRANTIES AND SHALL HAVE NO LIABILITY. Recipient AGREES TO PAY ALL FEES FOR THE MINIMUM COMMITMENT PERIOD REGARDLESS OF SERVICE QUALITY.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": "High",
+      "Privacy/Data Risk": null,
+      "Financial Risk": "High",
+      "Contractual Ambiguity": null
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "In the event of a security incident affecting user data, we will notify affected parties as required by law.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": "High",
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "User data, including personal information and usage patterns, may be disclosed to law enforcement or government authorities upon receipt of a valid legal request, without prior notice to the user.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Buyer agrees to follow industry-standard practices and recognized codes of conduct applicable to its business operations.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The headings in this Agreement are for convenience only and shall not affect the interpretation of this Agreement.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Buyer consents to the collection and processing of sensitive personal data, including health information, financial records, and biometric data, in connection with the Services.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "A material breach of this Agreement shall be determined by the non-breaching party in good faith, taking into account all relevant circumstances.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Non-refundable setup fees of $2,000,000 are due upon execution of this Agreement.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "In no event shall Provider's aggregate liability under this Agreement exceed $1,000,000.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "In the event of a breach, the non-breaching party's sole and exclusive remedy shall be the payment of liquidated damages in the amount of $250,000.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "All intellectual property rights in the Services shall remain the exclusive property of the Company.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "End User shall reimburse Vendor for reasonable, pre-approved out-of-pocket expenses incurred in connection with the Services.",
+    "labels": {
+      "Financial Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Each party shall comply with all applicable anti-bribery and anti-corruption laws, including the U.S. Foreign Corrupt Practices Act (FCPA) and the UK Bribery Act 2010.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "IN NO EVENT SHALL EITHER PARTY BE LIABLE FOR ANY LOST PROFITS, LOST REVENUE, LOSS OF BUSINESS, OR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Termination of this Agreement prior to the end of the initial term shall incur an early termination penalty equal to the remaining contract value for the unexpired portion of the term.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Buyer shall hold Company harmless from any third-party claims arising from Licensee's breach of its representations, warranties, or obligations under this Agreement.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Customer shall be responsible for providing accurate and complete information necessary for the delivery of the Services.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "The parties acknowledge that industry standards may evolve over the term of this Agreement.",
+    "labels": {
+      "Compliance Risk": "Low",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "IN NO EVENT SHALL EITHER PARTY BE LIABLE FOR ANY LOST PROFITS, LOST REVENUE, LOSS OF BUSINESS, OR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Contractor engages third-party service providers and subprocessors to assist in the delivery of the Services. A current list of subprocessors is available upon request.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The headings in this Agreement are for convenience only and shall not affect the interpretation of this Agreement.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "All amounts are denominated in U.S. dollars. Currency conversion risks are borne by Customer for payments made in other currencies.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Services will be delivered on a commercially reasonable basis within a reasonable timeframe, subject to Contractor's standard processes and procedures.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Client acknowledges that certain features of the Services may require regulatory approval in certain jurisdictions.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Your personal information may be shared with affiliated companies, business partners, advertising networks, and analytics providers for the purposes of marketing, product improvement, and targeted advertising.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Vendor SHALL HAVE NO LIABILITY WHATSOEVER FOR ANY DAMAGE, LOSS, OR EXPENSE ARISING OUT OF USER'S USE OF THE SERVICES, REGARDLESS OF THE THEORY OF LIABILITY.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "If any provision of this Agreement is held to be invalid or unenforceable, the remaining provisions shall continue in full force and effect.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "You may opt out of marketing communications at any time by clicking the unsubscribe link in any promotional email or by contacting us at the address provided.",
+    "labels": {
+      "Privacy/Data Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "A material breach of this Agreement shall be determined by the non-breaching party in good faith, taking into account all relevant circumstances.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Provider shall use reasonable efforts to provide the Services in accordance with the specifications, subject to availability and operational requirements.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "In the event of a breach, the non-breaching party's sole and exclusive remedy shall be the payment of liquidated damages in the amount of the total fees paid.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Subscriber acknowledges that certain features of the Services may require regulatory approval in certain jurisdictions.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "This Agreement shall automatically renew unless terminated by Licensee upon ninety (90) days notice. Early termination fees apply. Contractor may adjust pricing at its sole discretion upon renewal.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": "High",
+      "Contractual Ambiguity": "High"
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "This Agreement shall automatically renew for successive terms of equal length unless either party provides written notice of non-renewal at least fourteen (14) days prior to the expiration of the then-current term.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Provider may modify, update, or discontinue these terms at any time, with changes becoming effective upon posting.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": "High"
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Neither party shall be liable for any damages arising from the other party's negligence or failure to comply with its obligations under this Agreement.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Service collects biometric identifiers, including facial geometry and fingerprint data, for authentication and identity verification purposes.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The term 'material adverse change' shall have the meaning customarily attributed to such term in agreements of this type.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "In the event of a security incident affecting personal data, Provider will notify affected individuals and relevant supervisory authorities as required by applicable law.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Termination prior to the end of the initial term incurs a penalty equal to the remaining contract value.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": "High",
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "This Agreement constitutes the entire agreement between the parties with respect to the subject matter hereof and supersedes all prior and contemporaneous agreements and understandings.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Warranty claims must be submitted in writing within thirty (30) days of discovering the defect.",
+    "labels": {
+      "Liability Risk": "Low",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Service collects biometric identifiers, including facial geometry and fingerprint data, for authentication and identity verification purposes.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Neither party shall be liable for any damages arising from the other party's negligence or failure to comply with its obligations under this Agreement.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The service collects biometric identifiers including facial geometry, fingerprints, or voice patterns for authentication and personalization.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": "High",
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Customer must comply with all applicable laws, regulations, rules, and requirements in connection with its use of the Services, including without limitation all export control laws and economic sanctions regulations.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "We use third-party analytics services, including Google Analytics, to collect information about your use of the Service.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Any notices required or permitted under this Agreement shall be in writing and delivered by certified mail, overnight courier, or email to the addresses set forth on the signature page.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "The Services are designed to assist Buyer in meeting its compliance obligations, but do not guarantee compliance with any specific regulation.",
+    "labels": {
+      "Compliance Risk": "Low",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Personal data collected through the Services may be transferred to and stored on servers located in countries outside your country of residence, including countries that may not provide the same level of data protection.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Supplier shall not be liable for any failure to perform its obligations if such failure results from circumstances beyond its reasonable control.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensor may take such actions as it deems necessary or appropriate in its sole and absolute discretion to protect its interests and the interests of its users.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Customer assumes full responsibility for any consequences arising from use of the platform and waives all rights to pursue legal action.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": "High",
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "The warranties set forth in this Agreement are the exclusive warranties provided by Contractor, and no other warranties, express or implied, are made.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Overdue balances shall accrue interest at the maximum rate permitted by applicable law.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": "Medium",
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Each party shall maintain appropriate records as required by applicable regulatory authorities.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The term 'material adverse change' shall have the meaning customarily attributed to such term in agreements of this type.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Funds held in escrow shall be released upon mutual written agreement of the parties or upon final resolution of any dispute.",
+    "labels": {
+      "Financial Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Provider shall maintain commercially reasonable security measures to protect Customer data during the term of this Agreement.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Company processes personally identifiable information (PII) on behalf of End User. Recipient is the data controller and Company acts as the data processor.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Continued use of the Services after any changes to these terms constitutes your acceptance of the modified terms.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Supplier shall use reasonable efforts to provide the Services in accordance with the specifications, subject to availability and operational requirements.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Contractor warrants that the Services will conform in all material respects to the specifications set forth in the applicable documentation for a period of the initial term from the date of delivery.",
+    "labels": {
+      "Liability Risk": "Low",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Provider shall deliver the Services in accordance with the specifications set forth in Exhibit A.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Buyer shall use commercially reasonable efforts to maintain compliance with applicable industry guidelines.",
+    "labels": {
+      "Compliance Risk": "Low",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties shall negotiate in good faith to resolve any disputes arising under this Agreement, using customary commercial practices.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Continued use of the Services after any changes to these terms constitutes your acceptance of the modified terms.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "In the event of a security incident affecting personal data, Vendor will notify affected individuals and relevant supervisory authorities as required by applicable law.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Client shall hold Supplier harmless from any third-party claims arising from Licensee's breach of its representations, warranties, or obligations under this Agreement.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Recipient represents and warrants that it shall comply with all applicable economic sanctions laws and regulations, including those administered by the Office of Foreign Assets Control (OFAC).",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Supplier shall not be liable for any failure to perform its obligations if such failure results from circumstances beyond its reasonable control.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Provider reserves the right to withhold payment or offset amounts owed to the Customer against any disputed claims.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": "Medium",
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "The exhibits and schedules attached hereto are incorporated by reference and made a part of this Agreement.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "In no event shall Contractor's aggregate liability under this Agreement exceed the aggregate fees paid under this Agreement.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Supplier shall use reasonable efforts to provide the Services in accordance with the specifications, subject to availability and operational requirements.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties shall observe all laws, statutes, regulations, and administrative requirements applicable to the performance of their obligations under this Agreement.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties shall cooperate in good faith to implement the terms of this Agreement and resolve any issues that may arise.",
+    "labels": {
+      "Contractual Ambiguity": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Each party acknowledges that the other party makes no guarantees regarding the results that may be obtained from use of the Services.",
+    "labels": {
+      "Liability Risk": "Low",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Neither party shall be responsible for delays or failures caused by events beyond its reasonable control, including acts of God, government action, or labor disputes.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": "Medium",
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "By continuing to access the platform after modifications are posted, Buyer agrees to be bound by the revised terms without further notice or consent.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Services may be subject to export control restrictions under the Export Administration Regulations (EAR) and the International Traffic in Arms Regulations (ITAR). Subscriber shall not export or re-export any technical data or services in violation thereof.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties shall observe all laws, statutes, regulations, and administrative requirements applicable to the performance of their obligations under this Agreement.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Provider makes no guarantees regarding uptime, accuracy, or fitness of the service for the Customer's intended purpose.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": "Medium",
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "We use cookies, pixels, web beacons, and similar tracking technologies to monitor your activity on our website and across third-party sites for analytics and advertising purposes.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Obligations under this Agreement are subject to such conditions and limitations as Supplier may establish from time to time.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Subscriber commits to a minimum annual spend of $250,000, regardless of actual usage. Unused credits do not roll over to the next period.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The scope, features, and pricing of the Services are subject to change at any time without prior notice to Licensee.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "We monetize user data through sale or licensing arrangements with data brokers and analytics partners.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": "High",
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Your personal information may be shared with affiliated companies, business partners, advertising networks, and analytics providers for the purposes of marketing, product improvement, and targeted advertising.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "User must obtain and maintain all licenses, permits, and regulatory approvals required for its use of the Services in each applicable jurisdiction.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Client acknowledges that certain features of the Services may require regulatory approval in certain jurisdictions.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Customer shall provide Provider with access to its facilities and systems as reasonably necessary for Provider to perform the Services.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Neither party shall be responsible for any delay or failure in performance caused by events beyond its reasonable control, including acts of God, natural disasters, government actions, or labor disputes.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Recipient consents to the collection and processing of sensitive personal data, including health information, financial records, and biometric data, in connection with the Services.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "In no event shall either party be liable for lost profits, lost revenue, loss of business, or any indirect, consequential, or punitive damages.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": "High",
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Vendor shall use commercially reasonable efforts to maintain service availability, subject to scheduled maintenance windows communicated from time to time.",
+    "labels": {
+      "Contractual Ambiguity": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "We use cookies, pixels, and similar tracking technologies to monitor your activity on our website and across the web.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": "Medium",
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "We use cookies to maintain your session and remember your preferences. You may configure your browser to reject cookies, but some features of the Service may not function properly.",
+    "labels": {
+      "Privacy/Data Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Buyer shall ensure that its use of the Services complies with PCI-DSS requirements for the processing, storage, and transmission of payment card data.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "THE SERVICES ARE PROVIDED \"AS IS\" AND \"AS AVAILABLE\" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "A material breach of this Agreement shall be determined by the non-breaching party in good faith, taking into account all relevant circumstances.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Subscriber shall bear all costs associated with maintaining regulatory compliance, including HIPAA, and shall indemnify Licensor for any regulatory fines arising from Licensee's non-compliance.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": "High",
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "We use cookies, pixels, web beacons, and similar tracking technologies to monitor your activity on our website and across third-party sites for analytics and advertising purposes.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Recipient warrants that neither it nor any of its officers or directors appear on any government-maintained list of restricted or prohibited parties, including the OFAC Specially Designated Nationals list.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Services are designed to assist Subscriber in meeting its compliance obligations, but do not guarantee compliance with any specific regulation.",
+    "labels": {
+      "Compliance Risk": "Low",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "No waiver of any provision of this Agreement shall be effective unless in writing and signed by the party against whom the waiver is sought to be enforced.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "We collect personal data including biometric identifiers. This data may be shared with third parties. All payments for data processing services are non-refundable.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": "High",
+      "Financial Risk": "Medium",
+      "Contractual Ambiguity": null
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "The Services shall be performed in compliance with regulatory requirements applicable to Company's industry.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Services shall be performed in compliance with regulatory requirements applicable to Company's industry.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Overdue amounts shall bear interest at the rate of 18% per annum per month from the due date until paid in full, plus all costs of collection, including reasonable attorneys' fees.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "THE SERVICES ARE PROVIDED \"AS IS\" AND \"AS AVAILABLE\" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Your personal information may be shared with affiliated companies, business partners, advertising networks, and analytics providers for the purposes of marketing, product improvement, and targeted advertising.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Services will be delivered on a commercially reasonable basis within a reasonable timeframe, subject to Vendor's standard processes and procedures.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "If any claim is brought against Licensor as a result of Subscriber's actions or omissions, Licensee shall bear all costs of defense, including reasonable attorneys' fees, and any resulting judgments or settlements.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The term of this Agreement shall commence on the Effective Date and continue for a period of twelve months.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "End User shall use commercially reasonable efforts to maintain compliance with applicable industry guidelines.",
+    "labels": {
+      "Compliance Risk": "Low",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Customer commits to a minimum annual spend of the total fees paid, regardless of actual usage. Unused credits do not roll over to the next period.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Client warrants that neither it nor any of its officers or directors appear on any government-maintained list of restricted or prohibited parties, including the OFAC Specially Designated Nationals list.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Platform reserves the right to adjust pricing, fees, and billing terms at any time upon ten (10) business days written notice to Client.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Client is solely responsible for ensuring compliance with HIPAA and all regulations governing protected health information in connection with its use of the Services.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Continued use of the Services after any changes to these terms constitutes your acceptance of the modified terms.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Data collected through the Services is retained in accordance with Service Provider's data retention policy, which may be updated from time to time.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Services involving transfer of technology or data across borders are subject to export control restrictions including EAR and ITAR.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "User shall ensure that its use of the Services complies with PCI-DSS requirements for the processing, storage, and transmission of payment card data.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "End User agrees to a minimum purchase commitment of $100,000 per year during the term of this Agreement.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Services shall be performed in compliance with regulatory requirements applicable to Vendor's industry.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Service uses industry-standard encryption (TLS 1.2 or higher) to protect data in transit between your device and our servers.",
+    "labels": {
+      "Privacy/Data Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Personal data collected through the Services may be transferred to and stored on servers located in countries outside your country of residence, including countries that may not provide the same level of data protection.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Any dispute arising under this Agreement shall be resolved by binding arbitration in accordance with the rules of the American Arbitration Association.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "The Customer represents that its use of the service will not violate any laws concerning protected health information or financial records.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Licensee shall indemnify Company for any claims arising from Licensee's failure to comply with applicable data protection laws, including GDPR and CCPA. Supplier's aggregate liability for data protection claims shall not exceed the aggregate fees paid under this Agreement.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": "High",
+      "Privacy/Data Risk": "High",
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "Late payments shall accrue interest at the rate of 1% per month, or the maximum rate permitted by applicable law, whichever is less.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Provider may change its compliance requirements from time to time as it deems appropriate, and End User must comply with all such changes at its own expense.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": "Medium",
+      "Contractual Ambiguity": "High"
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "Vendor reserves the right to determine, in its sole discretion, whether Recipient's use of the Services violates the terms of this Agreement.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Non-refundable setup fees of $2,000,000 are due upon execution of this Agreement.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties agree to maintain the confidentiality of all proprietary information exchanged under this Agreement for a period of three years following termination.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Licensor reserves the right to determine, in its sole discretion, whether End User's use of the Services violates the terms of this Agreement.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The scope, features, and pricing of the Services are subject to change at any time without prior notice to User.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "We use cookies to maintain your session and remember your preferences. You may configure your browser to reject cookies, but some features of the Service may not function properly.",
+    "labels": {
+      "Privacy/Data Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Obligations under this Agreement are subject to such conditions and limitations as Provider may establish from time to time.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Neither party shall be liable for any damages arising from the other party's negligence or failure to comply with its obligations under this Agreement.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Provider processes personally identifiable information (PII) on behalf of Subscriber. Client is the data controller and Provider acts as the data processor.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Provider's aggregate liability shall not exceed the fees paid during the three months preceding the claim.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": "High",
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "All invoices are payable within thirty (30) days of the invoice date. Late payments may be subject to a late fee of 1% per month.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "We use cookies, pixels, web beacons, and similar tracking technologies to monitor your activity on our website and across third-party sites for analytics and advertising purposes.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Customer must obtain and maintain any licenses, permits, or regulatory approvals necessary for lawful use of the services in its jurisdiction.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Provider engages third-party service providers and subprocessors to assist in the delivery of the Services. A current list of subprocessors is available upon request.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "This Agreement shall automatically renew for successive terms of equal length unless either party provides written notice of non-renewal at least ninety (90) days prior to the expiration of the then-current term.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The receiving party agrees to make the disclosing party whole for any losses, damages, or costs incurred as a result of any breach of this Agreement.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The company may take such actions as it deems necessary or appropriate to protect its interests and the interests of its users.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": "High"
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Contractor shall use reasonable efforts to provide the Services in accordance with the specifications, subject to availability and operational requirements.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Cancellation of the subscription after the initial term shall be subject to a cancellation fee of one month's subscription fee.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The scope, features, and pricing of the Services are subject to change at any time without prior notice to Subscriber.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "We may sell, license, or otherwise transfer your personal data to third-party data brokers and analytics partners for monetization purposes.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Service uses industry-standard encryption (TLS 1.2 or higher) to protect data in transit between your device and our servers.",
+    "labels": {
+      "Privacy/Data Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Provider represents that it has the authority and capacity to enter into this Agreement and perform its obligations hereunder.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Services will be delivered on a commercially reasonable basis within a reasonable timeframe.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": "Medium"
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "IN NO EVENT SHALL EITHER PARTY BE LIABLE FOR ANY LOST PROFITS, LOST REVENUE, LOSS OF BUSINESS, OR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Each party shall maintain appropriate records as required by applicable regulatory authorities.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The recitals set forth above are incorporated into and made a part of this Agreement.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "End User shall hold Vendor harmless from any third-party claims arising from Customer's breach of its representations, warranties, or obligations under this Agreement.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Client shall use the Services in accordance with all applicable regulatory requirements and industry standards.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Client warrants that neither it nor any of its officers or directors appear on any government-maintained list of restricted or prohibited parties, including the OFAC Specially Designated Nationals list.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensee is solely responsible for ensuring compliance with HIPAA and all regulations governing protected health information in connection with its use of the Services.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The scope, features, and pricing of the Services are subject to change at any time without prior notice to User.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "We may collect, store, and process information about you, including your name, email address, IP address, device identifiers, location data, and browsing behavior across our services and third-party platforms.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties agree to maintain the confidentiality of all proprietary information exchanged under this Agreement for a period of three years following termination.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Neither party shall be responsible for any delay or failure in performance caused by events beyond its reasonable control, including acts of God, natural disasters, government actions, or labor disputes.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensor shall assign qualified personnel to perform the Services described herein.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Platform shall not be liable for any failure to perform its obligations if such failure results from circumstances beyond its reasonable control.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "User shall comply with all applicable data protection laws, including the General Data Protection Regulation (GDPR), the California Consumer Privacy Act (CCPA), and any similar regulations in force in the relevant jurisdiction.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Platform may unilaterally increase the subscription fee by up to 15% at each renewal period without requiring Subscriber's consent.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Company's liability under this Agreement shall be limited to direct damages only. The limitation of liability set forth herein shall not apply to breaches of confidentiality.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "In no event shall Platform's aggregate liability under this Agreement exceed $250,000.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Performance standards are based on generally accepted industry practices as applied to services of a similar nature and scope.",
+    "labels": {
+      "Contractual Ambiguity": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "All amounts are denominated in U.S. dollars. Currency conversion risks are borne by Buyer for payments made in other currencies.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Provider may take such actions as it deems necessary or appropriate in its sole and absolute discretion to protect its interests and the interests of its users.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Vendor's liability under this Agreement shall be limited to direct damages only. The limitation of liability set forth herein shall not apply to breaches of confidentiality.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Each party shall defend, indemnify, and hold harmless the other party from any third-party claims arising from the indemnifying party's negligence, willful misconduct, or breach of this Agreement.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "If any claim is brought against Licensor as a result of Licensee's actions or omissions, Client shall bear all costs of defense, including reasonable attorneys' fees, and any resulting judgments or settlements.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Overdue amounts shall bear interest at the rate of the prime rate plus 2% per month from the due date until paid in full, plus all costs of collection, including reasonable attorneys' fees.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties acknowledge that this Agreement does not create a partnership, joint venture, or agency relationship between them.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "User agrees to follow industry-standard practices and recognized codes of conduct applicable to its business operations.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "In the event of early termination by Recipient, User shall pay a cancellation fee equal to three months of the then-current subscription fee plus any outstanding balance.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensor reserves the right to determine, in its sole discretion, whether Customer's use of the Services violates the terms of this Agreement.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "All payments made under this Agreement are final and non-refundable under any circumstances, including early termination, service failure, or dissatisfaction with the Services.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Client shall reimburse Provider for reasonable, pre-approved out-of-pocket expenses incurred in connection with the Services.",
+    "labels": {
+      "Financial Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Company shall use commercially reasonable efforts to maintain service availability, subject to scheduled maintenance windows communicated from time to time.",
+    "labels": {
+      "Contractual Ambiguity": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Contractor may unilaterally increase the subscription fee by up to 15% at each renewal period without requiring Customer's consent.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "We may collect, store, and process information about you, including your name, email address, IP address, device identifiers, location data, and browsing behavior across our services and third-party platforms.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties shall negotiate in good faith to resolve any disputes arising under this Agreement, using customary commercial practices.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Supplier may assign, transfer, or delegate any of its rights or obligations under this Agreement to any third party at its sole discretion without notice.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Continued use of the Services after any changes to these terms constitutes your acceptance of the modified terms.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "All intellectual property rights in the Services shall remain the exclusive property of the Provider.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Each party shall comply with all anti-money laundering laws and regulations, including the Bank Secrecy Act and applicable Know Your Customer requirements.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The exhibits and schedules attached hereto are incorporated by reference and made a part of this Agreement.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "The parties shall observe all laws, statutes, regulations, and administrative requirements applicable to the performance of their obligations under this Agreement.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Each party shall defend, indemnify, and hold harmless the other party from any third-party claims arising from the indemnifying party's negligence, willful misconduct, or breach of this Agreement.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensor may assign, transfer, or delegate any of its rights or obligations under this Agreement to any third party at its sole discretion without notice.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The Provider may adjust pricing, fees, and billing terms from time to time upon notice to the Customer.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": "High",
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Cancellation of the subscription after the initial term shall be subject to a cancellation fee of one month's subscription fee.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensor may take such actions as it deems necessary or appropriate in its sole and absolute discretion to protect its interests and the interests of its users.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties acknowledge that industry standards may evolve over the term of this Agreement.",
+    "labels": {
+      "Compliance Risk": "Low",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Subscriber assumes full responsibility for any consequences arising from its use of the platform and waives all rights to pursue legal action against Service Provider.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "All payments made under this Agreement are final and non-refundable under any circumstances, including early termination, service failure, or dissatisfaction with the Services.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Subscriber represents and warrants that it shall comply with all applicable economic sanctions laws and regulations, including those administered by the Office of Foreign Assets Control (OFAC).",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Services are provided on an as-is and as-available basis without warranties of any kind, whether express or implied.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": "High",
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "The Effective Date of this Agreement shall be the date of the last signature below.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Subscriber shall indemnify Company against all claims and shall comply with applicable export control laws. This obligation survives termination of the Agreement indefinitely.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": "High",
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "The exhibits and schedules attached hereto are incorporated by reference and made a part of this Agreement.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Each party shall defend, indemnify, and hold harmless the other party from any third-party claims arising from the indemnifying party's negligence, willful misconduct, or breach of this Agreement.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Data collected through the Services is retained in accordance with Company's data retention policy, which may be updated from time to time.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "All invoices are due and payable within thirty (30) days of the date of invoice. Payment shall be made by wire transfer or ACH to the account designated by Supplier.",
+    "labels": {
+      "Financial Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "User records and personal information are retained for the duration of the account and for the initial term following account termination, unless a longer retention period is required by law.",
+    "labels": {
+      "Privacy/Data Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Any dispute arising under this Agreement shall be resolved by binding arbitration in accordance with the rules of the American Arbitration Association.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Client shall indemnify, defend, and hold harmless Supplier and its officers, directors, employees, and agents from and against any and all claims, damages, losses, liabilities, costs, and expenses arising out of or relating to Subscriber's use of the Services.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The scope of Services includes, without limitation, such activities as the parties may mutually determine to be appropriate.",
+    "labels": {
+      "Contractual Ambiguity": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensee shall indemnify Company for any claims arising from Licensee's failure to comply with applicable data protection laws, including GDPR and CCPA. Supplier's aggregate liability for data protection claims shall not exceed the aggregate fees paid under this Agreement.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": "High",
+      "Privacy/Data Risk": "High",
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "We use cookies to maintain your session and remember your preferences. You may configure your browser to reject cookies, but some features of the Service may not function properly.",
+    "labels": {
+      "Privacy/Data Risk": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "End User commits to a minimum annual spend of $100,000, regardless of actual usage. Unused credits do not roll over to the next period.",
+    "labels": {
+      "Financial Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Client shall comply with all applicable data protection laws, including the General Data Protection Regulation (GDPR), the California Consumer Privacy Act (CCPA), and any similar regulations in force in the relevant jurisdiction.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Company shall use commercially reasonable efforts to maintain service availability, subject to scheduled maintenance windows communicated from time to time.",
+    "labels": {
+      "Contractual Ambiguity": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "All invoices are payable within thirty (30) days of the invoice date. Late payments may be subject to a late fee of 18% per annum per month.",
+    "labels": {
+      "Financial Risk": "Medium",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Each party shall defend, indemnify, and hold harmless the other party from any third-party claims arising from the indemnifying party's negligence, willful misconduct, or breach of this Agreement.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "This agreement shall automatically renew for successive terms of equal length unless either party provides written notice of non-renewal.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": "High",
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "The Customer agrees to follow industry-standard practices and recognized codes of conduct applicable to its business.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "canonical"
+  },
+  {
+    "text": "Customer shall use the Services in accordance with all applicable regulatory requirements and industry standards.",
+    "labels": {
+      "Compliance Risk": "Medium",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "User shall indemnify, defend, and hold harmless Company and its officers, directors, employees, and agents from and against any and all claims, damages, losses, liabilities, costs, and expenses arising out of or relating to Buyer's use of the Services.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "THE AGGREGATE LIABILITY OF SUPPLIER ARISING OUT OF OR RELATED TO THIS AGREEMENT SHALL NOT EXCEED THE FEES PAID BY SUBSCRIBER IN THE THE INITIAL TERM PRECEDING THE CLAIM.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Each party acknowledges that the other party makes no guarantees regarding the results that may be obtained from use of the Services.",
+    "labels": {
+      "Liability Risk": "Low",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Neither party may assign this Agreement without the prior written consent of the other party, except in connection with a merger, acquisition, or sale of substantially all of its assets.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "In no event shall Contractor's aggregate liability under this Agreement exceed $1,000,000.",
+    "labels": {
+      "Liability Risk": "High",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Client must comply with all applicable laws, regulations, rules, and requirements in connection with its use of the Services, including without limitation all export control laws and economic sanctions regulations.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "We may sell, license, or otherwise transfer your personal data to third-party data brokers and analytics partners for monetization purposes.",
+    "labels": {
+      "Privacy/Data Risk": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "The parties shall cooperate in good faith to implement the terms of this Agreement and resolve any issues that may arise.",
+    "labels": {
+      "Contractual Ambiguity": "Low",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Licensor may modify its data collection and sharing practices at any time as it deems appropriate. Personal information may be shared with third-party advertising partners without additional notice.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": "High",
+      "Financial Risk": null,
+      "Contractual Ambiguity": "High"
+    },
+    "source": "multi_label"
+  },
+  {
+    "text": "This Agreement may be executed in counterparts, each of which shall be deemed an original, and all of which together shall constitute one and the same instrument.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  },
+  {
+    "text": "Company may modify, update, or discontinue these terms at any time, with changes becoming effective immediately upon posting to Service Provider's website.",
+    "labels": {
+      "Contractual Ambiguity": "High",
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Supplier shall not be liable for any failure to perform its obligations if such failure results from circumstances beyond its reasonable control.",
+    "labels": {
+      "Liability Risk": "Medium",
+      "Compliance Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "Each party shall comply with all applicable anti-bribery and anti-corruption laws, including the U.S. Foreign Corrupt Practices Act (FCPA) and the UK Bribery Act 2010.",
+    "labels": {
+      "Compliance Risk": "High",
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "template"
+  },
+  {
+    "text": "This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict of laws principles.",
+    "labels": {
+      "Compliance Risk": null,
+      "Liability Risk": null,
+      "Privacy/Data Risk": null,
+      "Financial Risk": null,
+      "Contractual Ambiguity": null
+    },
+    "source": "negative"
+  }
+]

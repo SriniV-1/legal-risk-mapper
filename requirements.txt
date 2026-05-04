@@ -12,6 +12,7 @@ pydantic==2.7.0
 sentence-transformers>=2.7.0  # all-MiniLM-L6-v2 (~80 MB, 384-dim)
 spacy>=3.7.0                  # clause segmentation
 numpy>=1.24.0                 # cosine sim + embedding math
+scikit-learn>=1.4.0           # ML risk classifier (LogisticRegression)
 # After installing spacy, also run:
 #   python -m spacy download en_core_web_sm
 
