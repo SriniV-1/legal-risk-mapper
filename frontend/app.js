@@ -4,7 +4,9 @@
  * Renders hero stats, three charts, filter bar, and grouped risk cards.
  */
 
-const API_BASE = "http://localhost:8000";
+// In production, set window.LRM_API_BASE via a <script> tag or env config.
+// Falls back to localhost:8000 for local development.
+const API_BASE = window.LRM_API_BASE || "http://localhost:8000";
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  SAMPLE DOCUMENTS

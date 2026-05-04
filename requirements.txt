@@ -23,5 +23,9 @@ requests>=2.31.0              # EDGAR scraping + test scripts
 # ── Testing ───────────────────────────────────────────────────────────────────
 # requests already listed above
 
+# ── Production Hardening ──────────────────────────────────────────────────
+slowapi>=0.1.9                # rate limiting for FastAPI (built on `limits`)
+gunicorn>=22.0.0              # production WSGI/ASGI server for Railway
+
 # ── Optional: PDF support ─────────────────────────────────────────────────────
 # pymupdf==1.24.0             # fast PDF text extraction

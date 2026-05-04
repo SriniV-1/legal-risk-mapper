@@ -112,6 +112,21 @@ Open `frontend/index.html` in your browser. The "Benchmark & Redline" button run
 
 Swagger docs at `http://localhost:8000/docs`.
 
+**Rate limiting:** `/analyze` at 30 req/min, `/benchmark` and `/redline` at 10 req/min per IP.
+
+**API key auth:** Set `LRM_API_KEY` env var to require `X-API-Key` header on `/benchmark` and `/redline`. Disabled by default for local dev.
+
+### Docker / Railway Deployment
+
+```bash
+# Build and run with Docker
+docker build -t legal-risk-mapper .
+docker run -p 8000:8000 --env-file .env legal-risk-mapper
+
+# Or deploy to Railway (uses railway.json + Dockerfile)
+railway up
+```
+
 ---
 
 ## Project Structure
@@ -119,7 +134,7 @@ Swagger docs at `http://localhost:8000/docs`.
 ```
 legal-risk-mapper/
 ├── backend/
-│   ├── main.py                     # FastAPI app (5 endpoints)
+│   ├── main.py                     # FastAPI app (5 endpoints, rate limiting, API key auth)
 │   ├── corpus/                     # Phase 1: EDGAR pipeline
 │   │   ├── edgar_scraper.py        # SEC EDGAR EFTS scraper
 │   │   ├── chunker.py              # Clause segmentation + classification
@@ -156,7 +171,11 @@ legal-risk-mapper/
 │   ├── run_batch_extraction.py     # Batch extraction with resume support
 │   ├── eval_retrieval.py           # MRR@5 / NDCG@5 retrieval eval
 │   ├── test_benchmark.py           # Benchmark pipeline test
-│   └── test_redline.py             # Redline pipeline test
+│   ├── test_redline.py             # Redline pipeline test
+│   └── eval_e2e.py                 # End-to-end pipeline eval (8 clauses)
+├── Dockerfile                      # Production container (gunicorn + uvicorn)
+├── railway.json                    # Railway deployment config with health checks
+├── vercel.json                     # Vercel static frontend config
 └── ROADMAP.md                      # Project roadmap + session handoff log
 ```
 
@@ -172,6 +191,8 @@ legal-risk-mapper/
 | **Pydantic source_text grounding** | Every extracted field has a verbatim quote. Prevents hallucination. Grounding score of 0.975 confirms real provenance. |
 | **Keyword heuristic → manual audit** for ground truth | Initial labels generated programmatically, then manually corrected over 5 prompt iterations. Caught 6 mislabeled examples. |
 | **Core F1 threshold of 0.75** (not 0.85) | Realistic for 8B local model. Documented that larger models would push above 0.85. |
+| **slowapi rate limiting** | Per-IP limiting (30/min analyze, 10/min benchmark/redline). Protects expensive LLM endpoints without external infrastructure. |
+| **Optional API key auth** | Env-based toggle (`LRM_API_KEY`). Disabled in dev, enabled in production. No user auth overhead for a portfolio project. |
 
 ---
 

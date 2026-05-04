@@ -8,13 +8,18 @@ Endpoints:
 """
 import io
 import logging
+import os
 from collections import Counter
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Request, Security
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.security import APIKeyHeader
 from pydantic import BaseModel, Field
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 from backend.models.schemas import (
     AnalyzeRequest, AnalyzeResponse, HealthResponse, RiskItem
@@ -27,6 +32,24 @@ from backend.redline.schemas import RedlineResult
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(name)s | %(message)s")
 logger = logging.getLogger("lrm")
 
+# ── Rate Limiting ────────────────────────────────────────────────────────────
+limiter = Limiter(key_func=get_remote_address)
+
+# ── API Key Auth ─────────────────────────────────────────────────────────────
+# If LRM_API_KEY is set, /benchmark and /redline require X-API-Key header.
+# If not set, auth is disabled (local dev mode).
+_API_KEY = os.environ.get("LRM_API_KEY")
+_api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+
+async def _verify_api_key(api_key: Optional[str] = Security(_api_key_header)):
+    """Validate API key if one is configured. No-op in dev mode."""
+    if _API_KEY is None:
+        return  # Auth disabled — dev mode
+    if api_key != _API_KEY:
+        raise HTTPException(status_code=403, detail="Invalid or missing API key")
+
+
 # ── App ───────────────────────────────────────────────────────────────────────
 app = FastAPI(
     title="Legal Risk Mapper",
@@ -34,9 +57,13 @@ app = FastAPI(
     version="1.0.0",
 )
 
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+_cors_origins = os.environ.get("CORS_ORIGINS", "*").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],        # Tighten in production
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -110,22 +137,25 @@ def health_check():
 
 
 @app.post("/analyze", response_model=AnalyzeResponse, tags=["Analysis"])
-def analyze_text(request: AnalyzeRequest):
+@limiter.limit("30/minute")
+def analyze_text(request: Request, body: AnalyzeRequest):
     """
     Analyze raw text for legal risks.
     Returns categorized risks with severity scores and explanations.
     """
-    logger.info(f"Analyzing text | title={request.document_title!r} | chars={len(request.text)}")
+    logger.info(f"Analyzing text | title={body.document_title!r} | chars={len(body.text)}")
     try:
-        risks = analyze_risks(request.text)
-        return _build_response(risks, request.document_title)
+        risks = analyze_risks(body.text)
+        return _build_response(risks, body.document_title)
     except Exception as e:
         logger.exception("Analysis failed")
         raise HTTPException(status_code=500, detail=f"Analysis error: {str(e)}")
 
 
 @app.post("/analyze/upload", response_model=AnalyzeResponse, tags=["Analysis"])
+@limiter.limit("30/minute")
 async def analyze_upload(
+    request: Request,
     file: UploadFile = File(...),
     document_title: Optional[str] = Form(default=None),
 ):
@@ -164,8 +194,10 @@ class BenchmarkRequest(BaseModel):
     clause_type: str = Field(default="liability", description="Clause category (currently: liability)")
 
 
-@app.post("/benchmark", response_model=BenchmarkResult, tags=["Benchmarking"])
-def benchmark_clause(request: BenchmarkRequest):
+@app.post("/benchmark", response_model=BenchmarkResult, tags=["Benchmarking"],
+           dependencies=[Security(_verify_api_key)])
+@limiter.limit("10/minute")
+def benchmark_clause(request: Request, body: BenchmarkRequest):
     """
     Benchmark a contract clause against real SEC EDGAR filings.
 
@@ -174,11 +206,11 @@ def benchmark_clause(request: BenchmarkRequest):
     and 5 cited real-world examples).
     """
     logger.info(
-        f"Benchmarking clause | type={request.clause_type!r} | chars={len(request.text)}"
+        f"Benchmarking clause | type={body.clause_type!r} | chars={len(body.text)}"
     )
     try:
         from backend.benchmarking.benchmarker import benchmark_clause as _benchmark
-        result = _benchmark(request.text, clause_type=request.clause_type)
+        result = _benchmark(body.text, clause_type=body.clause_type)
         return result
     except Exception as e:
         logger.exception("Benchmarking failed")
@@ -190,8 +222,10 @@ class RedlineRequest(BaseModel):
     clause_type: str = Field(default="liability", description="Clause category (currently: liability)")
 
 
-@app.post("/redline", response_model=RedlineResult, tags=["Redline"])
-def generate_redlines(request: RedlineRequest):
+@app.post("/redline", response_model=RedlineResult, tags=["Redline"],
+           dependencies=[Security(_verify_api_key)])
+@limiter.limit("10/minute")
+def generate_redlines(request: Request, body: RedlineRequest):
     """
     Generate grounded redline suggestions for a contract clause.
 
@@ -200,14 +234,14 @@ def generate_redlines(request: RedlineRequest):
     real SEC filings.
     """
     logger.info(
-        f"Generating redlines | type={request.clause_type!r} | chars={len(request.text)}"
+        f"Generating redlines | type={body.clause_type!r} | chars={len(body.text)}"
     )
     try:
         from backend.benchmarking.benchmarker import benchmark_clause as _benchmark
         from backend.redline.generator import generate_redlines as _generate
 
-        benchmark = _benchmark(request.text, clause_type=request.clause_type)
-        result = _generate(request.text, benchmark)
+        benchmark = _benchmark(body.text, clause_type=body.clause_type)
+        result = _generate(body.text, benchmark)
         return result
     except Exception as e:
         logger.exception("Redline generation failed")
