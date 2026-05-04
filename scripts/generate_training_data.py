@@ -84,13 +84,13 @@ def _compliance_templates() -> List[dict]:
     ]
 
     for t in high_templates:
-        for _ in range(random.randint(2, 4)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "High"})
     for t in medium_templates:
-        for _ in range(random.randint(2, 4)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "Medium"})
     for t in low_templates:
-        for _ in range(random.randint(2, 3)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "Low"})
 
     return [{"text": t["text"], "labels": {"Compliance Risk": t["severity"]}, "source": "template"} for t in templates]
@@ -131,13 +131,13 @@ def _liability_templates() -> List[dict]:
     ]
 
     for t in high_templates:
-        for _ in range(random.randint(2, 4)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "High"})
     for t in medium_templates:
-        for _ in range(random.randint(2, 4)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "Medium"})
     for t in low_templates:
-        for _ in range(random.randint(2, 3)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "Low"})
 
     return [{"text": t["text"], "labels": {"Liability Risk": t["severity"]}, "source": "template"} for t in templates]
@@ -175,13 +175,13 @@ def _privacy_templates() -> List[dict]:
     ]
 
     for t in high_templates:
-        for _ in range(random.randint(2, 4)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "High"})
     for t in medium_templates:
-        for _ in range(random.randint(2, 4)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "Medium"})
     for t in low_templates:
-        for _ in range(random.randint(2, 3)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "Low"})
 
     return [{"text": t["text"], "labels": {"Privacy/Data Risk": t["severity"]}, "source": "template"} for t in templates]
@@ -210,22 +210,35 @@ def _financial_templates() -> List[dict]:
         lambda: f"All invoices are payable within thirty (30) days of the invoice date. Late payments may be subject to a late fee of {_r(INTEREST_RATES)} per month.",
         lambda: f"All amounts are denominated in U.S. dollars. Currency conversion risks are borne by {_r(COUNTERPARTIES)} for payments made in other currencies.",
         lambda: f"Non-refundable setup fees of {_r(AMOUNTS)} are due upon execution of this Agreement.",
+        lambda: f"If {_r(COUNTERPARTIES)} downgrades its plan during the term, {_r(COUNTERPARTIES)} shall continue to pay the higher rate until the end of the current billing cycle.",
+        lambda: f"Upon termination, {_r(COUNTERPARTIES)} shall pay for all Services rendered through the termination date plus any applicable wind-down costs.",
+        lambda: f"{_r(PARTIES)} may assess a convenience fee for payments made by credit card or other non-standard payment methods.",
+        lambda: f"Price adjustments shall take effect at the beginning of each renewal term upon {_r(NOTICE_PERIODS)} prior written notice.",
+        lambda: f"Disputed invoices must be reported within {_r(NOTICE_PERIODS)} of receipt. Failure to dispute within this period constitutes acceptance.",
+        lambda: f"{_r(COUNTERPARTIES)} shall maintain a security deposit equal to one month's fees for the duration of the Agreement.",
+        lambda: f"Volume discounts are contingent upon meeting minimum order thresholds. Failure to meet thresholds may result in retroactive price adjustments.",
+        lambda: f"Any taxes, duties, or government-imposed fees arising from this Agreement shall be the sole responsibility of {_r(COUNTERPARTIES)}.",
     ]
 
     low_templates = [
         lambda: f"All invoices are due and payable within thirty (30) days of the date of invoice. Payment shall be made by wire transfer or ACH to the account designated by {_r(PARTIES)}.",
         lambda: f"Funds held in escrow shall be released upon mutual written agreement of the parties or upon final resolution of any dispute.",
         lambda: f"{_r(COUNTERPARTIES)} shall reimburse {_r(PARTIES)} for reasonable, pre-approved out-of-pocket expenses incurred in connection with the Services.",
+        lambda: f"Payment terms are net 30 from the date of invoice unless otherwise agreed in writing by both parties.",
+        lambda: f"Annual subscription fees are billed in advance on the anniversary of the Effective Date.",
+        lambda: f"{_r(PARTIES)} shall provide {_r(COUNTERPARTIES)} with itemized invoices detailing all charges for the applicable billing period.",
+        lambda: f"Fees for additional users or capacity above the contracted amounts shall be billed at the rates set forth in the Order Form.",
+        lambda: f"Travel and accommodation expenses shall be reimbursed at cost, subject to {_r(COUNTERPARTIES)}'s standard travel policy.",
     ]
 
     for t in high_templates:
-        for _ in range(random.randint(2, 4)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "High"})
     for t in medium_templates:
-        for _ in range(random.randint(2, 4)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "Medium"})
     for t in low_templates:
-        for _ in range(random.randint(2, 3)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "Low"})
 
     return [{"text": t["text"], "labels": {"Financial Risk": t["severity"]}, "source": "template"} for t in templates]
@@ -261,16 +274,19 @@ def _ambiguity_templates() -> List[dict]:
         lambda: f"{_r(PARTIES)} shall use commercially reasonable efforts to maintain service availability, subject to scheduled maintenance windows communicated from time to time.",
         lambda: f"The parties shall cooperate in good faith to implement the terms of this Agreement and resolve any issues that may arise.",
         lambda: f"Performance standards are based on generally accepted industry practices as applied to services of a similar nature and scope.",
+        lambda: f"Response times for support requests shall be reasonable and consistent with {_r(PARTIES)}'s published service level targets.",
+        lambda: f"The term 'business day' means any day other than a Saturday, Sunday, or public holiday in {_r(JURISDICTIONS)}.",
+        lambda: f"Minor updates and patches may be applied from time to time without advance notice to {_r(COUNTERPARTIES)}.",
     ]
 
     for t in high_templates:
-        for _ in range(random.randint(2, 4)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "High"})
     for t in medium_templates:
-        for _ in range(random.randint(2, 4)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "Medium"})
     for t in low_templates:
-        for _ in range(random.randint(2, 3)):
+        for _ in range(random.randint(3, 5)):
             templates.append({"text": t(), "severity": "Low"})
 
     return [{"text": t["text"], "labels": {"Contractual Ambiguity": t["severity"]}, "source": "template"} for t in templates]
@@ -313,15 +329,33 @@ def _negative_examples() -> List[dict]:
         "Provider represents that it has the authority and capacity to enter into this Agreement and perform its obligations hereunder.",
         "The exhibits and schedules attached hereto are incorporated by reference and made a part of this Agreement.",
         "Customer shall pay all undisputed invoices in accordance with the payment terms set forth in Schedule B.",
+        "The Services shall include implementation, training, and ongoing technical support as described in the Statement of Work.",
+        "Provider shall use commercially reasonable efforts to meet the delivery milestones set forth in the project timeline.",
+        "Customer grants Provider a limited license to use Customer's trademarks solely for the purpose of performing the Services.",
+        "Each party represents that it is duly organized and validly existing under the laws of its jurisdiction of incorporation.",
+        "The parties agree that the United Nations Convention on Contracts for the International Sale of Goods does not apply to this Agreement.",
+        "Provider shall maintain insurance coverage in the amounts and types specified in Exhibit C.",
+        "Customer may request additional services beyond the scope of this Agreement, subject to a separate Statement of Work and fees.",
+        "The parties agree to execute any additional documents reasonably necessary to effectuate the purposes of this Agreement.",
+        "Provider shall notify Customer promptly of any changes in its key personnel assigned to perform the Services.",
+        "This Agreement shall be binding upon and inure to the benefit of the parties and their respective successors and permitted assigns.",
+        "The failure of either party to enforce any provision of this Agreement shall not constitute a waiver of such provision.",
+        "All rights and remedies under this Agreement are cumulative and not exclusive of any other rights or remedies.",
+        "Customer shall return or destroy all Provider confidential information within thirty days following termination of this Agreement.",
+        "The parties agree to resolve disputes through mediation before resorting to arbitration or litigation.",
+        "Provider shall comply with Customer's reasonable workplace policies while performing Services on Customer's premises.",
+        "The Agreement may be amended only by a written instrument signed by authorized representatives of both parties.",
+        f"This Agreement shall be governed by and construed in accordance with the laws of {_r(JURISDICTIONS)}.",
+        "Each party shall bear its own costs and expenses in connection with the negotiation, execution, and performance of this Agreement.",
+        "The Effective Date and term of this Agreement are as set forth on the Order Form attached hereto.",
     ]
 
     examples = []
     for clause in neutral_clauses:
         examples.append({"text": clause, "labels": dict(empty_labels), "source": "negative"})
-    # Duplicate some with light variation
-    for _ in range(20):
+    # Generate variations with party name swaps (3x more than before)
+    for _ in range(60):
         clause = random.choice(neutral_clauses)
-        # Swap party names
         clause = clause.replace("Provider", _r(PARTIES)).replace("Customer", _r(COUNTERPARTIES))
         examples.append({"text": clause, "labels": dict(empty_labels), "source": "negative"})
 

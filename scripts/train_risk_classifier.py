@@ -78,16 +78,15 @@ def encode_texts(texts):
 
 def train_and_evaluate(X, y_matrix, test_size=0.2, seed=42):
     """
-    Train per-category classifiers with stratified split.
-    Returns trained classifiers, label encoders, and per-category metrics.
+    Train per-category classifiers with cross-validated hyperparameter
+    selection and a final held-out test evaluation.
     """
-    from sklearn.model_selection import train_test_split
+    from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
     from sklearn.linear_model import LogisticRegression
     from sklearn.preprocessing import LabelEncoder
     from sklearn.metrics import classification_report, f1_score
 
     # Stratified split — use the first category's labels for stratification
-    # (imperfect but good enough for this dataset size)
     primary_labels = y_matrix[:, 0]
     X_train, X_test, y_train, y_test = train_test_split(
         X, y_matrix, test_size=test_size, random_state=seed, stratify=primary_labels
@@ -112,17 +111,34 @@ def train_and_evaluate(X, y_matrix, test_size=0.2, seed=42):
         y_enc_train = le.transform(y_col_train)
         y_enc_test = le.transform(y_col_test)
 
-        # Train classifier
+        # Hyperparameter search over C values using cross-validation
+        best_c, best_cv_score = 1.0, 0.0
+        for c_val in [0.1, 0.5, 1.0, 5.0, 10.0]:
+            clf_trial = LogisticRegression(
+                max_iter=2000, C=c_val, class_weight="balanced",
+                random_state=seed, solver="lbfgs",
+            )
+            cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=seed)
+            scores = cross_val_score(clf_trial, X_train, y_enc_train, cv=cv,
+                                     scoring="f1_macro")
+            mean_score = scores.mean()
+            if mean_score > best_cv_score:
+                best_cv_score = mean_score
+                best_c = c_val
+
+        log.info(f"  Best C={best_c} (CV macro F1={best_cv_score:.3f})")
+
+        # Train final classifier with best C on full training set
         clf = LogisticRegression(
-            max_iter=1000,
-            C=1.0,
+            max_iter=2000,
+            C=best_c,
             class_weight="balanced",
             random_state=seed,
             solver="lbfgs",
         )
         clf.fit(X_train, y_enc_train)
 
-        # Evaluate
+        # Evaluate on held-out test set
         y_pred = clf.predict(X_test)
         y_pred_labels = le.inverse_transform(y_pred)
         y_true_labels = le.inverse_transform(y_enc_test)
@@ -146,6 +162,8 @@ def train_and_evaluate(X, y_matrix, test_size=0.2, seed=42):
         metrics[cat] = {
             "detection_f1": round(detection_f1, 3),
             "severity_macro_f1": round(macro_f1, 3),
+            "best_C": best_c,
+            "cv_score": round(best_cv_score, 3),
             "report": report,
         }
 
