@@ -540,13 +540,16 @@ async function runBenchmark() {
   const text = textInput.value.trim();
   if (text.length < 30) return showError("Please enter at least 30 characters of clause text to benchmark.");
 
-  showLoader("Benchmarking against SEC EDGAR corpus...");
+  const clauseType = $("clauseTypeSelect").value;
+  const typeLabel = $("clauseTypeSelect").selectedOptions[0].text;
+
+  showLoader(`Benchmarking ${typeLabel} clause against SEC EDGAR corpus...`);
   try {
     // Call benchmark endpoint
     const benchRes = await fetch(`${API_BASE}/benchmark`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, clause_type: "liability" }),
+      body: JSON.stringify({ text, clause_type: clauseType }),
     });
     if (!benchRes.ok) {
       const err = await benchRes.json().catch(() => ({ detail: benchRes.statusText }));
@@ -561,7 +564,7 @@ async function runBenchmark() {
     const redlineRes = await fetch(`${API_BASE}/redline`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, clause_type: "liability" }),
+      body: JSON.stringify({ text, clause_type: clauseType }),
     });
     if (!redlineRes.ok) {
       const err = await redlineRes.json().catch(() => ({ detail: redlineRes.statusText }));
@@ -580,7 +583,7 @@ async function runBenchmark() {
 function renderBenchmarkResults(benchmark, redline) {
   // Hero stats
   $("benchSampleSize").textContent = benchmark.sample_size;
-  $("benchSubtitle").textContent = `Based on ${benchmark.sample_size} similar liability clauses from SEC EDGAR`;
+  $("benchSubtitle").textContent = `Based on ${benchmark.sample_size} similar ${benchmark.clause_type} clauses from SEC EDGAR`;
   $("benchExamples").textContent = benchmark.cited_examples.length;
   $("benchRedlines").textContent = redline.suggestions.length;
 
