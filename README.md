@@ -1,5 +1,7 @@
 # Legal Risk Mapper
 
+![CI](https://github.com/SriniV-1/legal-risk-mapper/actions/workflows/ci.yml/badge.svg)
+
 A contract analysis platform that performs **ML-based risk classification**, **structured clause extraction** across 6 clause categories, **RAG-based market benchmarking** against real SEC EDGAR filings, and **grounded redline generation** for SaaS Master Service Agreements. Built as a portfolio project demonstrating production-quality legal AI engineering.
 
 ---
@@ -212,6 +214,14 @@ Swagger docs at `http://localhost:8000/docs`.
 
 **API key auth:** Set `LRM_API_KEY` env var to require `X-API-Key` header on `/benchmark` and `/redline`.
 
+### Run Tests
+
+```bash
+python -m pytest tests/ -v
+```
+
+42 tests covering schema validation, API endpoints, extraction pipeline integrity, and risk analysis.
+
 ### Docker / Railway Deployment
 
 ```bash
@@ -275,6 +285,12 @@ legal-risk-mapper/
 │   ├── generate_training_data.py   # Risk classifier training data generator
 │   ├── train_risk_classifier.py    # ML classifier training + canonical generation
 │   └── eval_classifier.py          # ML vs regex comparison eval
+├── tests/                          # Pytest suite (42 tests)
+│   ├── test_schemas.py             # Pydantic schema validation
+│   ├── test_extraction.py          # Extraction pipeline + registry integrity
+│   ├── test_risk_analyzer.py       # Risk detection + severity scoring
+│   └── test_api.py                 # FastAPI endpoint tests
+├── .github/workflows/ci.yml       # GitHub Actions CI (pytest on push/PR)
 ├── Dockerfile                      # Production container (gunicorn + uvicorn)
 ├── railway.json                    # Railway deployment config
 └── ROADMAP.md                      # Project roadmap + session handoff log
