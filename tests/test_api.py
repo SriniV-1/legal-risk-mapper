@@ -94,6 +94,44 @@ class TestBenchmarkEndpoint:
         # May fail if Ollama/Supabase not running, but should not 422
         assert r.status_code in (200, 500)
 
+    def test_benchmark_default_is_auto(self):
+        r = client.post("/benchmark", json={
+            "text": "The total aggregate liability of the Provider shall not exceed annual fees."
+        })
+        # No clause_type specified — defaults to "auto". Should not 422.
+        assert r.status_code in (200, 500)
+
+
+class TestAutoDetection:
+    """Clause type auto-detection from text."""
+
+    def test_liability_keywords_detected(self):
+        from backend.main import _resolve_clause_type
+        text = "Provider's aggregate liability shall not exceed the fees paid. Consequential damages are excluded."
+        assert _resolve_clause_type(text, "auto") == "liability"
+
+    def test_termination_keywords_detected(self):
+        from backend.main import _resolve_clause_type
+        text = "Either party may terminate this Agreement for cause with thirty days notice. Survival provisions apply."
+        assert _resolve_clause_type(text, "auto") == "termination"
+
+    def test_governing_law_keywords_detected(self):
+        from backend.main import _resolve_clause_type
+        text = "This Agreement shall be governed by the laws of the State of Delaware. Any disputes shall be resolved by arbitration."
+        assert _resolve_clause_type(text, "auto") == "governing_law"
+
+    def test_explicit_type_passthrough(self):
+        from backend.main import _resolve_clause_type
+        text = "Whatever text, doesn't matter."
+        assert _resolve_clause_type(text, "payment") == "payment"
+        assert _resolve_clause_type(text, "ip") == "ip"
+
+    def test_unknown_text_falls_back_to_liability(self):
+        from backend.main import _resolve_clause_type
+        text = "The quick brown fox jumps over the lazy dog in a very legal sounding manner indeed."
+        result = _resolve_clause_type(text, "auto")
+        assert result in ("liability", "other")  # either is acceptable
+
 
 class TestRedlineEndpoint:
     def test_redline_rejects_short_text(self):

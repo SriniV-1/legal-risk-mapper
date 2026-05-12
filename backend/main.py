@@ -189,9 +189,27 @@ async def analyze_upload(
         raise HTTPException(status_code=500, detail=f"Analysis error: {str(e)}")
 
 
+def _resolve_clause_type(text: str, requested: str) -> str:
+    """
+    Resolve the effective clause type.
+
+    If the client passes "auto" (or doesn't know), detect from the text using
+    the same keyword-density classifier used by the corpus chunker. Falls back
+    to "liability" if no signal is found (most common clause type).
+    """
+    if requested != "auto":
+        return requested
+    from backend.corpus.chunker import _classify_chunk
+    detected = _classify_chunk(text)
+    if detected == "other":
+        detected = "liability"  # safest fallback
+    logger.info(f"Auto-detected clause type: {detected!r}")
+    return detected
+
+
 class BenchmarkRequest(BaseModel):
     text: str = Field(min_length=30, description="Clause text to benchmark against the market")
-    clause_type: str = Field(default="liability", description="Clause category (currently: liability)")
+    clause_type: str = Field(default="auto", description="Clause category, or 'auto' to detect from text")
 
 
 @app.post("/benchmark", response_model=BenchmarkResult, tags=["Benchmarking"],
@@ -201,16 +219,17 @@ def benchmark_clause(request: Request, body: BenchmarkRequest):
     """
     Benchmark a contract clause against real SEC EDGAR filings.
 
-    Extracts structured data from the clause, retrieves similar clauses from the
-    corpus, and computes market statistics (field distributions, percentiles,
-    and 5 cited real-world examples).
+    Pass `clause_type: "auto"` (default) to auto-detect from the text using
+    keyword-density classification. Or specify explicitly: liability, termination,
+    payment, confidentiality, ip, governing_law.
     """
+    clause_type = _resolve_clause_type(body.text, body.clause_type)
     logger.info(
-        f"Benchmarking clause | type={body.clause_type!r} | chars={len(body.text)}"
+        f"Benchmarking clause | type={clause_type!r} | chars={len(body.text)}"
     )
     try:
         from backend.benchmarking.benchmarker import benchmark_clause as _benchmark
-        result = _benchmark(body.text, clause_type=body.clause_type)
+        result = _benchmark(body.text, clause_type=clause_type)
         return result
     except Exception as e:
         logger.exception("Benchmarking failed")
@@ -219,7 +238,7 @@ def benchmark_clause(request: Request, body: BenchmarkRequest):
 
 class RedlineRequest(BaseModel):
     text: str = Field(min_length=30, description="Clause text to generate redlines for")
-    clause_type: str = Field(default="liability", description="Clause category (currently: liability)")
+    clause_type: str = Field(default="auto", description="Clause category, or 'auto' to detect from text")
 
 
 @app.post("/redline", response_model=RedlineResult, tags=["Redline"],
@@ -229,18 +248,19 @@ def generate_redlines(request: Request, body: RedlineRequest):
     """
     Generate grounded redline suggestions for a contract clause.
 
-    Runs the full pipeline: benchmark the clause against EDGAR market data,
-    then generate edit suggestions citing specific market statistics and
-    real SEC filings.
+    Pass `clause_type: "auto"` (default) to auto-detect from the text.
+    Runs the full pipeline: benchmark against EDGAR market data, then generate
+    edit suggestions citing specific market statistics and real SEC filings.
     """
+    clause_type = _resolve_clause_type(body.text, body.clause_type)
     logger.info(
-        f"Generating redlines | type={body.clause_type!r} | chars={len(body.text)}"
+        f"Generating redlines | type={clause_type!r} | chars={len(body.text)}"
     )
     try:
         from backend.benchmarking.benchmarker import benchmark_clause as _benchmark
         from backend.redline.generator import generate_redlines as _generate
 
-        benchmark = _benchmark(body.text, clause_type=body.clause_type)
+        benchmark = _benchmark(body.text, clause_type=clause_type)
         result = _generate(body.text, benchmark)
         return result
     except Exception as e:

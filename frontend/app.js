@@ -540,12 +540,11 @@ async function runBenchmark() {
   const text = textInput.value.trim();
   if (text.length < 30) return showError("Please enter at least 30 characters of clause text to benchmark.");
 
-  const clauseType = $("clauseTypeSelect").value;
-  const typeLabel = $("clauseTypeSelect").selectedOptions[0].text;
+  const clauseType = $("clauseTypeSelect").value;  // "auto" or explicit type
 
-  showLoader(`Benchmarking ${typeLabel} clause against SEC EDGAR corpus...`);
+  showLoader("Detecting clause type and benchmarking against SEC EDGAR corpus...");
   try {
-    // Call benchmark endpoint
+    // Call benchmark endpoint — passes "auto" or an explicit override
     const benchRes = await fetch(`${API_BASE}/benchmark`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -558,13 +557,13 @@ async function runBenchmark() {
     const benchmark = await benchRes.json();
 
     // Update loader hint for redline step
-    $("loaderHint").textContent = "Generating redline suggestions...";
+    $("loaderHint").textContent = `Generating ${benchmark.clause_type} redline suggestions...`;
 
-    // Call redline endpoint
+    // Redline uses the resolved type returned by benchmark (not the raw "auto")
     const redlineRes = await fetch(`${API_BASE}/redline`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, clause_type: clauseType }),
+      body: JSON.stringify({ text, clause_type: benchmark.clause_type }),
     });
     if (!redlineRes.ok) {
       const err = await redlineRes.json().catch(() => ({ detail: redlineRes.statusText }));
@@ -583,7 +582,8 @@ async function runBenchmark() {
 function renderBenchmarkResults(benchmark, redline) {
   // Hero stats
   $("benchSampleSize").textContent = benchmark.sample_size;
-  $("benchSubtitle").textContent = `Based on ${benchmark.sample_size} similar ${benchmark.clause_type} clauses from SEC EDGAR`;
+  const typeLabel = benchmark.clause_type.replace(/_/g, " ");
+  $("benchSubtitle").textContent = `${typeLabel} clause · ${benchmark.sample_size} similar clauses from SEC EDGAR`;
   $("benchExamples").textContent = benchmark.cited_examples.length;
   $("benchRedlines").textContent = redline.suggestions.length;
 
