@@ -22,7 +22,8 @@ python-dotenv>=1.0.0          # .env file loading
 requests>=2.31.0              # EDGAR scraping + test scripts
 
 # ── Testing ───────────────────────────────────────────────────────────────────
-# requests already listed above
+pytest>=8.0.0                 # test runner
+httpx>=0.27.0                 # async HTTP client for FastAPI TestClient
 
 # ── Production Hardening ──────────────────────────────────────────────────
 slowapi>=0.1.9                # rate limiting for FastAPI (built on `limits`)
