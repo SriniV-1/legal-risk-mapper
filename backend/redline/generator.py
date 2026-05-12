@@ -98,6 +98,42 @@ def _format_cited_example_details(ex_data: dict, clause_type: str) -> list[str]:
             lines.append("      Injunctive relief: yes")
         if ex_data.get("is_mutual"):
             lines.append("      Mutual: yes")
+    elif clause_type == "ip":
+        if ex_data.get("has_customer_owns_deliverables"):
+            lines.append("      Customer owns deliverables: yes")
+        if ex_data.get("has_provider_owns_deliverables"):
+            lines.append("      Provider owns deliverables: yes")
+        if ex_data.get("has_work_for_hire"):
+            lines.append("      Work-for-hire: yes")
+        if ex_data.get("has_ip_assignment"):
+            direction = ex_data.get("assignment_direction", "")
+            lines.append(f"      IP assignment: {direction or 'yes'}")
+        if ex_data.get("has_license_grant"):
+            scope = ex_data.get("license_scope", "")
+            lines.append(f"      License: {scope or 'yes'}")
+        if ex_data.get("has_feedback_clause"):
+            lines.append("      Feedback clause: yes")
+        if ex_data.get("has_source_code_escrow"):
+            lines.append("      Source code escrow: yes")
+        if ex_data.get("has_non_compete"):
+            lines.append("      Non-compete: yes")
+    elif clause_type == "governing_law":
+        if ex_data.get("has_governing_law"):
+            jurisdiction = ex_data.get("governing_law_jurisdiction", "")
+            lines.append(f"      Governing law: {jurisdiction or 'yes'}")
+        if ex_data.get("has_venue_selection"):
+            venue = ex_data.get("venue_location", "")
+            exclusive = " (exclusive)" if ex_data.get("is_exclusive_venue") else ""
+            lines.append(f"      Venue: {venue or 'yes'}{exclusive}")
+        if ex_data.get("has_arbitration"):
+            body = ex_data.get("arbitration_body", "")
+            lines.append(f"      Arbitration: {body or 'yes'}")
+        if ex_data.get("has_jury_waiver"):
+            lines.append("      Jury waiver: yes")
+        if ex_data.get("has_class_action_waiver"):
+            lines.append("      Class action waiver: yes")
+        if ex_data.get("has_prevailing_party_fees"):
+            lines.append("      Prevailing party fees: yes")
 
     return lines
 

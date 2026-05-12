@@ -227,6 +227,95 @@ class ConfidentialityExtraction(BaseModel):
     extraction_confidence: float = Field(default=0.0, ge=0.0, le=1.0, description="Model's confidence in the extraction (0-1)")
 
 
+# ── IP Extraction ───────────────────────────────────────────────────────────
+
+class IPExtraction(BaseModel):
+    """
+    Structured extraction from an intellectual property clause.
+
+    Every field that captures a factual claim about the clause MUST have a
+    corresponding source_text field with the exact quote from the contract.
+    """
+    # IP ownership — who owns pre-existing IP and deliverables
+    has_customer_owns_deliverables: Optional[bool] = Field(default=None, description="True if the customer/client owns work product, deliverables, or custom developments")
+    has_provider_owns_deliverables: Optional[bool] = Field(default=None, description="True if the provider/vendor retains ownership of deliverables or work product")
+    ownership_source_text: Optional[str] = Field(default=None, description="Exact quote about IP ownership of deliverables")
+
+    # Pre-existing IP
+    has_pre_existing_ip_carveout: Optional[bool] = Field(default=None, description="True if the clause preserves each party's pre-existing IP rights")
+    pre_existing_ip_source_text: Optional[str] = Field(default=None, description="Exact quote about pre-existing IP")
+
+    # Work-for-hire
+    has_work_for_hire: Optional[bool] = Field(default=None, description="True if deliverables are designated as 'work made for hire' under copyright law")
+    work_for_hire_source_text: Optional[str] = Field(default=None, description="Exact quote about work-for-hire designation")
+
+    # IP assignment
+    has_ip_assignment: Optional[bool] = Field(default=None, description="True if one party assigns IP rights to the other (often customer)")
+    assignment_direction: Optional[str] = Field(default=None, description="Direction of assignment: 'provider_to_customer', 'customer_to_provider', 'mutual'")
+    ip_assignment_source_text: Optional[str] = Field(default=None, description="Exact quote about IP assignment")
+
+    # License grant
+    has_license_grant: Optional[bool] = Field(default=None, description="True if the clause grants a license to use IP (as opposed to ownership transfer)")
+    license_scope: Optional[str] = Field(default=None, description="License scope: 'exclusive', 'non_exclusive'")
+    license_source_text: Optional[str] = Field(default=None, description="Exact quote about the license grant")
+
+    # Feedback clause
+    has_feedback_clause: Optional[bool] = Field(default=None, description="True if the clause addresses ownership of feedback, suggestions, or enhancement requests provided by customer")
+    feedback_source_text: Optional[str] = Field(default=None, description="Exact quote about feedback/suggestions IP")
+
+    # Source code escrow
+    has_source_code_escrow: Optional[bool] = Field(default=None, description="True if source code is placed in escrow for the customer's benefit")
+    escrow_source_text: Optional[str] = Field(default=None, description="Exact quote about source code escrow")
+
+    # Non-compete restriction
+    has_non_compete: Optional[bool] = Field(default=None, description="True if the clause restricts a party from developing competing products or services")
+    non_compete_source_text: Optional[str] = Field(default=None, description="Exact quote about non-compete restrictions")
+
+    # Overall confidence
+    extraction_confidence: float = Field(default=0.0, ge=0.0, le=1.0, description="Model's confidence in the extraction (0-1)")
+
+
+# ── Governing Law Extraction ────────────────────────────────────────────────
+
+class GoverningLawExtraction(BaseModel):
+    """
+    Structured extraction from a governing law / dispute resolution clause.
+
+    Every field that captures a factual claim about the clause MUST have a
+    corresponding source_text field with the exact quote from the contract.
+    """
+    # Governing law
+    has_governing_law: Optional[bool] = Field(default=None, description="True if the clause specifies a governing law jurisdiction")
+    governing_law_jurisdiction: Optional[str] = Field(default=None, description="The jurisdiction, e.g. 'Delaware', 'State of New York', 'England and Wales', 'State of California'")
+    governing_law_source_text: Optional[str] = Field(default=None, description="Exact quote about governing law")
+
+    # Venue / forum selection
+    has_venue_selection: Optional[bool] = Field(default=None, description="True if the clause specifies exclusive or non-exclusive venue for disputes")
+    venue_location: Optional[str] = Field(default=None, description="The venue, e.g. 'federal and state courts in Delaware', 'courts of New York County'")
+    is_exclusive_venue: Optional[bool] = Field(default=None, description="True if venue is exclusive (parties must litigate there), false if non-exclusive")
+    venue_source_text: Optional[str] = Field(default=None, description="Exact quote about venue/forum selection")
+
+    # Arbitration
+    has_arbitration: Optional[bool] = Field(default=None, description="True if disputes are resolved by arbitration instead of litigation")
+    arbitration_body: Optional[str] = Field(default=None, description="Arbitration organization, e.g. 'AAA', 'JAMS', 'ICC', 'LCIA'")
+    arbitration_source_text: Optional[str] = Field(default=None, description="Exact quote about arbitration")
+
+    # Jury waiver
+    has_jury_waiver: Optional[bool] = Field(default=None, description="True if the parties waive the right to a jury trial")
+    jury_waiver_source_text: Optional[str] = Field(default=None, description="Exact quote about jury waiver")
+
+    # Class action waiver
+    has_class_action_waiver: Optional[bool] = Field(default=None, description="True if the parties waive the right to participate in class actions")
+    class_action_waiver_source_text: Optional[str] = Field(default=None, description="Exact quote about class action waiver")
+
+    # Prevailing party attorneys' fees
+    has_prevailing_party_fees: Optional[bool] = Field(default=None, description="True if the prevailing party in a dispute is entitled to recover attorneys' fees")
+    prevailing_party_source_text: Optional[str] = Field(default=None, description="Exact quote about prevailing party fees")
+
+    # Overall confidence
+    extraction_confidence: float = Field(default=0.0, ge=0.0, le=1.0, description="Model's confidence in the extraction (0-1)")
+
+
 # ── Mapping for future categories ────────────────────────────────────────────
 
 EXTRACTION_SCHEMAS = {
@@ -234,4 +323,6 @@ EXTRACTION_SCHEMAS = {
     "termination": TerminationExtraction,
     "payment": PaymentExtraction,
     "confidentiality": ConfidentialityExtraction,
+    "ip": IPExtraction,
+    "governing_law": GoverningLawExtraction,
 }

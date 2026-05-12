@@ -80,12 +80,47 @@ _CONFIDENTIALITY_BOOL_FIELDS = [
 
 _CONFIDENTIALITY_CAT_FIELDS = []
 
+# IP
+_IP_BOOL_FIELDS = [
+    ("has_customer_owns_deliverables", lambda e: e.get("has_customer_owns_deliverables")),
+    ("has_provider_owns_deliverables", lambda e: e.get("has_provider_owns_deliverables")),
+    ("has_pre_existing_ip_carveout", lambda e: e.get("has_pre_existing_ip_carveout")),
+    ("has_work_for_hire", lambda e: e.get("has_work_for_hire")),
+    ("has_ip_assignment", lambda e: e.get("has_ip_assignment")),
+    ("has_license_grant", lambda e: e.get("has_license_grant")),
+    ("has_feedback_clause", lambda e: e.get("has_feedback_clause")),
+    ("has_source_code_escrow", lambda e: e.get("has_source_code_escrow")),
+    ("has_non_compete", lambda e: e.get("has_non_compete")),
+]
+
+_IP_CAT_FIELDS = [
+    ("assignment_direction", lambda e: e.get("assignment_direction")),
+    ("license_scope", lambda e: e.get("license_scope")),
+]
+
+# Governing Law
+_GOVERNING_LAW_BOOL_FIELDS = [
+    ("has_governing_law", lambda e: e.get("has_governing_law")),
+    ("has_venue_selection", lambda e: e.get("has_venue_selection")),
+    ("has_arbitration", lambda e: e.get("has_arbitration")),
+    ("has_jury_waiver", lambda e: e.get("has_jury_waiver")),
+    ("has_class_action_waiver", lambda e: e.get("has_class_action_waiver")),
+    ("has_prevailing_party_fees", lambda e: e.get("has_prevailing_party_fees")),
+]
+
+_GOVERNING_LAW_CAT_FIELDS = [
+    ("governing_law_jurisdiction", lambda e: e.get("governing_law_jurisdiction")),
+    ("arbitration_body", lambda e: e.get("arbitration_body")),
+]
+
 # Registry: clause_type → (bool_fields, cat_fields)
 _FIELD_REGISTRY = {
     "liability": (_LIABILITY_BOOL_FIELDS, _LIABILITY_CAT_FIELDS),
     "termination": (_TERMINATION_BOOL_FIELDS, _TERMINATION_CAT_FIELDS),
     "payment": (_PAYMENT_BOOL_FIELDS, _PAYMENT_CAT_FIELDS),
     "confidentiality": (_CONFIDENTIALITY_BOOL_FIELDS, _CONFIDENTIALITY_CAT_FIELDS),
+    "ip": (_IP_BOOL_FIELDS, _IP_CAT_FIELDS),
+    "governing_law": (_GOVERNING_LAW_BOOL_FIELDS, _GOVERNING_LAW_CAT_FIELDS),
 }
 
 

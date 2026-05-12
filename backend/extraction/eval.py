@@ -656,6 +656,208 @@ def run_confidentiality_eval(eval_file: str = "data/eval/confidentiality_eval.js
     return result
 
 
+# ── IP eval ────────────────────────────────────────────────────────────────
+
+IP_CORE_FIELDS = {
+    "has_customer_owns_deliverables", "has_provider_owns_deliverables",
+    "has_pre_existing_ip_carveout", "has_work_for_hire",
+    "has_ip_assignment", "has_license_grant",
+    "has_feedback_clause", "has_source_code_escrow", "has_non_compete",
+}
+
+
+def evaluate_ip(
+    eval_file: str | Path,
+    extractions: list[dict],
+) -> EvalResult:
+    """Evaluate IP extractions against ground truth."""
+    with open(eval_file) as f:
+        eval_data = json.load(f)
+
+    ext_by_id = {}
+    for e in extractions:
+        eid = e.get("id") or e.get("chunk_id")
+        if eid:
+            ext_by_id[eid] = e
+
+    result = EvalResult(total_examples=len(eval_data))
+    result.CORE_FIELDS = IP_CORE_FIELDS
+
+    bool_fields = list(IP_CORE_FIELDS)
+    cat_fields = ["assignment_direction", "license_scope"]
+    all_fields = bool_fields + cat_fields
+
+    for f_name in all_fields:
+        result.field_metrics[f_name] = FieldMetrics(field_name=f_name)
+
+    success_count = 0
+    for gt_item in eval_data:
+        item_id = gt_item["id"]
+        gt = gt_item["ground_truth"]
+        ext_item = ext_by_id.get(item_id)
+
+        if ext_item is None or ext_item.get("extracted_data") is None:
+            for f_name in all_fields:
+                result.field_metrics[f_name].total += 1
+                gt_val = gt.get(f_name, False) if f_name in bool_fields else (gt.get(f_name) is not None)
+                if gt_val:
+                    result.field_metrics[f_name].fn += 1
+                else:
+                    result.field_metrics[f_name].tn += 1
+            continue
+
+        success_count += 1
+        ext = ext_item["extracted_data"]
+
+        for f_name in bool_fields:
+            pred = ext.get(f_name)
+            gt_val = gt.get(f_name, False)
+            _compare_bool(pred, gt_val, result.field_metrics[f_name])
+
+        _compare_categorical(ext.get("assignment_direction"), gt.get("assignment_direction"), result.field_metrics["assignment_direction"])
+        _compare_categorical(ext.get("license_scope"), gt.get("license_scope"), result.field_metrics["license_scope"])
+
+        clause_text = gt_item["text"]
+        for source_field in [
+            ext.get("ownership_source_text"),
+            ext.get("pre_existing_ip_source_text"),
+            ext.get("work_for_hire_source_text"),
+            ext.get("ip_assignment_source_text"),
+            ext.get("license_source_text"),
+            ext.get("feedback_source_text"),
+            ext.get("escrow_source_text"),
+            ext.get("non_compete_source_text"),
+        ]:
+            score = _check_grounding(source_field, clause_text)
+            result.grounding_scores.append(score)
+
+    result.extraction_success_rate = success_count / len(eval_data) if eval_data else 0.0
+    return result
+
+
+def run_ip_eval(eval_file: str = "data/eval/ip_eval.json") -> EvalResult:
+    """Run IP extraction on eval set and evaluate."""
+    from backend.extraction.extractor import extract_ip
+
+    with open(eval_file) as f:
+        eval_data = json.load(f)
+
+    log.info("Running IP extraction on %d eval examples...", len(eval_data))
+
+    extractions = []
+    for item in eval_data:
+        text = item["text"]
+        if len(text) < 30:
+            continue
+        ext = extract_ip(text)
+        extractions.append({
+            "id": item["id"],
+            "extracted_data": ext.model_dump() if ext else None,
+        })
+
+    result = evaluate_ip(eval_file, extractions)
+    return result
+
+
+# ── Governing Law eval ────────────────────────────────────────────────────
+
+GOVERNING_LAW_CORE_FIELDS = {
+    "has_governing_law", "has_venue_selection", "has_arbitration",
+    "has_jury_waiver", "has_class_action_waiver", "has_prevailing_party_fees",
+}
+
+
+def evaluate_governing_law(
+    eval_file: str | Path,
+    extractions: list[dict],
+) -> EvalResult:
+    """Evaluate governing law extractions against ground truth."""
+    with open(eval_file) as f:
+        eval_data = json.load(f)
+
+    ext_by_id = {}
+    for e in extractions:
+        eid = e.get("id") or e.get("chunk_id")
+        if eid:
+            ext_by_id[eid] = e
+
+    result = EvalResult(total_examples=len(eval_data))
+    result.CORE_FIELDS = GOVERNING_LAW_CORE_FIELDS
+
+    bool_fields = list(GOVERNING_LAW_CORE_FIELDS)
+    cat_fields = ["governing_law_jurisdiction", "arbitration_body"]
+    all_fields = bool_fields + cat_fields
+
+    for f_name in all_fields:
+        result.field_metrics[f_name] = FieldMetrics(field_name=f_name)
+
+    success_count = 0
+    for gt_item in eval_data:
+        item_id = gt_item["id"]
+        gt = gt_item["ground_truth"]
+        ext_item = ext_by_id.get(item_id)
+
+        if ext_item is None or ext_item.get("extracted_data") is None:
+            for f_name in all_fields:
+                result.field_metrics[f_name].total += 1
+                gt_val = gt.get(f_name, False) if f_name in bool_fields else (gt.get(f_name) is not None)
+                if gt_val:
+                    result.field_metrics[f_name].fn += 1
+                else:
+                    result.field_metrics[f_name].tn += 1
+            continue
+
+        success_count += 1
+        ext = ext_item["extracted_data"]
+
+        for f_name in bool_fields:
+            pred = ext.get(f_name)
+            gt_val = gt.get(f_name, False)
+            _compare_bool(pred, gt_val, result.field_metrics[f_name])
+
+        _compare_categorical(ext.get("governing_law_jurisdiction"), gt.get("governing_law_jurisdiction"), result.field_metrics["governing_law_jurisdiction"])
+        _compare_categorical(ext.get("arbitration_body"), gt.get("arbitration_body"), result.field_metrics["arbitration_body"])
+
+        clause_text = gt_item["text"]
+        for source_field in [
+            ext.get("governing_law_source_text"),
+            ext.get("venue_source_text"),
+            ext.get("arbitration_source_text"),
+            ext.get("jury_waiver_source_text"),
+            ext.get("class_action_waiver_source_text"),
+            ext.get("prevailing_party_source_text"),
+        ]:
+            score = _check_grounding(source_field, clause_text)
+            result.grounding_scores.append(score)
+
+    result.extraction_success_rate = success_count / len(eval_data) if eval_data else 0.0
+    return result
+
+
+def run_governing_law_eval(eval_file: str = "data/eval/governing_law_eval.json") -> EvalResult:
+    """Run governing law extraction on eval set and evaluate."""
+    from backend.extraction.extractor import extract_governing_law
+
+    with open(eval_file) as f:
+        eval_data = json.load(f)
+
+    log.info("Running governing law extraction on %d eval examples...", len(eval_data))
+
+    extractions = []
+    for item in eval_data:
+        text = item["text"]
+        if len(text) < 30:
+            continue
+        ext = extract_governing_law(text)
+        extractions.append({
+            "id": item["id"],
+            "extracted_data": ext.model_dump() if ext else None,
+        })
+
+    result = evaluate_governing_law(eval_file, extractions)
+    return result
+
+
 # ── CLI ──────────────────────────────────────────────────────────────────────
 
 def run_eval(eval_file: str = "data/eval/liability_eval.json") -> EvalResult:
@@ -695,6 +897,10 @@ if __name__ == "__main__":
         result = run_payment_eval()
     elif clause_type == "confidentiality":
         result = run_confidentiality_eval()
+    elif clause_type == "ip":
+        result = run_ip_eval()
+    elif clause_type == "governing_law":
+        result = run_governing_law_eval()
     else:
         result = run_eval()
 

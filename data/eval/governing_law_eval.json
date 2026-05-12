@@ -1,0 +1,422 @@
+[
+  {
+    "id": 1,
+    "text": "This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict of laws principles. Any dispute arising under this Agreement shall be resolved exclusively in the federal and state courts located in Wilmington, Delaware. EACH PARTY HEREBY IRREVOCABLY WAIVES ANY AND ALL RIGHT TO TRIAL BY JURY IN ANY LEGAL PROCEEDING ARISING OUT OF OR RELATED TO THIS AGREEMENT.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 2,
+    "text": "This Agreement shall be governed by the laws of the State of California. Any dispute, controversy, or claim arising out of or relating to this Agreement shall be settled by binding arbitration administered by the American Arbitration Association (AAA) in accordance with its Commercial Arbitration Rules. The arbitration shall take place in San Francisco, California. The prevailing party shall be entitled to recover its reasonable attorneys' fees and costs from the non-prevailing party.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": false,
+      "has_arbitration": true,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": true
+    }
+  },
+  {
+    "id": 3,
+    "text": "This Agreement shall be governed by and construed in accordance with the laws of the State of New York. The parties consent to the exclusive jurisdiction of the state and federal courts located in New York County, New York. Each party waives any right to a jury trial. Each party agrees that any claims shall be brought solely in an individual capacity and not as part of any class, consolidated, or representative proceeding.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": true,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 4,
+    "text": "This Agreement shall be governed by the laws of England and Wales. The parties submit to the non-exclusive jurisdiction of the courts of London, England.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 5,
+    "text": "Any dispute arising out of or in connection with this Agreement shall be referred to and finally resolved by arbitration under the rules of the International Chamber of Commerce (ICC). The seat of arbitration shall be Singapore. The language of the arbitration shall be English. The arbitral tribunal shall consist of three arbitrators.",
+    "ground_truth": {
+      "has_governing_law": false,
+      "has_venue_selection": false,
+      "has_arbitration": true,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 6,
+    "text": "This Agreement shall be governed by the laws of the State of Texas, without regard to its choice of law provisions. Each party irrevocably submits to the exclusive jurisdiction of the federal and state courts located in Dallas County, Texas. EACH PARTY WAIVES THE RIGHT TO A TRIAL BY JURY. In any action to enforce this Agreement, the prevailing party shall be entitled to recover reasonable attorneys' fees, costs, and expenses.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": true
+    }
+  },
+  {
+    "id": 7,
+    "text": "The validity, construction, and performance of this Agreement shall be governed by the laws of the Commonwealth of Massachusetts. The parties agree that any disputes shall be submitted to binding arbitration administered by JAMS in Boston, Massachusetts. Each party waives any right to participate in a class-wide arbitration or class action.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": false,
+      "has_arbitration": true,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": true,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 8,
+    "text": "This Agreement shall be governed by the laws of the State of Illinois. The parties consent to the jurisdiction of the courts of Cook County, Illinois for any action arising hereunder.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 9,
+    "text": "Any controversy or claim arising out of this Agreement shall be settled by binding arbitration in accordance with the rules of the American Arbitration Association. The arbitration shall be held in New York, New York. The arbitrator's decision shall be final and binding. Judgment upon the award may be entered in any court of competent jurisdiction. The prevailing party shall be entitled to recover its reasonable attorneys' fees.",
+    "ground_truth": {
+      "has_governing_law": false,
+      "has_venue_selection": false,
+      "has_arbitration": true,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": true
+    }
+  },
+  {
+    "id": 10,
+    "text": "This Agreement shall be governed by and construed in accordance with the laws of the State of Washington. Any dispute shall be resolved exclusively in the state or federal courts located in King County, Washington. Each party hereby waives any right to trial by jury. Each party waives any right to bring claims as part of a class action or consolidated proceeding. The substantially prevailing party shall be entitled to recover costs and reasonable attorneys' fees.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": true,
+      "has_prevailing_party_fees": true
+    }
+  },
+  {
+    "id": 11,
+    "text": "This Agreement shall be governed by the laws of the Federal Republic of Germany. Any dispute shall be resolved by arbitration under the rules of the German Arbitration Institute (DIS) in Frankfurt am Main.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": false,
+      "has_arbitration": true,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 12,
+    "text": "This Agreement shall be governed by the laws of the State of Georgia, without regard to conflict of laws principles. The parties submit to the exclusive jurisdiction of the courts located in Fulton County, Georgia.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 13,
+    "text": "This Agreement shall be interpreted under the laws of the State of Delaware. All disputes shall be submitted to binding arbitration administered by AAA under its Commercial Arbitration Rules. The arbitration shall be conducted in Wilmington, Delaware by a single arbitrator. EACH PARTY HEREBY WAIVES THE RIGHT TO A JURY TRIAL. All claims must be brought in a party's individual capacity and not as a plaintiff or class member in any purported class or representative proceeding.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": false,
+      "has_arbitration": true,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": true,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 14,
+    "text": "The parties agree that this Agreement shall be governed by the laws of the State of New York, without regard to conflict of law rules. Each party irrevocably waives any right to trial by jury.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": false,
+      "has_arbitration": false,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 15,
+    "text": "Any dispute arising under this Agreement shall first be submitted to mediation. If mediation is unsuccessful within thirty (30) days, the dispute shall be resolved by binding arbitration under the rules of JAMS. The arbitration shall take place in Los Angeles, California. The prevailing party in any arbitration or litigation shall be entitled to recover reasonable attorneys' fees and costs.",
+    "ground_truth": {
+      "has_governing_law": false,
+      "has_venue_selection": false,
+      "has_arbitration": true,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": true
+    }
+  },
+  {
+    "id": 16,
+    "text": "This Agreement shall be governed by the laws of the State of Florida. The parties agree to the exclusive jurisdiction and venue of the courts of Miami-Dade County, Florida for all disputes arising under this Agreement. The parties waive any right to a jury trial. The prevailing party in any action shall recover its reasonable attorneys' fees and costs.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": true
+    }
+  },
+  {
+    "id": 17,
+    "text": "This Agreement is governed by the laws of the Province of Ontario, Canada. The parties submit to the exclusive jurisdiction of the courts of Toronto, Ontario.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 18,
+    "text": "This Agreement shall be construed in accordance with the laws of the State of Colorado. Any dispute shall be resolved by binding arbitration under the Commercial Arbitration Rules of the American Arbitration Association (AAA) in Denver, Colorado. Each party agrees that disputes shall be resolved on an individual basis only and waives any right to bring claims as part of a class action or consolidated proceeding.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": false,
+      "has_arbitration": true,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": true,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 19,
+    "text": "The laws of the State of Virginia shall govern this Agreement. Any action or proceeding shall be brought in the federal or state courts located in Fairfax County, Virginia, and each party consents to the jurisdiction of such courts.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 20,
+    "text": "This Agreement shall be governed by and construed in accordance with the laws of the State of California, without regard to its conflicts of law provisions. Each party irrevocably submits to the exclusive jurisdiction of the state and federal courts located in Santa Clara County, California. EACH PARTY HEREBY IRREVOCABLY WAIVES ALL RIGHT TO TRIAL BY JURY IN ANY ACTION, PROCEEDING, OR COUNTERCLAIM ARISING OUT OF OR RELATING TO THIS AGREEMENT. All claims must be brought in each party's individual capacity and not as a plaintiff or class member in any class, consolidated, or representative proceeding. In any action to enforce this Agreement, the prevailing party shall be entitled to recover its reasonable attorneys' fees, costs, and expenses.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": true,
+      "has_prevailing_party_fees": true
+    }
+  },
+  {
+    "id": 21,
+    "text": "All disputes arising out of this Agreement shall be finally settled under the Rules of Arbitration of the London Court of International Arbitration (LCIA). The number of arbitrators shall be one. The seat of arbitration shall be London, United Kingdom. The language of the arbitration shall be English.",
+    "ground_truth": {
+      "has_governing_law": false,
+      "has_venue_selection": false,
+      "has_arbitration": true,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 22,
+    "text": "This Agreement is governed by the laws of the State of Pennsylvania. Venue for any action shall be in the Court of Common Pleas of Philadelphia County or the United States District Court for the Eastern District of Pennsylvania.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 23,
+    "text": "This Agreement shall be governed by the laws of the State of New Jersey. Each party waives the right to a jury trial in any action arising out of this Agreement. In any action to enforce this Agreement, the successful party shall be entitled to recover its reasonable costs and attorneys' fees.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": false,
+      "has_arbitration": false,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": true
+    }
+  },
+  {
+    "id": 24,
+    "text": "Any claim arising under this Agreement shall be resolved by binding arbitration administered by JAMS. The arbitration shall be conducted in Chicago, Illinois. This Agreement is governed by the laws of the State of Illinois. The parties waive all rights to a jury trial and to participate in class actions.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": false,
+      "has_arbitration": true,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": true,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 25,
+    "text": "This Agreement shall be construed under the laws of the State of Oregon. The parties submit to the jurisdiction of the state and federal courts in Multnomah County, Oregon. The prevailing party in any dispute shall recover reasonable attorneys' fees.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": true
+    }
+  },
+  {
+    "id": 26,
+    "text": "The parties agree that this Agreement shall be governed by the laws of the State of Delaware. All disputes shall be resolved by binding arbitration administered by the American Arbitration Association in accordance with its Commercial Arbitration Rules. The place of arbitration shall be Wilmington, Delaware. The prevailing party in any arbitration shall be entitled to an award of reasonable attorneys' fees.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": false,
+      "has_arbitration": true,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": true
+    }
+  },
+  {
+    "id": 27,
+    "text": "This Agreement is governed by the laws of the State of North Carolina. Any legal action arising out of this Agreement shall be brought exclusively in the state or federal courts located in Wake County, North Carolina. EACH PARTY WAIVES ANY RIGHT TO A JURY TRIAL.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 28,
+    "text": "This Agreement shall be governed by the laws of Japan. Any dispute shall be finally resolved by arbitration in accordance with the Commercial Arbitration Rules of the Japan Commercial Arbitration Association. The place of arbitration shall be Tokyo. The arbitral proceedings shall be conducted in English.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": false,
+      "has_arbitration": true,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 29,
+    "text": "This Agreement is governed by the laws of the State of Nevada. The parties consent to the exclusive jurisdiction of the courts of Clark County, Nevada. Each party waives the right to trial by jury. Each party waives the right to participate in any class action or consolidated proceeding. The prevailing party shall recover reasonable attorneys' fees and costs.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": true,
+      "has_prevailing_party_fees": true
+    }
+  },
+  {
+    "id": 30,
+    "text": "This Agreement shall be governed by the laws of the State of Connecticut, without giving effect to any choice of law rules. The parties irrevocably submit to the non-exclusive jurisdiction of the state and federal courts in Hartford, Connecticut.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 31,
+    "text": "All disputes shall be resolved by final and binding arbitration under the AAA Commercial Arbitration Rules. The arbitration will be held in Austin, Texas. The laws of the State of Texas govern this Agreement. Each party agrees to bring claims only in its individual capacity and waives the right to participate in class-wide arbitration or class action lawsuits.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": false,
+      "has_arbitration": true,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": true,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 32,
+    "text": "This Agreement shall be governed by the laws of the State of Michigan. Any suit or proceeding arising from this Agreement shall be brought in the courts of Oakland County, Michigan.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": false,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 33,
+    "text": "This Agreement is governed by the laws of the State of Utah. The parties irrevocably submit to the exclusive jurisdiction of the federal and state courts in Salt Lake County, Utah. Each party hereby waives any and all right to a trial by jury. In any litigation, the prevailing party shall be entitled to recover its reasonable attorneys' fees, expenses, and court costs from the non-prevailing party.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": false,
+      "has_prevailing_party_fees": true
+    }
+  },
+  {
+    "id": 34,
+    "text": "Any dispute under this Agreement shall be resolved by arbitration in accordance with the JAMS Comprehensive Arbitration Rules. The seat of arbitration shall be Seattle, Washington. The governing law is the law of the State of Washington. The parties waive any right to jury trial and any right to bring or participate in class actions.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": false,
+      "has_arbitration": true,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": true,
+      "has_prevailing_party_fees": false
+    }
+  },
+  {
+    "id": 35,
+    "text": "This Agreement shall be governed by the laws of the State of Minnesota, without regard to its conflict of law provisions. Each party consents to the exclusive jurisdiction of the state and federal courts located in Hennepin County, Minnesota. EACH PARTY HEREBY WAIVES ALL RIGHT TO TRIAL BY JURY. All claims shall be brought only on an individual basis, and neither party shall bring claims as part of a class, consolidated, or representative action. In any action to enforce this Agreement, the prevailing party shall be entitled to recover its reasonable attorneys' fees and costs.",
+    "ground_truth": {
+      "has_governing_law": true,
+      "has_venue_selection": true,
+      "has_arbitration": false,
+      "has_jury_waiver": true,
+      "has_class_action_waiver": true,
+      "has_prevailing_party_fees": true
+    }
+  }
+]
