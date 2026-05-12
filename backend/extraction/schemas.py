@@ -124,9 +124,64 @@ class TerminationExtraction(BaseModel):
     extraction_confidence: float = Field(default=0.0, ge=0.0, le=1.0, description="Model's confidence in the extraction (0-1)")
 
 
+# ── Payment Extraction ───────────────────────────────────────────────────────
+
+class LateFeeInfo(BaseModel):
+    """Structured representation of late payment penalties."""
+    has_late_fee: bool = Field(default=False, description="Whether overdue payments incur a penalty or interest")
+    late_fee_type: Optional[str] = Field(default=None, description="Type: 'flat_fee', 'percentage', 'interest_rate', 'other'")
+    late_fee_amount: Optional[str] = Field(default=None, description="The fee/rate, e.g. '1.5% per month', '$50 per invoice', 'lesser of 1.5%/month or maximum legal rate'")
+    late_fee_source_text: Optional[str] = Field(default=None, description="Exact quote about late fees or interest")
+
+
+class PaymentExtraction(BaseModel):
+    """
+    Structured extraction from a payment clause.
+
+    Every field that captures a factual claim about the clause MUST have a
+    corresponding source_text field with the exact quote from the contract.
+    """
+    # Payment terms (net days)
+    has_payment_terms: Optional[bool] = Field(default=None, description="True if the clause specifies a payment deadline (e.g. net-30)")
+    payment_days: Optional[int] = Field(default=None, description="Number of days to pay after invoice (e.g. 30, 45, 60)")
+    payment_terms_source_text: Optional[str] = Field(default=None, description="Exact quote about payment terms/deadline")
+
+    # Late payment penalty / interest
+    late_fee: LateFeeInfo = Field(default_factory=LateFeeInfo)
+
+    # Price escalation / unilateral increase
+    has_price_escalation: Optional[bool] = Field(default=None, description="True if provider can increase prices unilaterally or at renewal")
+    price_escalation_source_text: Optional[str] = Field(default=None, description="Exact quote about price changes")
+
+    # Non-refundable payments
+    has_non_refundable: Optional[bool] = Field(default=None, description="True if payments are stated as non-refundable")
+    non_refundable_source_text: Optional[str] = Field(default=None, description="Exact quote about non-refundable payments")
+
+    # Minimum commitment / minimum spend
+    has_minimum_commitment: Optional[bool] = Field(default=None, description="True if there is a minimum purchase, spend, or volume commitment")
+    minimum_commitment_amount: Optional[str] = Field(default=None, description="The minimum amount or formula, e.g. '$50,000 annually', '1,000 units per quarter'")
+    minimum_commitment_source_text: Optional[str] = Field(default=None, description="Exact quote about minimum commitments")
+
+    # Invoice frequency
+    invoice_frequency: Optional[str] = Field(default=None, description="How often invoices are issued: 'monthly', 'quarterly', 'annually', 'upfront', 'upon_delivery'")
+    invoice_frequency_source_text: Optional[str] = Field(default=None, description="Exact quote about invoicing schedule")
+
+    # Payment dispute process
+    has_dispute_process: Optional[bool] = Field(default=None, description="True if the clause provides a process for disputing invoices")
+    dispute_process_source_text: Optional[str] = Field(default=None, description="Exact quote about the dispute process")
+
+    # Right of setoff
+    has_right_of_setoff: Optional[bool] = Field(default=None, description="True if a party can offset amounts owed against payments due")
+    setoff_source_text: Optional[str] = Field(default=None, description="Exact quote about setoff rights")
+
+    # Overall confidence
+    extraction_confidence: float = Field(default=0.0, ge=0.0, le=1.0, description="Model's confidence in the extraction (0-1)")
+
+
 # ── Mapping for future categories ────────────────────────────────────────────
 
 EXTRACTION_SCHEMAS = {
     "liability": LiabilityExtraction,
     "termination": TerminationExtraction,
+    "payment": PaymentExtraction,
 }

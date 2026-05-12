@@ -1,0 +1,667 @@
+[
+  {
+    "id": 1,
+    "description": "Full-featured payment clause — net-30, late fees, price escalation, non-refundable, minimum commit",
+    "text": "Customer shall pay all invoices within thirty (30) days of the invoice date. Invoices shall be issued monthly in arrears. Late payments shall accrue interest at a rate of 1.5% per month or the maximum rate permitted by law, whichever is less. All fees are non-refundable except as expressly stated herein. Customer commits to a minimum annual spend of $100,000. Provider may increase fees upon renewal by providing at least sixty (60) days prior written notice, provided that any increase shall not exceed 5% per year.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 30,
+      "late_fee": {
+        "has_late_fee": true,
+        "late_fee_type": "interest_rate"
+      },
+      "has_price_escalation": true,
+      "has_non_refundable": true,
+      "has_minimum_commitment": true,
+      "invoice_frequency": "monthly",
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 2,
+    "description": "Simple net-60 with no penalties",
+    "text": "All invoices are due and payable within sixty (60) days of receipt. Payment shall be made by wire transfer or ACH to the account designated by Provider.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 60,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 3,
+    "description": "Due upon receipt with flat late fee",
+    "text": "All amounts are due upon receipt of invoice. A late payment charge of $50.00 per invoice will be assessed on any invoice not paid within fifteen (15) days of the due date.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 0,
+      "late_fee": {
+        "has_late_fee": true,
+        "late_fee_type": "flat_fee"
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 4,
+    "description": "Quarterly billing with dispute process",
+    "text": "Fees shall be invoiced quarterly in advance and are due within forty-five (45) days of the invoice date. Customer may dispute any invoice in good faith by providing written notice within fifteen (15) days of receipt, specifying the disputed amount and the basis for the dispute. Undisputed portions of any invoice shall remain due and payable in accordance with the payment terms.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 45,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": "quarterly",
+      "has_dispute_process": true,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 5,
+    "description": "Annual upfront payment, non-refundable, with CPI escalation",
+    "text": "Customer shall pay the annual subscription fee in full upon execution of each Order Form. All fees paid are non-refundable and non-cancellable. Provider reserves the right to increase subscription fees annually in an amount not to exceed the greater of 3% or the increase in the Consumer Price Index (CPI) for the preceding twelve-month period.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": true,
+      "has_non_refundable": true,
+      "has_minimum_commitment": false,
+      "invoice_frequency": "annually",
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 6,
+    "description": "Negative example — liability limitation clause",
+    "text": "IN NO EVENT SHALL EITHER PARTY'S AGGREGATE LIABILITY UNDER THIS AGREEMENT EXCEED THE TOTAL FEES PAID BY CUSTOMER DURING THE TWELVE (12) MONTH PERIOD PRECEDING THE EVENT GIVING RISE TO SUCH LIABILITY.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 7,
+    "description": "Setoff rights with net-30",
+    "text": "Customer shall pay undisputed invoices within thirty (30) days of the invoice date. Provider may setoff any amounts owed by Customer under this Agreement against any amounts payable by Provider to Customer under this Agreement or any other agreement between the parties.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 30,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": true
+    }
+  },
+  {
+    "id": 8,
+    "description": "Minimum volume commitment with overage charges",
+    "text": "Customer commits to a minimum monthly volume of 10,000 API calls per month during the term of this Agreement. Usage below the minimum volume commitment shall be billed at the committed rate. Usage in excess of the committed volume shall be billed at the then-current overage rate as set forth in the applicable Order Form.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": true,
+      "invoice_frequency": "monthly",
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 9,
+    "description": "Negative example — termination clause",
+    "text": "Either party may terminate this Agreement for cause upon thirty (30) days prior written notice if the other party materially breaches any provision and fails to cure within the notice period.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 10,
+    "description": "Percentage late fee with net-45",
+    "text": "All invoices are payable within forty-five (45) days of the date of invoice. In the event any amount is not received by the due date, a late payment fee of 2% of the outstanding balance will be assessed. Customer shall be responsible for all costs of collection, including reasonable attorneys' fees.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 45,
+      "late_fee": {
+        "has_late_fee": true,
+        "late_fee_type": "percentage"
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 11,
+    "description": "Unilateral price change at any time",
+    "text": "Provider may modify its pricing at any time by posting updated prices on its website or by notifying Customer via email. Continued use of the Services after a price change constitutes acceptance of the new pricing. Customer's sole remedy for a price change it does not accept is to terminate this Agreement.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": true,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 12,
+    "description": "Monthly billing with taxes and currency",
+    "text": "Provider shall invoice Customer monthly for the Services performed during the preceding calendar month. All fees are stated in United States Dollars and are exclusive of applicable taxes. Customer shall be responsible for all sales, use, VAT, and similar taxes arising from the transactions contemplated by this Agreement. Invoices are due within thirty (30) days of receipt.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 30,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": "monthly",
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 13,
+    "description": "Negative example — confidentiality clause",
+    "text": "Each party agrees to maintain the confidentiality of the other party's Confidential Information and not to disclose such information to any third party without the prior written consent of the disclosing party.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 14,
+    "description": "Comprehensive dispute process with withholding rights",
+    "text": "If Customer disputes any charge on an invoice, Customer must notify Provider in writing within thirty (30) days of receipt of the invoice, specifying in reasonable detail the nature and amount of the dispute. Customer may withhold payment of the disputed amount pending resolution, provided that Customer pays all undisputed amounts by the due date. The parties shall use commercially reasonable efforts to resolve any dispute within sixty (60) days.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": true,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 15,
+    "description": "Upfront payment with no refunds and suspension for non-payment",
+    "text": "The initial setup fee and the first year's subscription fee are due in full upon execution of this Agreement. All fees are non-refundable. Provider may suspend Customer's access to the Services if any undisputed payment is more than fifteen (15) days past due.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": true,
+      "has_minimum_commitment": false,
+      "invoice_frequency": "upfront",
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 16,
+    "description": "Net-90 with interest rate late fee and minimum annual spend",
+    "text": "Customer agrees to pay all properly submitted invoices within ninety (90) days of the invoice date. Past due amounts shall bear interest at the rate of 18% per annum, calculated from the due date until full payment is received. Customer commits to a minimum annual expenditure of $250,000 for the Services during each year of the term.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 90,
+      "late_fee": {
+        "has_late_fee": true,
+        "late_fee_type": "interest_rate"
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": true,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 17,
+    "description": "Negative example — scope of services",
+    "text": "Provider shall provide the professional services described in each Statement of Work. Provider shall assign qualified personnel to perform the Services and shall not subcontract any portion of the Services without Customer's prior written consent.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 18,
+    "description": "Time and materials billing with approval threshold",
+    "text": "Services performed on a time and materials basis shall be invoiced monthly based on actual hours worked at the rates specified in the applicable Statement of Work. Customer shall approve all timesheets within ten (10) business days of submission. Approved invoices are due within thirty (30) days.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 30,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": "monthly",
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 19,
+    "description": "Prepaid credits model with expiration",
+    "text": "Customer shall purchase prepaid credits in blocks as set forth in the Order Form. Credits are non-refundable and expire twelve (12) months from the date of purchase. Unused credits will not carry over to subsequent periods. Provider shall make usage reports available to Customer on a monthly basis.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": true,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 20,
+    "description": "Government payment terms — net-30 strict, no interest",
+    "text": "Payment shall be made in accordance with the Prompt Payment Act, 31 U.S.C. 3901 et seq. The Government shall pay the Contractor within thirty (30) calendar days after receipt of a proper invoice. Interest on overdue payments shall be paid in accordance with the Prompt Payment Act.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 30,
+      "late_fee": {
+        "has_late_fee": true,
+        "late_fee_type": "interest_rate"
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 21,
+    "description": "Milestone-based payments upon delivery",
+    "text": "Fees for professional services shall be payable upon completion of each milestone as described in the Statement of Work. Provider shall submit an invoice upon completion of each milestone, and Customer shall pay such invoice within fifteen (15) days of acceptance of the applicable deliverable.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 15,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": "upon_delivery",
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 22,
+    "description": "Mutual setoff with dispute and net-30",
+    "text": "All invoices are due and payable within thirty (30) days of the invoice date. Either party may offset any undisputed amounts owed to it under this Agreement against amounts payable by it under this Agreement. Customer may dispute any invoice by providing written notice to Provider within ten (10) business days of receipt, identifying the disputed items and the basis for the dispute.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 30,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": true,
+      "has_right_of_setoff": true
+    }
+  },
+  {
+    "id": 23,
+    "description": "Negative example — intellectual property clause",
+    "text": "All intellectual property rights in and to the Services, including all modifications, improvements, and derivative works, shall remain the exclusive property of Provider. Customer is granted a limited, non-exclusive, non-transferable license to use the Services during the term of this Agreement.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 24,
+    "description": "Annual escalation with cap and non-refundable fees",
+    "text": "Subscription fees for each renewal term shall be subject to an annual increase of no more than the greater of (a) 5% or (b) the percentage increase in the Consumer Price Index for the preceding calendar year. All fees paid under this Agreement are non-refundable and non-cancellable, regardless of whether Customer uses the Services for the full term.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": true,
+      "has_non_refundable": true,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 25,
+    "description": "Net-15 with suspension rights and interest",
+    "text": "Customer shall pay all undisputed invoices within fifteen (15) days of the invoice date. If any payment is not received within ten (10) days after the due date, Provider may (a) charge interest on the overdue amount at the lesser of 1.5% per month or the maximum rate permitted by applicable law, and (b) suspend Customer's access to the Services upon five (5) days prior written notice.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 15,
+      "late_fee": {
+        "has_late_fee": true,
+        "late_fee_type": "interest_rate"
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 26,
+    "description": "Negative example — data protection clause",
+    "text": "Provider shall implement and maintain appropriate technical and organizational measures to protect Customer Data against unauthorized access, loss, or destruction. Provider shall promptly notify Customer of any data breach affecting Customer Data.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 27,
+    "description": "Usage-based monthly billing with minimum floor",
+    "text": "Customer shall be billed monthly based on actual usage of the Platform as measured by the number of active users during the billing period. Notwithstanding the foregoing, Customer shall pay a minimum monthly fee of $5,000 regardless of actual usage. Provider shall deliver usage reports to Customer within five (5) business days following the end of each billing period.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": true,
+      "invoice_frequency": "monthly",
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 28,
+    "description": "Complex payment with all features present",
+    "text": "Fees. Customer shall pay Provider the fees set forth in each Order Form. Provider shall invoice Customer monthly in advance. All invoices are due within thirty (30) days of the invoice date. Late payments shall bear interest at 1% per month. All fees are non-refundable. Customer commits to a minimum annual spend of $200,000. Provider may increase fees by up to 7% annually upon sixty (60) days prior written notice before the start of a renewal term. Customer may dispute any charge by notifying Provider in writing within fifteen (15) days of the invoice date. Provider may offset amounts owed by Customer against any credits or refunds due to Customer.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 30,
+      "late_fee": {
+        "has_late_fee": true,
+        "late_fee_type": "interest_rate"
+      },
+      "has_price_escalation": true,
+      "has_non_refundable": true,
+      "has_minimum_commitment": true,
+      "invoice_frequency": "monthly",
+      "has_dispute_process": true,
+      "has_right_of_setoff": true
+    }
+  },
+  {
+    "id": 29,
+    "description": "Simple pricing schedule — not escalation",
+    "text": "The fees for the Services during the initial term shall be as set forth in Exhibit A. For any renewal term, the fees shall be at Provider's then-current list prices unless otherwise agreed in writing by the parties.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": true,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 30,
+    "description": "Negative example — governing law",
+    "text": "This Agreement shall be governed by and construed in accordance with the laws of the State of California, without giving effect to any choice of law principles. Any legal action arising under this Agreement shall be brought exclusively in the state or federal courts located in San Francisco County, California.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 31,
+    "description": "Quarterly invoicing with purchase order requirement",
+    "text": "Provider shall invoice Customer quarterly for subscription fees. Customer shall issue a purchase order for each invoice prior to payment. All invoices must reference a valid purchase order number. Payment is due within sixty (60) days of receipt of a conforming invoice that references a valid purchase order.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 60,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": "quarterly",
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 32,
+    "description": "Pro-rata refund on termination — explicitly refundable",
+    "text": "If this Agreement is terminated for any reason, Provider shall refund to Customer a pro-rata portion of any prepaid fees covering the unused portion of the then-current term. Such refund shall be paid within thirty (30) days of the effective date of termination.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 33,
+    "description": "Provider withholding right (one-sided setoff)",
+    "text": "Provider reserves the right to withhold or deduct from any amounts payable to Customer any amounts that Customer owes to Provider under this Agreement or any other agreement between the parties. Provider shall notify Customer of any such withholding within five (5) business days.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": true
+    }
+  },
+  {
+    "id": 34,
+    "description": "Negative example — warranty clause",
+    "text": "Provider warrants that the Services will be performed in a professional and workmanlike manner consistent with generally accepted industry standards. THE FOREGOING WARRANTY IS THE SOLE AND EXCLUSIVE WARRANTY AND IS IN LIEU OF ALL OTHER WARRANTIES, EXPRESS OR IMPLIED.",
+    "ground_truth": {
+      "has_payment_terms": false,
+      "payment_days": null,
+      "late_fee": {
+        "has_late_fee": false,
+        "late_fee_type": null
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  },
+  {
+    "id": 35,
+    "description": "Net-30 with maximum legal rate interest",
+    "text": "All amounts due under this Agreement shall be paid within thirty (30) days of invoice. Any amounts not paid when due shall accrue interest at the maximum rate permitted by applicable law from the due date until paid in full.",
+    "ground_truth": {
+      "has_payment_terms": true,
+      "payment_days": 30,
+      "late_fee": {
+        "has_late_fee": true,
+        "late_fee_type": "interest_rate"
+      },
+      "has_price_escalation": false,
+      "has_non_refundable": false,
+      "has_minimum_commitment": false,
+      "invoice_frequency": null,
+      "has_dispute_process": false,
+      "has_right_of_setoff": false
+    }
+  }
+]

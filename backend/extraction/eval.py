@@ -423,6 +423,135 @@ def run_termination_eval(eval_file: str = "data/eval/termination_eval.json") -> 
     return result
 
 
+# ── Payment eval ────────────────────────────────────────────────────────────
+
+PAYMENT_CORE_FIELDS = {
+    "has_payment_terms", "has_late_fee", "has_price_escalation",
+    "has_non_refundable", "has_minimum_commitment",
+    "has_dispute_process", "has_right_of_setoff",
+}
+
+
+def _get_gt_payment_field(gt: dict, field_name: str) -> bool:
+    """Get a ground truth boolean value by field name for payment."""
+    if field_name == "has_late_fee":
+        return gt.get("late_fee", {}).get("has_late_fee", False)
+    else:
+        return gt.get(field_name, False)
+
+
+def evaluate_payment(
+    eval_file: str | Path,
+    extractions: list[dict],
+) -> EvalResult:
+    """Evaluate payment extractions against ground truth."""
+    with open(eval_file) as f:
+        eval_data = json.load(f)
+
+    ext_by_id = {}
+    for e in extractions:
+        eid = e.get("id") or e.get("chunk_id")
+        if eid:
+            ext_by_id[eid] = e
+
+    result = EvalResult(total_examples=len(eval_data))
+    result.CORE_FIELDS = PAYMENT_CORE_FIELDS
+
+    bool_fields = [
+        "has_payment_terms", "has_late_fee", "has_price_escalation",
+        "has_non_refundable", "has_minimum_commitment",
+        "has_dispute_process", "has_right_of_setoff",
+    ]
+    cat_fields = ["invoice_frequency", "late_fee_type"]
+    all_fields = bool_fields + cat_fields
+
+    for f_name in all_fields:
+        result.field_metrics[f_name] = FieldMetrics(field_name=f_name)
+
+    success_count = 0
+    for gt_item in eval_data:
+        item_id = gt_item["id"]
+        gt = gt_item["ground_truth"]
+        ext_item = ext_by_id.get(item_id)
+
+        if ext_item is None or ext_item.get("extracted_data") is None:
+            for f_name in all_fields:
+                result.field_metrics[f_name].total += 1
+                gt_val = _get_gt_payment_field(gt, f_name) if f_name in bool_fields else (gt.get(f_name) is not None)
+                if gt_val:
+                    result.field_metrics[f_name].fn += 1
+                else:
+                    result.field_metrics[f_name].tn += 1
+            continue
+
+        success_count += 1
+        ext = ext_item["extracted_data"]
+
+        for f_name in bool_fields:
+            if f_name == "has_late_fee":
+                pred = ext.get("late_fee", {}).get("has_late_fee")
+                gt_val = gt.get("late_fee", {}).get("has_late_fee", False)
+            else:
+                pred = ext.get(f_name)
+                gt_val = gt.get(f_name, False)
+            _compare_bool(pred, gt_val, result.field_metrics[f_name])
+
+        # Categorical
+        _compare_categorical(
+            ext.get("invoice_frequency"),
+            gt.get("invoice_frequency"),
+            result.field_metrics["invoice_frequency"],
+        )
+        _compare_categorical(
+            ext.get("late_fee", {}).get("late_fee_type"),
+            gt.get("late_fee", {}).get("late_fee_type"),
+            result.field_metrics["late_fee_type"],
+        )
+
+        # Grounding checks
+        clause_text = gt_item["text"]
+        for source_field in [
+            ext.get("payment_terms_source_text"),
+            ext.get("late_fee", {}).get("late_fee_source_text"),
+            ext.get("price_escalation_source_text"),
+            ext.get("non_refundable_source_text"),
+            ext.get("minimum_commitment_source_text"),
+            ext.get("invoice_frequency_source_text"),
+            ext.get("dispute_process_source_text"),
+            ext.get("setoff_source_text"),
+        ]:
+            score = _check_grounding(source_field, clause_text)
+            result.grounding_scores.append(score)
+
+    result.extraction_success_rate = success_count / len(eval_data) if eval_data else 0.0
+    return result
+
+
+def run_payment_eval(eval_file: str = "data/eval/payment_eval.json") -> EvalResult:
+    """Run payment extraction on eval set and evaluate."""
+    from backend.extraction.extractor import extract_payment
+
+    with open(eval_file) as f:
+        eval_data = json.load(f)
+
+    log.info("Running payment extraction on %d eval examples...", len(eval_data))
+
+    extractions = []
+    for item in eval_data:
+        text = item["text"]
+        if len(text) < 30:
+            continue
+
+        ext = extract_payment(text)
+        extractions.append({
+            "id": item["id"],
+            "extracted_data": ext.model_dump() if ext else None,
+        })
+
+    result = evaluate_payment(eval_file, extractions)
+    return result
+
+
 # ── CLI ──────────────────────────────────────────────────────────────────────
 
 def run_eval(eval_file: str = "data/eval/liability_eval.json") -> EvalResult:
@@ -458,6 +587,8 @@ if __name__ == "__main__":
 
     if clause_type == "termination":
         result = run_termination_eval()
+    elif clause_type == "payment":
+        result = run_payment_eval()
     else:
         result = run_eval()
 

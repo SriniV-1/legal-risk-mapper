@@ -16,7 +16,7 @@ from backend.benchmarking.aggregator import aggregate_market_stats
 from backend.benchmarking.schemas import BenchmarkResult
 from backend.corpus.retrieval import retrieve_similar
 from backend.corpus.db import _get_client
-from backend.extraction.extractor import extract_liability, extract_termination
+from backend.extraction.extractor import extract_liability, extract_termination, extract_payment
 
 log = logging.getLogger(__name__)
 
@@ -78,6 +78,7 @@ def benchmark_clause(
     _extractors = {
         "liability": extract_liability,
         "termination": extract_termination,
+        "payment": extract_payment,
     }
     user_extraction = None
     extractor_fn = _extractors.get(clause_type)

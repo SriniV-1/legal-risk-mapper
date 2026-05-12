@@ -35,6 +35,9 @@ def _get_user_field_value(user_extraction: dict, field_name: str, clause_type: s
         return user_extraction.get("cure_period", {}).get("has_cure_period")
     if field_name == "has_notice_period":
         return user_extraction.get("notice_period", {}).get("has_notice_period")
+    # Payment nested fields
+    if field_name == "has_late_fee":
+        return user_extraction.get("late_fee", {}).get("has_late_fee")
 
     return user_extraction.get(field_name)
 
@@ -63,6 +66,18 @@ def _format_cited_example_details(ex_data: dict, clause_type: str) -> list[str]:
             lines.append("      Auto-renewal: yes")
         if ex_data.get("has_termination_fee"):
             lines.append(f"      Termination fee: {ex_data.get('termination_fee_amount', 'present')}")
+    elif clause_type == "payment":
+        if ex_data.get("has_payment_terms"):
+            lines.append(f"      Payment terms: net-{ex_data.get('payment_days', '?')}")
+        late = ex_data.get("late_fee", {})
+        if late.get("has_late_fee"):
+            lines.append(f"      Late fee: {late.get('late_fee_amount', 'present')} ({late.get('late_fee_type', '')})")
+        if ex_data.get("has_non_refundable"):
+            lines.append("      Non-refundable: yes")
+        if ex_data.get("has_minimum_commitment"):
+            lines.append(f"      Minimum commitment: {ex_data.get('minimum_commitment_amount', 'present')}")
+        if ex_data.get("has_price_escalation"):
+            lines.append("      Price escalation: yes")
 
     return lines
 

@@ -50,10 +50,27 @@ _TERMINATION_CAT_FIELDS = [
     ("convenience_termination_who", lambda e: e.get("convenience_termination_who")),
 ]
 
+# Payment
+_PAYMENT_BOOL_FIELDS = [
+    ("has_payment_terms", lambda e: e.get("has_payment_terms")),
+    ("has_late_fee", lambda e: e.get("late_fee", {}).get("has_late_fee")),
+    ("has_price_escalation", lambda e: e.get("has_price_escalation")),
+    ("has_non_refundable", lambda e: e.get("has_non_refundable")),
+    ("has_minimum_commitment", lambda e: e.get("has_minimum_commitment")),
+    ("has_dispute_process", lambda e: e.get("has_dispute_process")),
+    ("has_right_of_setoff", lambda e: e.get("has_right_of_setoff")),
+]
+
+_PAYMENT_CAT_FIELDS = [
+    ("invoice_frequency", lambda e: e.get("invoice_frequency")),
+    ("late_fee_type", lambda e: e.get("late_fee", {}).get("late_fee_type")),
+]
+
 # Registry: clause_type → (bool_fields, cat_fields)
 _FIELD_REGISTRY = {
     "liability": (_LIABILITY_BOOL_FIELDS, _LIABILITY_CAT_FIELDS),
     "termination": (_TERMINATION_BOOL_FIELDS, _TERMINATION_CAT_FIELDS),
+    "payment": (_PAYMENT_BOOL_FIELDS, _PAYMENT_CAT_FIELDS),
 }
 
 
