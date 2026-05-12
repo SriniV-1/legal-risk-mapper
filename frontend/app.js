@@ -588,10 +588,10 @@ function renderBenchmarkResults(benchmark, redline) {
   $("benchRedlines").textContent = redline.suggestions.length;
 
   // User extraction
-  renderExtraction(benchmark.user_extraction);
+  renderExtraction(benchmark.user_extraction, benchmark.clause_type);
 
   // Market distributions
-  renderDistributions(benchmark.field_distributions, benchmark.user_extraction, benchmark.user_percentiles);
+  renderDistributions(benchmark.field_distributions, benchmark.user_extraction, benchmark.user_percentiles, benchmark.clause_type);
 
   // Cited examples
   renderCitedExamples(benchmark.cited_examples);
@@ -604,23 +604,82 @@ function renderBenchmarkResults(benchmark, redline) {
   benchmarkSection.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-function renderExtraction(ext) {
+// ── Per-category field definitions for extraction display ──
+const EXTRACTION_FIELDS = {
+  liability: [
+    { label: "Liability Cap", get: (e) => e.liability_cap?.has_cap },
+    { label: "Cap Type", get: (e) => e.liability_cap?.cap_type || "—" },
+    { label: "Mutual", get: (e) => e.is_mutual },
+    { label: "Carve-Outs", get: (e) => e.has_carve_outs },
+    { label: "Consequential Excluded", get: (e) => e.consequential_damages?.excluded },
+    { label: "Indemnification", get: (e) => e.has_indemnification },
+    { label: "Warranty Disclaimer", get: (e) => e.has_warranty_disclaimer },
+  ],
+  termination: [
+    { label: "For Cause", get: (e) => e.has_termination_for_cause },
+    { label: "For Convenience", get: (e) => e.has_termination_for_convenience },
+    { label: "Cure Period", get: (e) => e.cure_period?.has_cure_period },
+    { label: "Cure Days", get: (e) => e.cure_period?.cure_days ?? "—" },
+    { label: "Notice Period", get: (e) => e.notice_period?.has_notice_period },
+    { label: "Auto-Renewal", get: (e) => e.has_auto_renewal },
+    { label: "Survival Clause", get: (e) => e.has_survival_clause },
+    { label: "Termination Fee", get: (e) => e.has_termination_fee },
+  ],
+  payment: [
+    { label: "Payment Terms", get: (e) => e.has_payment_terms },
+    { label: "Payment Days", get: (e) => e.payment_days ?? "—" },
+    { label: "Late Fee", get: (e) => e.late_fee?.has_late_fee },
+    { label: "Price Escalation", get: (e) => e.has_price_escalation },
+    { label: "Non-Refundable", get: (e) => e.has_non_refundable },
+    { label: "Minimum Commitment", get: (e) => e.has_minimum_commitment },
+    { label: "Dispute Process", get: (e) => e.has_dispute_process },
+  ],
+  confidentiality: [
+    { label: "Broad Definition", get: (e) => e.has_broad_definition },
+    { label: "Standard Exclusions", get: (e) => e.has_standard_exclusions },
+    { label: "Duration Specified", get: (e) => e.has_duration },
+    { label: "Permitted Disclosures", get: (e) => e.has_permitted_disclosures },
+    { label: "Return/Destroy", get: (e) => e.has_return_or_destroy },
+    { label: "Residuals Clause", get: (e) => e.has_residuals_clause },
+    { label: "Injunctive Relief", get: (e) => e.has_injunctive_relief },
+    { label: "Mutual", get: (e) => e.is_mutual },
+  ],
+  ip: [
+    { label: "Customer Owns Deliverables", get: (e) => e.has_customer_owns_deliverables },
+    { label: "Provider Owns Deliverables", get: (e) => e.has_provider_owns_deliverables },
+    { label: "Pre-Existing IP Carveout", get: (e) => e.has_pre_existing_ip_carveout },
+    { label: "Work for Hire", get: (e) => e.has_work_for_hire },
+    { label: "IP Assignment", get: (e) => e.has_ip_assignment },
+    { label: "License Grant", get: (e) => e.has_license_grant },
+    { label: "Feedback Clause", get: (e) => e.has_feedback_clause },
+    { label: "Source Code Escrow", get: (e) => e.has_source_code_escrow },
+    { label: "Non-Compete", get: (e) => e.has_non_compete },
+  ],
+  governing_law: [
+    { label: "Governing Law", get: (e) => e.has_governing_law },
+    { label: "Jurisdiction", get: (e) => e.governing_law_jurisdiction || "—" },
+    { label: "Venue Selection", get: (e) => e.has_venue_selection },
+    { label: "Arbitration", get: (e) => e.has_arbitration },
+    { label: "Jury Waiver", get: (e) => e.has_jury_waiver },
+    { label: "Class Action Waiver", get: (e) => e.has_class_action_waiver },
+    { label: "Prevailing Party Fees", get: (e) => e.has_prevailing_party_fees },
+  ],
+};
+
+function renderExtraction(ext, clauseType) {
   const grid = $("extractionGrid");
   if (!ext) {
     grid.innerHTML = '<div class="extraction-item"><div class="extraction-value">Extraction failed</div></div>';
     return;
   }
 
-  const fields = [
-    { label: "Liability Cap", value: ext.liability_cap?.has_cap },
-    { label: "Cap Type", value: ext.liability_cap?.cap_type || "—" },
-    { label: "Mutual", value: ext.is_mutual },
-    { label: "Carve-Outs", value: ext.has_carve_outs },
-    { label: "Consequential Excluded", value: ext.consequential_damages?.excluded },
-    { label: "Indemnification", value: ext.has_indemnification },
-    { label: "Warranty Disclaimer", value: ext.has_warranty_disclaimer },
-    { label: "Confidence", value: ext.extraction_confidence != null ? (ext.extraction_confidence * 100).toFixed(0) + "%" : "—" },
-  ];
+  const fieldDefs = EXTRACTION_FIELDS[clauseType] || EXTRACTION_FIELDS.liability;
+  const fields = fieldDefs.map((f) => ({ label: f.label, value: f.get(ext) }));
+  // Always add confidence at the end
+  fields.push({
+    label: "Confidence",
+    value: ext.extraction_confidence != null ? (ext.extraction_confidence * 100).toFixed(0) + "%" : "—",
+  });
 
   grid.innerHTML = fields.map((f) => {
     const isBoolean = typeof f.value === "boolean";
@@ -635,28 +694,55 @@ function renderExtraction(ext) {
   }).join("");
 }
 
-function renderDistributions(dists, userExt, percentiles) {
-  const container = $("distributionBars");
-  const fieldLabels = {
-    has_cap: "Liability Cap",
-    is_mutual: "Mutual Limitation",
-    has_carve_outs: "Carve-Outs",
-    consequential_excluded: "Consequential Excluded",
-    has_indemnification: "Indemnification",
-    has_warranty_disclaimer: "Warranty Disclaimer",
-  };
+// ── Per-category field labels + user value getters for distribution bars ──
+const DISTRIBUTION_FIELDS = {
+  liability: {
+    labels: { has_cap: "Liability Cap", is_mutual: "Mutual Limitation", has_carve_outs: "Carve-Outs", consequential_excluded: "Consequential Excluded", has_indemnification: "Indemnification", has_warranty_disclaimer: "Warranty Disclaimer" },
+    getUserVal: (ext, field) => {
+      if (field === "has_cap") return ext?.liability_cap?.has_cap;
+      if (field === "consequential_excluded") return ext?.consequential_damages?.excluded;
+      return ext?.[field];
+    },
+  },
+  termination: {
+    labels: { has_termination_for_cause: "Termination for Cause", has_termination_for_convenience: "For Convenience", has_cure_period: "Cure Period", has_notice_period: "Notice Period", has_auto_renewal: "Auto-Renewal", has_survival_clause: "Survival Clause", has_post_termination_obligations: "Post-Termination Obligations", has_termination_fee: "Termination Fee" },
+    getUserVal: (ext, field) => {
+      if (field === "has_cure_period") return ext?.cure_period?.has_cure_period;
+      if (field === "has_notice_period") return ext?.notice_period?.has_notice_period;
+      return ext?.[field];
+    },
+  },
+  payment: {
+    labels: { has_payment_terms: "Payment Terms", has_late_fee: "Late Fee", has_price_escalation: "Price Escalation", has_non_refundable: "Non-Refundable", has_minimum_commitment: "Minimum Commitment", has_dispute_process: "Dispute Process", has_right_of_setoff: "Right of Setoff" },
+    getUserVal: (ext, field) => {
+      if (field === "has_late_fee") return ext?.late_fee?.has_late_fee;
+      return ext?.[field];
+    },
+  },
+  confidentiality: {
+    labels: { has_broad_definition: "Broad Definition", has_standard_exclusions: "Standard Exclusions", has_duration: "Duration Specified", has_permitted_disclosures: "Permitted Disclosures", has_return_or_destroy: "Return/Destroy", has_residuals_clause: "Residuals Clause", has_injunctive_relief: "Injunctive Relief", is_mutual: "Mutual" },
+    getUserVal: (ext, field) => ext?.[field],
+  },
+  ip: {
+    labels: { has_customer_owns_deliverables: "Customer Owns Deliverables", has_provider_owns_deliverables: "Provider Owns Deliverables", has_pre_existing_ip_carveout: "Pre-Existing IP Carveout", has_work_for_hire: "Work for Hire", has_ip_assignment: "IP Assignment", has_license_grant: "License Grant", has_feedback_clause: "Feedback Clause", has_source_code_escrow: "Source Code Escrow", has_non_compete: "Non-Compete" },
+    getUserVal: (ext, field) => ext?.[field],
+  },
+  governing_law: {
+    labels: { has_governing_law: "Governing Law", has_venue_selection: "Venue Selection", has_arbitration: "Arbitration", has_jury_waiver: "Jury Waiver", has_class_action_waiver: "Class Action Waiver", has_prevailing_party_fees: "Prevailing Party Fees" },
+    getUserVal: (ext, field) => ext?.[field],
+  },
+};
 
-  const getUserVal = (field) => {
-    if (!userExt) return null;
-    if (field === "has_cap") return userExt.liability_cap?.has_cap;
-    if (field === "consequential_excluded") return userExt.consequential_damages?.excluded;
-    return userExt[field];
-  };
+function renderDistributions(dists, userExt, percentiles, clauseType) {
+  const container = $("distributionBars");
+  const config = DISTRIBUTION_FIELDS[clauseType] || DISTRIBUTION_FIELDS.liability;
+  const fieldLabels = config.labels;
+  const getUserVal = config.getUserVal;
 
   const rows = Object.entries(dists)
     .filter(([k, v]) => v.total > 0 && !v.value_counts?.length && fieldLabels[k])
     .map(([fieldName, dist]) => {
-      const userVal = getUserVal(fieldName);
+      const userVal = getUserVal(userExt, fieldName);
       const pct = dist.true_pct;
       const userIndicator = userVal === true
         ? '<span class="dist-user-indicator has">You have this</span>'
