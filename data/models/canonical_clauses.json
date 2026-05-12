@@ -1,0 +1,452 @@
+[
+  {
+    "id": "COMP_01",
+    "category": "Compliance Risk",
+    "severity": "High",
+    "text": "Client must comply with all applicable laws, regulations, rules, and requirements in connection with its use of the Services, including without limitation all export control laws and economic sanctions regulations.",
+    "keywords": [
+      "laws",
+      "regulations",
+      "client",
+      "comply",
+      "applicable"
+    ],
+    "rationale": "creates significant regulatory compliance exposure with potential penalties",
+    "auto_generated": true
+  },
+  {
+    "id": "COMP_02",
+    "category": "Compliance Risk",
+    "severity": "High",
+    "text": "In the event of a conflict between this Agreement and any applicable law, regulation, or governmental requirement, Customer shall comply with the applicable law.",
+    "keywords": [
+      "applicable",
+      "law",
+      "event",
+      "conflict",
+      "regulation"
+    ],
+    "rationale": "creates significant regulatory compliance exposure with potential penalties",
+    "auto_generated": true
+  },
+  {
+    "id": "COMP_03",
+    "category": "Compliance Risk",
+    "severity": "High",
+    "text": "Subscriber must comply with all applicable laws, regulations, rules, and requirements in connection with its use of the Services, including without limitation all export control laws and economic sanctions regulations.",
+    "keywords": [
+      "laws",
+      "regulations",
+      "subscriber",
+      "comply",
+      "applicable"
+    ],
+    "rationale": "creates significant regulatory compliance exposure with potential penalties",
+    "auto_generated": true
+  },
+  {
+    "id": "COMP_04",
+    "category": "Compliance Risk",
+    "severity": "Medium",
+    "text": "The Services shall be performed in compliance with regulatory requirements applicable to Vendor's industry.",
+    "keywords": [
+      "performed",
+      "compliance",
+      "regulatory",
+      "requirements",
+      "applicable"
+    ],
+    "rationale": "introduces compliance obligations that require careful monitoring",
+    "auto_generated": true
+  },
+  {
+    "id": "COMP_05",
+    "category": "Compliance Risk",
+    "severity": "Medium",
+    "text": "The Services shall be performed in compliance with regulatory requirements applicable to Supplier's industry.",
+    "keywords": [
+      "performed",
+      "compliance",
+      "regulatory",
+      "requirements",
+      "applicable"
+    ],
+    "rationale": "introduces compliance obligations that require careful monitoring",
+    "auto_generated": true
+  },
+  {
+    "id": "COMP_06",
+    "category": "Compliance Risk",
+    "severity": "Low",
+    "text": "Customer shall use commercially reasonable efforts to maintain compliance with applicable industry guidelines.",
+    "keywords": [
+      "use",
+      "commercially",
+      "reasonable",
+      "efforts",
+      "maintain"
+    ],
+    "rationale": "references compliance standards that should be reviewed",
+    "auto_generated": true
+  },
+  {
+    "id": "LIAB_07",
+    "category": "Liability Risk",
+    "severity": "High",
+    "text": "Customer shall hold Service Provider harmless from any third-party claims arising from End User's breach of its representations, warranties, or obligations under this Agreement.",
+    "keywords": [
+      "hold",
+      "harmless",
+      "third",
+      "claims",
+      "arising"
+    ],
+    "rationale": "shifts substantial liability or eliminates legal protections",
+    "auto_generated": true
+  },
+  {
+    "id": "LIAB_08",
+    "category": "Liability Risk",
+    "severity": "High",
+    "text": "The Customer shall defend, indemnify, and hold harmless the Provider from any and all claims, damages, losses, and expenses arising from use of the services.",
+    "keywords": [
+      "defend",
+      "indemnify",
+      "hold",
+      "harmless",
+      "claims"
+    ],
+    "rationale": "shifts substantial liability or eliminates legal protections",
+    "auto_generated": true
+  },
+  {
+    "id": "LIAB_09",
+    "category": "Liability Risk",
+    "severity": "High",
+    "text": "THE AGGREGATE LIABILITY OF PROVIDER ARISING OUT OF OR RELATED TO THIS AGREEMENT SHALL NOT EXCEED THE FEES PAID BY CLIENT IN THE THE INITIAL TERM PRECEDING THE CLAIM.",
+    "keywords": [
+      "aggregate",
+      "liability",
+      "arising",
+      "out",
+      "related"
+    ],
+    "rationale": "shifts substantial liability or eliminates legal protections",
+    "auto_generated": true
+  },
+  {
+    "id": "LIAB_10",
+    "category": "Liability Risk",
+    "severity": "Medium",
+    "text": "Neither party shall be liable for any damages arising from the other party's negligence or failure to comply with its obligations under this Agreement.",
+    "keywords": [
+      "liable",
+      "damages",
+      "arising",
+      "negligence",
+      "failure"
+    ],
+    "rationale": "limits legal recourse or caps recovery in ways that need review",
+    "auto_generated": true
+  },
+  {
+    "id": "LIAB_11",
+    "category": "Liability Risk",
+    "severity": "Medium",
+    "text": "Neither party shall be liable for any damages arising from the other party's negligence or failure to comply with its obligations under this Agreement.",
+    "keywords": [
+      "liable",
+      "damages",
+      "arising",
+      "negligence",
+      "failure"
+    ],
+    "rationale": "limits legal recourse or caps recovery in ways that need review",
+    "auto_generated": true
+  },
+  {
+    "id": "LIAB_12",
+    "category": "Liability Risk",
+    "severity": "Low",
+    "text": "Contractor warrants that the Services will conform in all material respects to the specifications set forth in the applicable documentation for a period of twenty-four (24) months from the date of delivery.",
+    "keywords": [
+      "contractor",
+      "warrants",
+      "conform",
+      "material",
+      "respects"
+    ],
+    "rationale": "contains liability-related language worth noting",
+    "auto_generated": true
+  },
+  {
+    "id": "PRIV_13",
+    "category": "Privacy/Data Risk",
+    "severity": "High",
+    "text": "We may collect, store, and process information about you, including your name, email address, IP address, device identifiers, location data, and browsing behavior across our services and third-party platforms.",
+    "keywords": [
+      "address",
+      "collect",
+      "store",
+      "process",
+      "information"
+    ],
+    "rationale": "involves personal data handling that triggers major privacy law obligations",
+    "auto_generated": true
+  },
+  {
+    "id": "PRIV_14",
+    "category": "Privacy/Data Risk",
+    "severity": "High",
+    "text": "We may collect, store, and process information about you, including your name, email address, IP address, device identifiers, location data, and browsing behavior across our services and third-party platforms.",
+    "keywords": [
+      "address",
+      "collect",
+      "store",
+      "process",
+      "information"
+    ],
+    "rationale": "involves personal data handling that triggers major privacy law obligations",
+    "auto_generated": true
+  },
+  {
+    "id": "PRIV_15",
+    "category": "Privacy/Data Risk",
+    "severity": "High",
+    "text": "We may collect, store, and process information about you, including your name, email address, IP address, device identifiers, location data, and browsing behavior across our services and third-party platforms.",
+    "keywords": [
+      "address",
+      "collect",
+      "store",
+      "process",
+      "information"
+    ],
+    "rationale": "involves personal data handling that triggers major privacy law obligations",
+    "auto_generated": true
+  },
+  {
+    "id": "PRIV_16",
+    "category": "Privacy/Data Risk",
+    "severity": "Medium",
+    "text": "We use third-party analytics services, including Google Analytics, to collect information about your use of the Service.",
+    "keywords": [
+      "use",
+      "analytics",
+      "third",
+      "google",
+      "collect"
+    ],
+    "rationale": "includes data practices requiring privacy compliance review",
+    "auto_generated": true
+  },
+  {
+    "id": "PRIV_17",
+    "category": "Privacy/Data Risk",
+    "severity": "Medium",
+    "text": "We use third-party analytics services, including Google Analytics, to collect information about your use of the Service.",
+    "keywords": [
+      "use",
+      "analytics",
+      "third",
+      "google",
+      "collect"
+    ],
+    "rationale": "includes data practices requiring privacy compliance review",
+    "auto_generated": true
+  },
+  {
+    "id": "PRIV_18",
+    "category": "Privacy/Data Risk",
+    "severity": "Low",
+    "text": "You may opt out of marketing communications at any time by clicking the unsubscribe link in any promotional email or by contacting us at the address provided.",
+    "keywords": [
+      "you",
+      "opt",
+      "out",
+      "marketing",
+      "communications"
+    ],
+    "rationale": "references data handling that may implicate privacy requirements",
+    "auto_generated": true
+  },
+  {
+    "id": "FINA_19",
+    "category": "Financial Risk",
+    "severity": "High",
+    "text": "This Agreement shall automatically renew unless terminated by Subscriber upon thirty (30) days notice. Early termination fees apply. Contractor may adjust pricing at its sole discretion upon renewal.",
+    "keywords": [
+      "automatically",
+      "renew",
+      "unless",
+      "terminated",
+      "subscriber"
+    ],
+    "rationale": "creates significant financial exposure or lock-in risk",
+    "auto_generated": true
+  },
+  {
+    "id": "FINA_20",
+    "category": "Financial Risk",
+    "severity": "High",
+    "text": "This Agreement shall automatically renew unless terminated by Subscriber upon thirty (30) days notice. Early termination fees apply. Contractor may adjust pricing at its sole discretion upon renewal.",
+    "keywords": [
+      "automatically",
+      "renew",
+      "unless",
+      "terminated",
+      "subscriber"
+    ],
+    "rationale": "creates significant financial exposure or lock-in risk",
+    "auto_generated": true
+  },
+  {
+    "id": "FINA_21",
+    "category": "Financial Risk",
+    "severity": "High",
+    "text": "In the event of early termination by Buyer, User shall pay a cancellation fee equal to three months of the then-current subscription fee plus any outstanding balance.",
+    "keywords": [
+      "fee",
+      "event",
+      "early",
+      "termination",
+      "buyer"
+    ],
+    "rationale": "creates significant financial exposure or lock-in risk",
+    "auto_generated": true
+  },
+  {
+    "id": "FINA_22",
+    "category": "Financial Risk",
+    "severity": "Medium",
+    "text": "Client agrees to a minimum purchase commitment of the aggregate fees paid under this Agreement per year during the term of this Agreement.",
+    "keywords": [
+      "client",
+      "agrees",
+      "minimum",
+      "purchase",
+      "commitment"
+    ],
+    "rationale": "introduces financial obligations or restrictions worth reviewing",
+    "auto_generated": true
+  },
+  {
+    "id": "FINA_23",
+    "category": "Financial Risk",
+    "severity": "Medium",
+    "text": "Customer agrees to a minimum purchase commitment of the total fees paid per year during the term of this Agreement.",
+    "keywords": [
+      "agrees",
+      "minimum",
+      "purchase",
+      "commitment",
+      "total"
+    ],
+    "rationale": "introduces financial obligations or restrictions worth reviewing",
+    "auto_generated": true
+  },
+  {
+    "id": "FINA_24",
+    "category": "Financial Risk",
+    "severity": "Low",
+    "text": "Fees for additional users or capacity above the contracted amounts shall be billed at the rates set forth in the Order Form.",
+    "keywords": [
+      "fees",
+      "additional",
+      "users",
+      "capacity",
+      "contracted"
+    ],
+    "rationale": "contains financial terms that should be monitored",
+    "auto_generated": true
+  },
+  {
+    "id": "CONT_25",
+    "category": "Contractual Ambiguity",
+    "severity": "High",
+    "text": "Contractor may modify, update, or discontinue these terms at any time, with changes becoming effective immediately upon posting to Service Provider's website.",
+    "keywords": [
+      "contractor",
+      "modify",
+      "update",
+      "discontinue",
+      "terms"
+    ],
+    "rationale": "uses vague or one-sided language that undermines contractual certainty",
+    "auto_generated": true
+  },
+  {
+    "id": "CONT_26",
+    "category": "Contractual Ambiguity",
+    "severity": "High",
+    "text": "Service Provider may modify, update, or discontinue these terms at any time, with changes becoming effective immediately upon posting to Vendor's website.",
+    "keywords": [
+      "modify",
+      "update",
+      "discontinue",
+      "terms",
+      "time"
+    ],
+    "rationale": "uses vague or one-sided language that undermines contractual certainty",
+    "auto_generated": true
+  },
+  {
+    "id": "CONT_27",
+    "category": "Contractual Ambiguity",
+    "severity": "High",
+    "text": "Contractor may modify, update, or discontinue these terms at any time, with changes becoming effective immediately upon posting to Licensor's website.",
+    "keywords": [
+      "contractor",
+      "modify",
+      "update",
+      "discontinue",
+      "terms"
+    ],
+    "rationale": "uses vague or one-sided language that undermines contractual certainty",
+    "auto_generated": true
+  },
+  {
+    "id": "CONT_28",
+    "category": "Contractual Ambiguity",
+    "severity": "Medium",
+    "text": "Obligations under this Agreement are subject to such conditions and limitations as Supplier may establish from time to time.",
+    "keywords": [
+      "time",
+      "obligations",
+      "subject",
+      "conditions",
+      "limitations"
+    ],
+    "rationale": "contains ambiguous terms that could lead to interpretation disputes",
+    "auto_generated": true
+  },
+  {
+    "id": "CONT_29",
+    "category": "Contractual Ambiguity",
+    "severity": "Medium",
+    "text": "Obligations under this Agreement are subject to such conditions and limitations as Provider may establish from time to time.",
+    "keywords": [
+      "time",
+      "obligations",
+      "subject",
+      "conditions",
+      "limitations"
+    ],
+    "rationale": "contains ambiguous terms that could lead to interpretation disputes",
+    "auto_generated": true
+  },
+  {
+    "id": "CONT_30",
+    "category": "Contractual Ambiguity",
+    "severity": "Low",
+    "text": "Supplier shall use commercially reasonable efforts to maintain service availability, subject to scheduled maintenance windows communicated from time to time.",
+    "keywords": [
+      "time",
+      "supplier",
+      "use",
+      "commercially",
+      "reasonable"
+    ],
+    "rationale": "includes imprecise language worth clarifying",
+    "auto_generated": true
+  }
+]

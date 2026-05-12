@@ -16,7 +16,7 @@ from backend.benchmarking.aggregator import aggregate_market_stats
 from backend.benchmarking.schemas import BenchmarkResult
 from backend.corpus.retrieval import retrieve_similar
 from backend.corpus.db import _get_client
-from backend.extraction.extractor import extract_liability
+from backend.extraction.extractor import extract_liability, extract_termination
 
 log = logging.getLogger(__name__)
 
@@ -75,9 +75,14 @@ def benchmark_clause(
     log.info("Benchmarking %s clause (%d chars)", clause_type, len(clause_text))
 
     # Step 1: Extract structured data from the user's clause
+    _extractors = {
+        "liability": extract_liability,
+        "termination": extract_termination,
+    }
     user_extraction = None
-    if clause_type == "liability":
-        ext = extract_liability(clause_text)
+    extractor_fn = _extractors.get(clause_type)
+    if extractor_fn:
+        ext = extractor_fn(clause_text)
         if ext:
             user_extraction = ext.model_dump()
             log.info("User clause extraction succeeded")

@@ -1,22 +1,23 @@
 """
 Core risk analysis engine — HYBRID pipeline.
 
-Architecture (v3 — ML-trained):
+Architecture (v3 — fully ML-trained):
   1. spaCy clause segmentation  (backend/services/semantic_analyzer.py)
   2. ML classifier: per-clause multi-label risk classification using
      sentence embeddings + trained LogisticRegression classifiers
      (backend/services/risk_classifier.py)
-  3. Per-clause semantic similarity matching against a curated canonical
-     knowledge base  (backend/services/semantic_analyzer.py)
+  3. Per-clause semantic similarity matching against auto-generated
+     canonical embeddings (training representatives selected by centroid)
   4. Intelligent merge: ML classifier + semantic hits on the same clause are
      combined into a single, boosted-confidence risk
   5. Severity escalation when multiple categories cluster in one clause
   6. Template-based explanation generation
      (backend/services/explanation_engine.py)
 
-The ML classifier replaces the hardcoded regex rules as the primary
-detection layer. Regex rules are preserved as a FALLBACK — if the trained
-model is unavailable, the system degrades gracefully to regex-only mode.
+Both the ML classifier AND the semantic layer are fully ML-derived from
+the training dataset (617 labeled examples). No hand-curated rules or
+knowledge bases. Regex rules are preserved only as a FALLBACK if the
+trained model file is unavailable.
 
 Graceful degradation:
   • If ML classifier unavailable → falls back to regex rules

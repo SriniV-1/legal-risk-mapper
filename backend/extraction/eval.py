@@ -68,9 +68,16 @@ class EvalResult:
     total_examples: int = 0
 
     # Core boolean fields used for pass/fail (excludes categorical sub-fields)
+    # Dynamically set per clause type
     CORE_FIELDS = {
         "has_cap", "is_mutual", "has_carve_outs",
         "consequential_excluded", "has_indemnification", "has_warranty_disclaimer",
+    }
+
+    TERMINATION_CORE_FIELDS = {
+        "has_termination_for_cause", "has_termination_for_convenience",
+        "has_cure_period", "has_notice_period", "has_auto_renewal",
+        "has_survival_clause", "has_post_termination_obligations", "has_termination_fee",
     }
 
     @property
@@ -284,6 +291,138 @@ def _get_gt_field(gt: dict, field_name: str) -> bool:
         return gt.get(field_name, False)
 
 
+# ── Termination eval ────────────────────────────────────────────────────────
+
+def _get_gt_termination_field(gt: dict, field_name: str) -> bool:
+    """Get a ground truth boolean value by field name for termination."""
+    if field_name == "has_cure_period":
+        return gt.get("cure_period", {}).get("has_cure_period", False)
+    elif field_name == "has_notice_period":
+        return gt.get("notice_period", {}).get("has_notice_period", False)
+    else:
+        return gt.get(field_name, False)
+
+
+def evaluate_termination(
+    eval_file: str | Path,
+    extractions: list[dict],
+) -> EvalResult:
+    """
+    Evaluate termination extractions against ground truth.
+
+    Args:
+        eval_file: Path to eval JSON with ground_truth labels.
+        extractions: List of dicts with 'id' and 'extracted_data'.
+    """
+    with open(eval_file) as f:
+        eval_data = json.load(f)
+
+    gt_by_id = {e["id"]: e for e in eval_data}
+    ext_by_id = {}
+    for e in extractions:
+        eid = e.get("id") or e.get("chunk_id")
+        if eid:
+            ext_by_id[eid] = e
+
+    result = EvalResult(total_examples=len(eval_data))
+    result.CORE_FIELDS = EvalResult.TERMINATION_CORE_FIELDS
+
+    # Initialize field metrics
+    bool_fields = [
+        "has_termination_for_cause", "has_termination_for_convenience",
+        "has_cure_period", "has_notice_period", "has_auto_renewal",
+        "has_survival_clause", "has_post_termination_obligations", "has_termination_fee",
+    ]
+    cat_fields = ["convenience_termination_who"]
+    all_fields = bool_fields + cat_fields
+
+    for f_name in all_fields:
+        result.field_metrics[f_name] = FieldMetrics(field_name=f_name)
+
+    success_count = 0
+    for gt_item in eval_data:
+        item_id = gt_item["id"]
+        gt = gt_item["ground_truth"]
+        ext_item = ext_by_id.get(item_id)
+
+        if ext_item is None or ext_item.get("extracted_data") is None:
+            for f_name in all_fields:
+                result.field_metrics[f_name].total += 1
+                gt_val = _get_gt_termination_field(gt, f_name) if f_name in bool_fields else (gt.get(f_name) is not None)
+                if gt_val:
+                    result.field_metrics[f_name].fn += 1
+                else:
+                    result.field_metrics[f_name].tn += 1
+            continue
+
+        success_count += 1
+        ext = ext_item["extracted_data"]
+
+        # Boolean fields
+        for f_name in bool_fields:
+            if f_name == "has_cure_period":
+                pred = ext.get("cure_period", {}).get("has_cure_period")
+                gt_val = gt.get("cure_period", {}).get("has_cure_period", False)
+            elif f_name == "has_notice_period":
+                pred = ext.get("notice_period", {}).get("has_notice_period")
+                gt_val = gt.get("notice_period", {}).get("has_notice_period", False)
+            else:
+                pred = ext.get(f_name)
+                gt_val = gt.get(f_name, False)
+
+            _compare_bool(pred, gt_val, result.field_metrics[f_name])
+
+        # Categorical
+        _compare_categorical(
+            ext.get("convenience_termination_who"),
+            gt.get("convenience_termination_who"),
+            result.field_metrics["convenience_termination_who"],
+        )
+
+        # Grounding checks
+        clause_text = gt_item["text"]
+        for source_field in [
+            ext.get("termination_for_cause_source_text"),
+            ext.get("termination_for_convenience_source_text"),
+            ext.get("cure_period", {}).get("cure_source_text"),
+            ext.get("notice_period", {}).get("notice_source_text"),
+            ext.get("auto_renewal_source_text"),
+            ext.get("survival_source_text"),
+            ext.get("post_termination_source_text"),
+            ext.get("termination_fee_source_text"),
+        ]:
+            score = _check_grounding(source_field, clause_text)
+            result.grounding_scores.append(score)
+
+    result.extraction_success_rate = success_count / len(eval_data) if eval_data else 0.0
+    return result
+
+
+def run_termination_eval(eval_file: str = "data/eval/termination_eval.json") -> EvalResult:
+    """Run termination extraction on eval set and evaluate."""
+    from backend.extraction.extractor import extract_termination
+
+    with open(eval_file) as f:
+        eval_data = json.load(f)
+
+    log.info("Running termination extraction on %d eval examples...", len(eval_data))
+
+    extractions = []
+    for item in eval_data:
+        text = item["text"]
+        if len(text) < 30:
+            continue
+
+        ext = extract_termination(text)
+        extractions.append({
+            "id": item["id"],
+            "extracted_data": ext.model_dump() if ext else None,
+        })
+
+    result = evaluate_termination(eval_file, extractions)
+    return result
+
+
 # ── CLI ──────────────────────────────────────────────────────────────────────
 
 def run_eval(eval_file: str = "data/eval/liability_eval.json") -> EvalResult:
@@ -315,6 +454,12 @@ if __name__ == "__main__":
     import sys
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
-    result = run_eval()
+    clause_type = sys.argv[1] if len(sys.argv) > 1 else "liability"
+
+    if clause_type == "termination":
+        result = run_termination_eval()
+    else:
+        result = run_eval()
+
     print(result.summary())
     sys.exit(0 if result.macro_f1 >= 0.75 else 1)

@@ -181,6 +181,163 @@ def train_and_evaluate(X, y_matrix, test_size=0.2, seed=42):
     return classifiers, encoders, metrics, (X_train, X_test, y_train, y_test)
 
 
+def generate_canonical_clauses(texts, X, y_matrix):
+    """
+    Auto-select representative training examples as canonical clauses
+    for the semantic similarity layer. Replaces the hand-curated knowledge base.
+
+    For each (category, severity) pair:
+      1. Compute the embedding centroid for that group
+      2. Select the example closest to the centroid (most representative)
+      3. Auto-extract keywords (top distinctive words)
+      4. Generate a rationale from the category and severity
+
+    Saves to data/models/canonical_clauses.json
+    """
+    from collections import Counter
+    import re as _re
+    import string
+
+    CANONICAL_PATH = PROJECT_ROOT / "data" / "models" / "canonical_clauses.json"
+
+    # Common stop words to exclude from keyword extraction
+    STOP_WORDS = {
+        "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",
+        "of", "with", "by", "from", "is", "are", "was", "were", "be", "been",
+        "being", "have", "has", "had", "do", "does", "did", "will", "would",
+        "could", "should", "may", "might", "shall", "can", "this", "that",
+        "these", "those", "it", "its", "not", "no", "nor", "any", "all",
+        "each", "every", "such", "as", "if", "than", "so", "very", "just",
+        "only", "also", "both", "either", "neither", "other", "same",
+        "including", "without", "within", "under", "upon", "into",
+        "between", "through", "during", "before", "after", "above", "below",
+        "party", "parties", "agreement", "shall", "must", "pursuant",
+        "herein", "hereto", "thereof", "hereby", "provider", "customer",
+        "company", "services", "service", "section", "provided", "respect",
+    }
+
+    # Rationale templates by category
+    RATIONALE_TEMPLATES = {
+        "Compliance Risk": {
+            "High": "creates significant regulatory compliance exposure with potential penalties",
+            "Medium": "introduces compliance obligations that require careful monitoring",
+            "Low": "references compliance standards that should be reviewed",
+        },
+        "Liability Risk": {
+            "High": "shifts substantial liability or eliminates legal protections",
+            "Medium": "limits legal recourse or caps recovery in ways that need review",
+            "Low": "contains liability-related language worth noting",
+        },
+        "Privacy/Data Risk": {
+            "High": "involves personal data handling that triggers major privacy law obligations",
+            "Medium": "includes data practices requiring privacy compliance review",
+            "Low": "references data handling that may implicate privacy requirements",
+        },
+        "Financial Risk": {
+            "High": "creates significant financial exposure or lock-in risk",
+            "Medium": "introduces financial obligations or restrictions worth reviewing",
+            "Low": "contains financial terms that should be monitored",
+        },
+        "Contractual Ambiguity": {
+            "High": "uses vague or one-sided language that undermines contractual certainty",
+            "Medium": "contains ambiguous terms that could lead to interpretation disputes",
+            "Low": "includes imprecise language worth clarifying",
+        },
+    }
+
+    def _extract_keywords(text, n=5):
+        """Extract top N distinctive words from a clause."""
+        words = _re.findall(r'\b[a-z]{3,}\b', text.lower())
+        words = [w for w in words if w not in STOP_WORDS]
+        counts = Counter(words)
+        return [w for w, _ in counts.most_common(n)]
+
+    canonicals = []
+    clause_id_counter = 0
+
+    for cat_idx, cat in enumerate(CATEGORIES):
+        # Get all examples with a non-None severity for this category
+        cat_examples = []
+        for i, text in enumerate(texts):
+            sev = y_matrix[i, cat_idx]
+            if sev != "None":
+                cat_examples.append((i, text, sev))
+
+        if not cat_examples:
+            continue
+
+        # Group by severity
+        sev_groups = {}
+        for i, text, sev in cat_examples:
+            sev_groups.setdefault(sev, []).append((i, text))
+
+        # For each severity level, select representative examples
+        # Pick up to 3 per severity for High, 2 for Medium, 1 for Low
+        max_per_sev = {"High": 3, "Medium": 2, "Low": 1}
+
+        for sev in ["High", "Medium", "Low"]:
+            examples = sev_groups.get(sev, [])
+            if not examples:
+                continue
+
+            n_select = min(max_per_sev.get(sev, 2), len(examples))
+            indices = [idx for idx, _ in examples]
+            embeddings = X[indices]
+
+            # Compute centroid
+            centroid = embeddings.mean(axis=0, keepdims=True)
+
+            # Compute distances to centroid
+            # Using cosine distance (1 - cosine_similarity)
+            norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+            norms[norms == 0] = 1.0
+            normed = embeddings / norms
+            centroid_norm = centroid / (np.linalg.norm(centroid) or 1.0)
+            similarities = (normed @ centroid_norm.T).flatten()
+
+            # Select top-N closest to centroid
+            top_indices = np.argsort(-similarities)[:n_select]
+
+            for rank, sel_idx in enumerate(top_indices):
+                orig_idx = indices[sel_idx]
+                text = texts[orig_idx]
+
+                # Generate a short category prefix for the ID
+                prefix = cat.split()[0][:4].upper()
+                clause_id_counter += 1
+                cid = f"{prefix}_{clause_id_counter:02d}"
+
+                keywords = _extract_keywords(text)
+                rationale = RATIONALE_TEMPLATES.get(cat, {}).get(
+                    sev, f"raises {cat.lower()} concerns"
+                )
+
+                canonicals.append({
+                    "id": cid,
+                    "category": cat,
+                    "severity": sev,
+                    "text": text,
+                    "keywords": keywords,
+                    "rationale": rationale,
+                    "auto_generated": True,
+                })
+
+    # Save
+    CANONICAL_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(CANONICAL_PATH, "w") as f:
+        json.dump(canonicals, f, indent=2)
+
+    log.info(f"\nGenerated {len(canonicals)} canonical clauses → {CANONICAL_PATH}")
+
+    # Category breakdown
+    from collections import Counter as Ctr
+    cat_counts = Ctr(c["category"] for c in canonicals)
+    for cat, count in sorted(cat_counts.items()):
+        log.info(f"  {cat}: {count} canonical examples")
+
+    return canonicals
+
+
 def save_model(classifiers, encoders, metrics):
     """Save the trained model bundle."""
     MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -235,6 +392,9 @@ def main():
     avg_sev = sum(severity_f1s) / len(severity_f1s)
     print(f"\n  Average detection F1:     {avg_det:.3f}")
     print(f"  Average severity macro F1: {avg_sev:.3f}")
+
+    # Generate canonical clauses for semantic layer (replaces hand-curated KB)
+    generate_canonical_clauses(texts, X, y_matrix)
 
     # Save
     save_model(classifiers, encoders, metrics)

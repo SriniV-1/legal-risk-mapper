@@ -20,11 +20,59 @@ from backend.redline.schemas import RedlineResult, RedlineSuggestion
 log = logging.getLogger(__name__)
 
 
+def _get_user_field_value(user_extraction: dict, field_name: str, clause_type: str):
+    """Look up a user's field value, handling nested structures per clause type."""
+    if not user_extraction:
+        return None
+
+    # Liability nested fields
+    if field_name == "has_cap":
+        return user_extraction.get("liability_cap", {}).get("has_cap")
+    if field_name == "consequential_excluded":
+        return user_extraction.get("consequential_damages", {}).get("excluded")
+    # Termination nested fields
+    if field_name == "has_cure_period":
+        return user_extraction.get("cure_period", {}).get("has_cure_period")
+    if field_name == "has_notice_period":
+        return user_extraction.get("notice_period", {}).get("has_notice_period")
+
+    return user_extraction.get(field_name)
+
+
+def _format_cited_example_details(ex_data: dict, clause_type: str) -> list[str]:
+    """Format clause-type-specific details from a cited example's extraction."""
+    lines = []
+    if not ex_data:
+        return lines
+
+    if clause_type == "liability":
+        cap = ex_data.get("liability_cap", {})
+        if cap.get("has_cap"):
+            lines.append(f"      Cap: {cap.get('cap_amount', 'present')}")
+    elif clause_type == "termination":
+        if ex_data.get("has_termination_for_convenience"):
+            who = ex_data.get("convenience_termination_who", "")
+            lines.append(f"      Convenience termination: {who or 'yes'}")
+        cure = ex_data.get("cure_period", {})
+        if cure.get("has_cure_period"):
+            lines.append(f"      Cure period: {cure.get('cure_days', '?')} days")
+        notice = ex_data.get("notice_period", {})
+        if notice.get("has_notice_period"):
+            lines.append(f"      Notice period: {notice.get('notice_days', '?')} days")
+        if ex_data.get("has_auto_renewal"):
+            lines.append("      Auto-renewal: yes")
+        if ex_data.get("has_termination_fee"):
+            lines.append(f"      Termination fee: {ex_data.get('termination_fee_amount', 'present')}")
+
+    return lines
+
+
 def _build_market_context(benchmark: BenchmarkResult) -> str:
     """Format benchmark results into a readable market context block for the prompt."""
+    clause_type = benchmark.clause_type
     lines = []
     lines.append("MARKET DATA (from real SEC EDGAR filings):")
-    lines.append(f"  Sample size: {benchmark.sample_size} similar liability clauses")
+    lines.append(f"  Sample size: {benchmark.sample_size} similar {clause_type} clauses")
     lines.append("")
 
     # Field distributions
@@ -41,14 +89,9 @@ def _build_market_context(benchmark: BenchmarkResult) -> str:
         lines.append("  How the user's clause compares:")
         for field_name, pct in benchmark.user_percentiles.items():
             if pct is not None:
-                user_val = None
-                if benchmark.user_extraction:
-                    if field_name == "has_cap":
-                        user_val = benchmark.user_extraction.get("liability_cap", {}).get("has_cap")
-                    elif field_name == "consequential_excluded":
-                        user_val = benchmark.user_extraction.get("consequential_damages", {}).get("excluded")
-                    else:
-                        user_val = benchmark.user_extraction.get(field_name)
+                user_val = _get_user_field_value(
+                    benchmark.user_extraction, field_name, clause_type
+                )
                 lines.append(f"    - {field_name}: user={user_val}, market={pct:.0f}th percentile")
 
     # Cited examples
@@ -59,10 +102,7 @@ def _build_market_context(benchmark: BenchmarkResult) -> str:
             company = ex.company or ex.contract_id
             lines.append(f"    Example {i} ({company}):")
             lines.append(f"      \"{ex.text_snippet[:200]}...\"")
-            if ex.extracted_data:
-                cap = ex.extracted_data.get("liability_cap", {})
-                if cap.get("has_cap"):
-                    lines.append(f"      Cap: {cap.get('cap_amount', 'present')}")
+            lines.extend(_format_cited_example_details(ex.extracted_data, clause_type))
 
     return "\n".join(lines)
 

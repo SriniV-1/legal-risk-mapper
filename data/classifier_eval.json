@@ -11,7 +11,7 @@
     "regex_missed": 0,
     "ml_extra": 0,
     "regex_extra": 0,
-    "ml_time_ms": 25,
+    "ml_time_ms": 14,
     "regex_time_ms": 4
   },
   {
@@ -26,23 +26,23 @@
     "regex_missed": 0,
     "ml_extra": 3,
     "regex_extra": 3,
-    "ml_time_ms": 11,
+    "ml_time_ms": 9,
     "regex_time_ms": 0
   },
   {
     "id": "paraphrased",
     "ml_total": 4,
-    "regex_total": 4,
+    "regex_total": 3,
     "ml_categories": 4,
-    "regex_categories": 4,
+    "regex_categories": 2,
     "ml_expected_hit": 3,
-    "regex_expected_hit": 3,
+    "regex_expected_hit": 2,
     "ml_missed": 1,
-    "regex_missed": 1,
+    "regex_missed": 2,
     "ml_extra": 1,
-    "regex_extra": 1,
-    "ml_time_ms": 12,
-    "regex_time_ms": 1
+    "regex_extra": 0,
+    "ml_time_ms": 11,
+    "regex_time_ms": 0
   },
   {
     "id": "privacy_heavy",
@@ -56,7 +56,7 @@
     "regex_missed": 0,
     "ml_extra": 0,
     "regex_extra": 0,
-    "ml_time_ms": 11,
+    "ml_time_ms": 10,
     "regex_time_ms": 0
   }
 ]

@@ -18,7 +18,9 @@ from backend.benchmarking.schemas import (
 
 log = logging.getLogger(__name__)
 
-# Fields to compute distributions for (liability category)
+# ── Per-category field definitions ──────────────────────────────────────────
+
+# Liability
 _LIABILITY_BOOL_FIELDS = [
     ("has_cap", lambda e: e.get("liability_cap", {}).get("has_cap")),
     ("is_mutual", lambda e: e.get("is_mutual")),
@@ -31,6 +33,28 @@ _LIABILITY_BOOL_FIELDS = [
 _LIABILITY_CAT_FIELDS = [
     ("cap_type", lambda e: e.get("liability_cap", {}).get("cap_type")),
 ]
+
+# Termination
+_TERMINATION_BOOL_FIELDS = [
+    ("has_termination_for_cause", lambda e: e.get("has_termination_for_cause")),
+    ("has_termination_for_convenience", lambda e: e.get("has_termination_for_convenience")),
+    ("has_cure_period", lambda e: e.get("cure_period", {}).get("has_cure_period")),
+    ("has_notice_period", lambda e: e.get("notice_period", {}).get("has_notice_period")),
+    ("has_auto_renewal", lambda e: e.get("has_auto_renewal")),
+    ("has_survival_clause", lambda e: e.get("has_survival_clause")),
+    ("has_post_termination_obligations", lambda e: e.get("has_post_termination_obligations")),
+    ("has_termination_fee", lambda e: e.get("has_termination_fee")),
+]
+
+_TERMINATION_CAT_FIELDS = [
+    ("convenience_termination_who", lambda e: e.get("convenience_termination_who")),
+]
+
+# Registry: clause_type → (bool_fields, cat_fields)
+_FIELD_REGISTRY = {
+    "liability": (_LIABILITY_BOOL_FIELDS, _LIABILITY_CAT_FIELDS),
+    "termination": (_TERMINATION_BOOL_FIELDS, _TERMINATION_CAT_FIELDS),
+}
 
 
 def _compute_bool_distribution(
@@ -121,15 +145,20 @@ def aggregate_market_stats(
     Returns:
         BenchmarkResult with distributions, percentiles, and cited examples.
     """
+    # Look up field definitions for this clause type
+    bool_fields, cat_fields = _FIELD_REGISTRY.get(
+        clause_type, (_LIABILITY_BOOL_FIELDS, _LIABILITY_CAT_FIELDS)
+    )
+
     # Compute field distributions
     distributions: dict[str, FieldDistribution] = {}
 
-    for field_name, extractor in _LIABILITY_BOOL_FIELDS:
+    for field_name, extractor in bool_fields:
         distributions[field_name] = _compute_bool_distribution(
             field_name, extractor, market_extractions,
         )
 
-    for field_name, extractor in _LIABILITY_CAT_FIELDS:
+    for field_name, extractor in cat_fields:
         distributions[field_name] = _compute_cat_distribution(
             field_name, extractor, market_extractions,
         )
@@ -137,12 +166,12 @@ def aggregate_market_stats(
     # Compute user percentiles
     percentiles: dict[str, Optional[float]] = {}
     if user_extraction:
-        for field_name, extractor in _LIABILITY_BOOL_FIELDS:
+        for field_name, extractor in bool_fields:
             user_val = extractor(user_extraction)
             market_dist = distributions[field_name]
             percentiles[field_name] = _compute_percentile(user_val, market_dist.true_pct)
     else:
-        for field_name, _ in _LIABILITY_BOOL_FIELDS:
+        for field_name, _ in bool_fields:
             percentiles[field_name] = None
 
     # Build cited examples (top 5)

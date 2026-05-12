@@ -1,0 +1,842 @@
+[
+  {
+    "id": 1,
+    "description": "Full-featured termination clause — cause, convenience, cure, notice, auto-renewal, survival, post-termination, fee",
+    "text": "Either party may terminate this Agreement for cause upon thirty (30) days prior written notice if the other party materially breaches any provision of this Agreement and fails to cure such breach within thirty (30) days after receipt of written notice. Either party may terminate this Agreement for convenience upon ninety (90) days prior written notice to the other party. This Agreement shall automatically renew for successive one-year terms unless either party provides written notice of non-renewal at least sixty (60) days prior to the end of the then-current term. Upon termination, Customer shall pay all fees accrued through the effective date of termination and Provider shall return or destroy all Customer Data within thirty (30) days. Early termination for convenience shall incur a fee equal to 50% of the remaining contract value. Sections 5 (Confidentiality), 7 (Limitation of Liability), 8 (Indemnification), and 10 (Governing Law) shall survive any termination or expiration of this Agreement.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": true,
+      "convenience_termination_who": "either_party",
+      "cure_period": {
+        "has_cure_period": true,
+        "cure_days": 30
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 90
+      },
+      "has_auto_renewal": true,
+      "has_survival_clause": true,
+      "surviving_sections": ["confidentiality", "limitation of liability", "indemnification", "governing law"],
+      "has_post_termination_obligations": true,
+      "post_termination_obligations": ["data return or destruction", "payment of accrued fees"],
+      "has_termination_fee": true
+    }
+  },
+  {
+    "id": 2,
+    "description": "Cause-only termination with cure period, no convenience",
+    "text": "This Agreement may be terminated by either party in the event of a material breach by the other party, provided that the breaching party has been given written notice specifying the nature of the breach and a period of forty-five (45) days to cure such breach. If the breach is not cured within the cure period, the non-breaching party may terminate this Agreement immediately upon written notice.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": true,
+        "cure_days": 45
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 3,
+    "description": "Provider-only convenience termination with notice",
+    "text": "Provider may terminate this Agreement at any time for any reason upon sixty (60) days prior written notice to Customer. Customer may only terminate this Agreement in the event of Provider's material breach that remains uncured for thirty (30) days following written notice.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": true,
+      "convenience_termination_who": "provider_only",
+      "cure_period": {
+        "has_cure_period": true,
+        "cure_days": 30
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 60
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 4,
+    "description": "Auto-renewal with survival, no convenience, no fee",
+    "text": "The initial term of this Agreement is one (1) year from the Effective Date. This Agreement shall automatically renew for additional successive one-year periods unless either party gives written notice of non-renewal at least thirty (30) days before the expiration of the then-current term. Either party may terminate this Agreement upon material breach by the other party that is not cured within fifteen (15) days of notice. The provisions of Sections 4, 6, 7, and 9 shall survive the termination or expiration of this Agreement.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": true,
+        "cure_days": 15
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": true,
+      "has_survival_clause": true,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 5,
+    "description": "Immediate termination for insolvency, no cure",
+    "text": "Either party may terminate this Agreement immediately by written notice to the other party if the other party: (a) becomes insolvent or admits inability to pay its debts as they become due; (b) files a petition for bankruptcy or is the subject of an involuntary petition; (c) makes an assignment for the benefit of creditors; or (d) has a receiver or trustee appointed for a substantial part of its assets.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 6,
+    "description": "Customer-only convenience with early termination penalty",
+    "text": "Customer may terminate this Agreement for convenience at any time by providing at least thirty (30) days written notice to Provider. Upon early termination by Customer, Customer shall pay a termination fee equal to the remaining balance of the minimum commitment for the then-current term. Provider may terminate this Agreement only for Customer's material breach.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": true,
+      "convenience_termination_who": "customer_only",
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 30
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": true
+    }
+  },
+  {
+    "id": 7,
+    "description": "Post-termination obligations heavy — data return, transition, wind-down",
+    "text": "Upon termination or expiration of this Agreement for any reason: (a) Provider shall cease providing the Services; (b) Provider shall return or, at Customer's election, securely delete all Customer Data within forty-five (45) days and certify such deletion in writing; (c) Provider shall provide reasonable transition assistance to Customer or its designee for a period of up to ninety (90) days at Provider's then-current rates; (d) Customer shall pay all outstanding invoices within thirty (30) days of the termination date; and (e) each party shall return all Confidential Information of the other party.",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": true,
+      "post_termination_obligations": ["data return or deletion", "transition assistance", "payment of outstanding invoices", "return of confidential information"],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 8,
+    "description": "Minimal termination — just cause with no details",
+    "text": "This Agreement may be terminated by either party for material breach by the other party.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 9,
+    "description": "Negative example — governing law clause, not termination",
+    "text": "This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict of laws principles. Any dispute arising under this Agreement shall be resolved exclusively in the federal or state courts located in Wilmington, Delaware.",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 10,
+    "description": "Negative example — liability limitation, not termination",
+    "text": "IN NO EVENT SHALL EITHER PARTY'S AGGREGATE LIABILITY UNDER THIS AGREEMENT EXCEED THE TOTAL FEES PAID BY CUSTOMER DURING THE TWELVE (12) MONTH PERIOD PRECEDING THE EVENT GIVING RISE TO SUCH LIABILITY. NEITHER PARTY SHALL BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES.",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 11,
+    "description": "Rich survival clause with named sections",
+    "text": "The following provisions shall survive any termination or expiration of this Agreement: Section 3 (Intellectual Property), Section 5 (Confidentiality), Section 6 (Representations and Warranties), Section 7 (Indemnification), Section 8 (Limitation of Liability), Section 10 (Non-Solicitation), and this Section 11 (General Provisions).",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": true,
+      "surviving_sections": ["intellectual property", "confidentiality", "representations and warranties", "indemnification", "limitation of liability", "non-solicitation", "general provisions"],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 12,
+    "description": "Convenience + cause with different notice periods",
+    "text": "Either party may terminate this Agreement: (i) for convenience upon one hundred twenty (120) days prior written notice; or (ii) immediately upon written notice if the other party commits a material breach and fails to cure such breach within twenty (20) days after receiving written notice thereof. Upon any termination, all licenses granted hereunder shall immediately terminate.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": true,
+      "convenience_termination_who": "either_party",
+      "cure_period": {
+        "has_cure_period": true,
+        "cure_days": 20
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 120
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 13,
+    "description": "Auto-renewal with termination fee and post-termination obligations",
+    "text": "This Agreement shall automatically renew for successive twelve (12) month periods unless either party provides sixty (60) days written notice of non-renewal prior to the end of the current term. If Customer terminates this Agreement prior to the end of any renewal term, Customer shall pay an early termination fee equal to the remaining monthly fees for the balance of such term. Following termination, Provider shall securely delete all Customer Data within thirty (30) days and provide a written certification of deletion.",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": true,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": true,
+      "post_termination_obligations": ["data deletion", "written certification of deletion"],
+      "has_termination_fee": true
+    }
+  },
+  {
+    "id": 14,
+    "description": "Long cure period (60 days) with mutual convenience",
+    "text": "Either party may terminate this Agreement upon sixty (60) days prior written notice for any reason or no reason. In the event of a material breach, the non-breaching party shall provide written notice to the breaching party, which shall have sixty (60) days from the date of such notice to cure the breach. If the breach is not cured within the cure period, the non-breaching party may terminate this Agreement immediately.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": true,
+      "convenience_termination_who": "either_party",
+      "cure_period": {
+        "has_cure_period": true,
+        "cure_days": 60
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 60
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 15,
+    "description": "Negative example — payment terms, not termination",
+    "text": "Customer shall pay all invoices within thirty (30) days of the invoice date. Late payments shall bear interest at the rate of 1.5% per month or the maximum rate permitted by law, whichever is less. Provider reserves the right to suspend Services if payment is more than thirty (30) days overdue.",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 16,
+    "description": "Termination for regulatory/compliance reasons",
+    "text": "Either party may terminate this Agreement immediately upon written notice if: (a) a change in applicable law or regulation renders performance of this Agreement illegal or materially impracticable; (b) any governmental authority requires termination or material modification of the Services; or (c) the other party loses any license, permit, or authorization required to perform its obligations. The obligations of Sections 4, 5, and 8 shall survive such termination.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": true,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 17,
+    "description": "Multi-year fixed term with no auto-renewal, comprehensive post-termination",
+    "text": "The term of this Agreement shall be three (3) years from the Effective Date. This Agreement shall not automatically renew. Either party may terminate for material breach upon thirty (30) days written notice and failure to cure within such period. Upon termination or expiration: (i) Customer shall pay all amounts owed for Services performed through the termination date; (ii) Provider shall deliver to Customer all work product completed as of the termination date; (iii) each party shall return or destroy the other party's Confidential Information; and (iv) Provider shall provide transition assistance for up to sixty (60) days following termination.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": true,
+        "cure_days": 30
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": true,
+      "post_termination_obligations": ["payment of amounts owed", "delivery of work product", "return or destruction of confidential information", "transition assistance"],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 18,
+    "description": "Provider-only convenience, customer-only for cause",
+    "text": "Provider may terminate this Agreement at any time upon thirty (30) days written notice to Customer without cause. Customer may terminate this Agreement only if Provider fails to perform the Services in material compliance with the service levels set forth in Exhibit A for three (3) consecutive months.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": true,
+      "convenience_termination_who": "provider_only",
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 30
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 19,
+    "description": "Negative example — confidentiality clause",
+    "text": "Each party agrees to maintain the confidentiality of the other party's Confidential Information and not to disclose such information to any third party without the prior written consent of the disclosing party. The obligations of confidentiality shall continue for a period of five (5) years following disclosure.",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 20,
+    "description": "Termination with refund provision (not a fee)",
+    "text": "Either party may terminate this Agreement for convenience upon ninety (90) days prior written notice. Upon early termination by Customer, Provider shall refund any prepaid and unused fees on a pro-rata basis. Upon early termination by Provider, Provider shall refund all prepaid and unused fees in full within thirty (30) days.",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": true,
+      "convenience_termination_who": "either_party",
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 90
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": true,
+      "post_termination_obligations": ["refund of prepaid fees"],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 21,
+    "description": "Suspension then termination, no cure for repeated breaches",
+    "text": "Provider may suspend access to the Services immediately upon notice if Customer violates the Acceptable Use Policy. If Customer fails to resolve the violation within ten (10) days of suspension, Provider may terminate this Agreement. In the event of a third suspension within any twelve-month period, Provider may terminate this Agreement immediately without further cure opportunity.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": true,
+        "cure_days": 10
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 22,
+    "description": "Auto-renewal with opt-out notice and survival",
+    "text": "This Agreement shall commence on the Effective Date and continue for an initial term of one (1) year. Thereafter, this Agreement shall automatically renew for successive one-year terms unless either party delivers written notice of its intent not to renew at least forty-five (45) days prior to the end of the then-current term. The provisions of this Agreement that by their nature should survive termination shall survive, including without limitation Sections 3 (Payment), 5 (Intellectual Property), 7 (Confidentiality), 9 (Indemnification), and 10 (Limitation of Liability).",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": true,
+      "has_survival_clause": true,
+      "surviving_sections": ["payment", "intellectual property", "confidentiality", "indemnification", "limitation of liability"],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 23,
+    "description": "Termination for non-payment specifically",
+    "text": "Provider may terminate this Agreement upon fifteen (15) days written notice if Customer fails to pay any undisputed amount when due and such failure continues for fifteen (15) days after written notice from Provider. Such termination shall not relieve Customer of its obligation to pay all amounts due and owing under this Agreement.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": true,
+        "cure_days": 15
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 15
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": true,
+      "post_termination_obligations": ["payment of amounts due"],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 24,
+    "description": "Effect of termination section — mostly post-termination obligations",
+    "text": "Effect of Termination. Upon the effective date of termination or expiration of this Agreement: (a) all rights and licenses granted to Customer under this Agreement shall immediately terminate; (b) Customer shall immediately cease all use of the Services and the Platform; (c) Customer shall pay Provider for all Services rendered and expenses incurred up to and including the effective date of termination; (d) Provider shall make Customer Data available for export for a period of thirty (30) days following the effective date, after which Provider may delete all Customer Data; and (e) Provider shall provide commercially reasonable cooperation to facilitate an orderly transition to a successor provider.",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": true,
+      "post_termination_obligations": ["cease use of services", "payment for services rendered", "data export window", "transition cooperation"],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 25,
+    "description": "Complex multi-trigger termination",
+    "text": "This Agreement may be terminated as follows: (a) By either party, for material breach, upon thirty (30) days written notice if such breach remains uncured at the end of such period; (b) By either party, for convenience, upon ninety (90) days prior written notice; (c) By Provider, immediately, if Customer's use of the Services poses a security risk to Provider or its other customers; (d) By either party, immediately, upon the other party's insolvency, bankruptcy filing, or assignment for the benefit of creditors.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": true,
+      "convenience_termination_who": "either_party",
+      "cure_period": {
+        "has_cure_period": true,
+        "cure_days": 30
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 90
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 26,
+    "description": "Negative example — indemnification clause",
+    "text": "Customer shall indemnify, defend, and hold harmless Provider and its officers, directors, employees, and agents from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating to: (a) Customer's use of the Services; (b) Customer's breach of this Agreement; or (c) Customer's violation of any applicable law or regulation.",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 27,
+    "description": "Short notice period, customer convenience only, no cure",
+    "text": "Customer may cancel this subscription at any time by providing fourteen (14) days written notice to Provider. No refunds will be issued for partial months. Provider may terminate this Agreement immediately if Customer engages in any prohibited activity as described in the Acceptable Use Policy.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": true,
+      "convenience_termination_who": "customer_only",
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 14
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 28,
+    "description": "Evergreen contract with high termination fee",
+    "text": "This Agreement shall continue in effect until terminated by either party. This Agreement shall automatically renew on a month-to-month basis. Either party may terminate upon sixty (60) days written notice. In the event of early termination by Customer during the first twenty-four (24) months, Customer shall pay an early termination fee equal to the total remaining contract value through the end of month twenty-four. Sections 4 (Fees), 6 (Confidentiality), and 8 (Limitation of Liability) survive termination.",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": true,
+      "convenience_termination_who": "either_party",
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 60
+      },
+      "has_auto_renewal": true,
+      "has_survival_clause": true,
+      "surviving_sections": ["fees", "confidentiality", "limitation of liability"],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": true
+    }
+  },
+  {
+    "id": 29,
+    "description": "Termination for change of control",
+    "text": "Either party may terminate this Agreement upon thirty (30) days written notice in the event of a Change of Control of the other party. For purposes of this Agreement, 'Change of Control' means any merger, acquisition, or sale of all or substantially all of the assets of a party, or any transaction resulting in a change in the majority ownership or voting control of a party.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 30
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 30,
+    "description": "Negative example — scope of services clause",
+    "text": "Provider shall provide the Services described in each Statement of Work executed by the parties. Provider shall perform the Services in a professional and workmanlike manner consistent with generally accepted industry standards. Provider shall assign qualified personnel to perform the Services and shall not replace key personnel without Customer's prior written consent.",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 31,
+    "description": "Convenience with wind-down period and data obligations",
+    "text": "Either party may terminate this Agreement for any reason by providing at least sixty (60) days advance written notice. During the notice period, Provider shall continue to perform the Services in accordance with the terms of this Agreement. Upon the effective date of termination, Provider shall: (a) cease all processing of Customer Personal Data; (b) return or delete all Customer Personal Data in accordance with Customer's instructions within ninety (90) days; and (c) provide Customer with a written certification confirming the deletion of Customer Personal Data.",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": true,
+      "convenience_termination_who": "either_party",
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 60
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": true,
+      "post_termination_obligations": ["cease processing of personal data", "return or delete personal data", "written certification of deletion"],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 32,
+    "description": "Termination for failure to meet SLAs",
+    "text": "Customer may terminate this Agreement upon thirty (30) days written notice if Provider fails to meet the Service Level targets specified in Schedule B for three (3) consecutive calendar months or for any five (5) months within a rolling twelve (12) month period, and Provider fails to cure such deficiency within thirty (30) days after receiving written notice.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": true,
+        "cure_days": 30
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 30
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 33,
+    "description": "Negative example — IP assignment clause",
+    "text": "All Intellectual Property developed by Provider in the course of performing the Services under this Agreement shall be the sole and exclusive property of Customer. Provider hereby assigns and agrees to assign to Customer all right, title, and interest in and to such Intellectual Property, including all patent rights, copyrights, trade secret rights, and other proprietary rights therein.",
+    "ground_truth": {
+      "has_termination_for_cause": false,
+      "has_termination_for_convenience": false,
+      "convenience_termination_who": null,
+      "cure_period": {
+        "has_cure_period": false,
+        "cure_days": null
+      },
+      "notice_period": {
+        "has_notice_period": false,
+        "notice_days": null
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 34,
+    "description": "Government contract termination — for cause and for government convenience",
+    "text": "The Government may terminate this contract for convenience at any time by providing the Contractor with written notice at least thirty (30) calendar days prior to the effective date of termination. The Government may also terminate this contract for default if the Contractor fails to perform any of the provisions of this contract, fails to make progress so as to endanger performance, or fails to comply with any provision of this contract. In the event of termination for default, the Contractor shall be given ten (10) calendar days to cure any deficiency.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": true,
+      "convenience_termination_who": "customer_only",
+      "cure_period": {
+        "has_cure_period": true,
+        "cure_days": 10
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 30
+      },
+      "has_auto_renewal": false,
+      "has_survival_clause": false,
+      "surviving_sections": [],
+      "has_post_termination_obligations": false,
+      "post_termination_obligations": [],
+      "has_termination_fee": false
+    }
+  },
+  {
+    "id": 35,
+    "description": "Comprehensive termination with all fields present",
+    "text": "Term and Termination. The initial term of this Agreement is two (2) years. This Agreement will automatically renew for successive one-year renewal terms unless either party provides written notice of non-renewal at least ninety (90) days before the end of the then-current term. Either party may terminate for convenience upon sixty (60) days prior written notice. Either party may terminate for cause if the other party materially breaches this Agreement and fails to cure such breach within thirty (30) days of written notice. If Customer terminates for convenience during the initial term, Customer shall pay an early termination fee equal to 75% of the remaining fees for the initial term. Upon termination: (a) Provider shall return all Customer Data within thirty (30) days; (b) Customer shall pay all fees through the termination date; (c) Provider shall provide transition assistance for up to ninety (90) days at its standard rates. Sections 5 (Confidentiality), 8 (Indemnification), 9 (Limitation of Liability), and 12 (General) shall survive termination.",
+    "ground_truth": {
+      "has_termination_for_cause": true,
+      "has_termination_for_convenience": true,
+      "convenience_termination_who": "either_party",
+      "cure_period": {
+        "has_cure_period": true,
+        "cure_days": 30
+      },
+      "notice_period": {
+        "has_notice_period": true,
+        "notice_days": 60
+      },
+      "has_auto_renewal": true,
+      "has_survival_clause": true,
+      "surviving_sections": ["confidentiality", "indemnification", "limitation of liability", "general"],
+      "has_post_termination_obligations": true,
+      "post_termination_obligations": ["data return", "payment of fees", "transition assistance"],
+      "has_termination_fee": true
+    }
+  }
+]
