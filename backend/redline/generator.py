@@ -78,6 +78,26 @@ def _format_cited_example_details(ex_data: dict, clause_type: str) -> list[str]:
             lines.append(f"      Minimum commitment: {ex_data.get('minimum_commitment_amount', 'present')}")
         if ex_data.get("has_price_escalation"):
             lines.append("      Price escalation: yes")
+    elif clause_type == "confidentiality":
+        if ex_data.get("has_broad_definition"):
+            lines.append("      Broad definition: yes")
+        if ex_data.get("has_standard_exclusions"):
+            excl = ex_data.get("exclusions", [])
+            lines.append(f"      Standard exclusions: {', '.join(excl) if excl else 'yes'}")
+        if ex_data.get("has_duration"):
+            if ex_data.get("is_perpetual"):
+                lines.append("      Duration: perpetual")
+            elif ex_data.get("duration_years"):
+                lines.append(f"      Duration: {ex_data.get('duration_years')} years")
+        if ex_data.get("has_permitted_disclosures"):
+            recip = ex_data.get("permitted_recipients", [])
+            lines.append(f"      Permitted disclosures: {', '.join(recip) if recip else 'yes'}")
+        if ex_data.get("has_return_or_destroy"):
+            lines.append("      Return/destroy: yes")
+        if ex_data.get("has_injunctive_relief"):
+            lines.append("      Injunctive relief: yes")
+        if ex_data.get("is_mutual"):
+            lines.append("      Mutual: yes")
 
     return lines
 

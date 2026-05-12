@@ -66,11 +66,26 @@ _PAYMENT_CAT_FIELDS = [
     ("late_fee_type", lambda e: e.get("late_fee", {}).get("late_fee_type")),
 ]
 
+# Confidentiality
+_CONFIDENTIALITY_BOOL_FIELDS = [
+    ("has_broad_definition", lambda e: e.get("has_broad_definition")),
+    ("has_standard_exclusions", lambda e: e.get("has_standard_exclusions")),
+    ("has_duration", lambda e: e.get("has_duration")),
+    ("has_permitted_disclosures", lambda e: e.get("has_permitted_disclosures")),
+    ("has_return_or_destroy", lambda e: e.get("has_return_or_destroy")),
+    ("has_residuals_clause", lambda e: e.get("has_residuals_clause")),
+    ("has_injunctive_relief", lambda e: e.get("has_injunctive_relief")),
+    ("is_mutual", lambda e: e.get("is_mutual")),
+]
+
+_CONFIDENTIALITY_CAT_FIELDS = []
+
 # Registry: clause_type → (bool_fields, cat_fields)
 _FIELD_REGISTRY = {
     "liability": (_LIABILITY_BOOL_FIELDS, _LIABILITY_CAT_FIELDS),
     "termination": (_TERMINATION_BOOL_FIELDS, _TERMINATION_CAT_FIELDS),
     "payment": (_PAYMENT_BOOL_FIELDS, _PAYMENT_CAT_FIELDS),
+    "confidentiality": (_CONFIDENTIALITY_BOOL_FIELDS, _CONFIDENTIALITY_CAT_FIELDS),
 }
 
 

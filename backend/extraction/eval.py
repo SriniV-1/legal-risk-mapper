@@ -552,6 +552,110 @@ def run_payment_eval(eval_file: str = "data/eval/payment_eval.json") -> EvalResu
     return result
 
 
+# ── Confidentiality eval ───────────────────────────────────────────────────
+
+CONFIDENTIALITY_CORE_FIELDS = {
+    "has_broad_definition", "has_standard_exclusions", "has_duration",
+    "has_permitted_disclosures", "has_return_or_destroy",
+    "has_residuals_clause", "has_injunctive_relief", "is_mutual",
+}
+
+
+def evaluate_confidentiality(
+    eval_file: str | Path,
+    extractions: list[dict],
+) -> EvalResult:
+    """Evaluate confidentiality extractions against ground truth."""
+    with open(eval_file) as f:
+        eval_data = json.load(f)
+
+    ext_by_id = {}
+    for e in extractions:
+        eid = e.get("id") or e.get("chunk_id")
+        if eid:
+            ext_by_id[eid] = e
+
+    result = EvalResult(total_examples=len(eval_data))
+    result.CORE_FIELDS = CONFIDENTIALITY_CORE_FIELDS
+
+    bool_fields = [
+        "has_broad_definition", "has_standard_exclusions", "has_duration",
+        "has_permitted_disclosures", "has_return_or_destroy",
+        "has_residuals_clause", "has_injunctive_relief", "is_mutual",
+    ]
+    all_fields = bool_fields
+
+    for f_name in all_fields:
+        result.field_metrics[f_name] = FieldMetrics(field_name=f_name)
+
+    success_count = 0
+    for gt_item in eval_data:
+        item_id = gt_item["id"]
+        gt = gt_item["ground_truth"]
+        ext_item = ext_by_id.get(item_id)
+
+        if ext_item is None or ext_item.get("extracted_data") is None:
+            for f_name in all_fields:
+                result.field_metrics[f_name].total += 1
+                gt_val = gt.get(f_name, False)
+                if gt_val:
+                    result.field_metrics[f_name].fn += 1
+                else:
+                    result.field_metrics[f_name].tn += 1
+            continue
+
+        success_count += 1
+        ext = ext_item["extracted_data"]
+
+        for f_name in bool_fields:
+            pred = ext.get(f_name)
+            gt_val = gt.get(f_name, False)
+            _compare_bool(pred, gt_val, result.field_metrics[f_name])
+
+        # Grounding checks
+        clause_text = gt_item["text"]
+        for source_field in [
+            ext.get("definition_source_text"),
+            ext.get("exclusions_source_text"),
+            ext.get("duration_source_text"),
+            ext.get("permitted_disclosures_source_text"),
+            ext.get("return_destroy_source_text"),
+            ext.get("residuals_source_text"),
+            ext.get("injunctive_relief_source_text"),
+            ext.get("mutuality_source_text"),
+        ]:
+            score = _check_grounding(source_field, clause_text)
+            result.grounding_scores.append(score)
+
+    result.extraction_success_rate = success_count / len(eval_data) if eval_data else 0.0
+    return result
+
+
+def run_confidentiality_eval(eval_file: str = "data/eval/confidentiality_eval.json") -> EvalResult:
+    """Run confidentiality extraction on eval set and evaluate."""
+    from backend.extraction.extractor import extract_confidentiality
+
+    with open(eval_file) as f:
+        eval_data = json.load(f)
+
+    log.info("Running confidentiality extraction on %d eval examples...", len(eval_data))
+
+    extractions = []
+    for item in eval_data:
+        text = item["text"]
+        if len(text) < 30:
+            continue
+
+        ext = extract_confidentiality(text)
+        extractions.append({
+            "id": item["id"],
+            "extracted_data": ext.model_dump() if ext else None,
+        })
+
+    result = evaluate_confidentiality(eval_file, extractions)
+    return result
+
+
 # ── CLI ──────────────────────────────────────────────────────────────────────
 
 def run_eval(eval_file: str = "data/eval/liability_eval.json") -> EvalResult:
@@ -589,6 +693,8 @@ if __name__ == "__main__":
         result = run_termination_eval()
     elif clause_type == "payment":
         result = run_payment_eval()
+    elif clause_type == "confidentiality":
+        result = run_confidentiality_eval()
     else:
         result = run_eval()
 

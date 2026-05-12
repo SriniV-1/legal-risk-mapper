@@ -178,10 +178,60 @@ class PaymentExtraction(BaseModel):
     extraction_confidence: float = Field(default=0.0, ge=0.0, le=1.0, description="Model's confidence in the extraction (0-1)")
 
 
+# ── Confidentiality Extraction ───────────────────────────────────────────────
+
+class ConfidentialityExtraction(BaseModel):
+    """
+    Structured extraction from a confidentiality / NDA clause.
+
+    Every field that captures a factual claim about the clause MUST have a
+    corresponding source_text field with the exact quote from the contract.
+    """
+    # Definition scope — how broadly is "Confidential Information" defined?
+    has_broad_definition: Optional[bool] = Field(default=None, description="True if the definition of Confidential Information is broad (e.g. 'all information disclosed', 'any and all information')")
+    definition_source_text: Optional[str] = Field(default=None, description="Exact quote defining Confidential Information")
+
+    # Standard exclusions (public domain, independent development, prior knowledge, compelled disclosure)
+    has_standard_exclusions: Optional[bool] = Field(default=None, description="True if standard carve-outs are present (publicly available, independently developed, already known, legally compelled)")
+    exclusions: list[str] = Field(default_factory=list, description="List of exclusion categories, e.g. ['public domain', 'independent development', 'prior knowledge', 'compelled disclosure']")
+    exclusions_source_text: Optional[str] = Field(default=None, description="Exact quote listing the exclusions")
+
+    # Duration of confidentiality obligations
+    has_duration: Optional[bool] = Field(default=None, description="True if the clause specifies how long confidentiality obligations last")
+    duration_years: Optional[int] = Field(default=None, description="Number of years obligations last (null if perpetual or unspecified)")
+    is_perpetual: Optional[bool] = Field(default=None, description="True if obligations are stated to last indefinitely or in perpetuity")
+    duration_source_text: Optional[str] = Field(default=None, description="Exact quote about duration")
+
+    # Permitted disclosures (employees, advisors, affiliates)
+    has_permitted_disclosures: Optional[bool] = Field(default=None, description="True if the clause permits disclosure to certain categories (employees, advisors, affiliates, subcontractors)")
+    permitted_recipients: list[str] = Field(default_factory=list, description="List of permitted recipient categories, e.g. ['employees', 'advisors', 'affiliates', 'legal counsel']")
+    permitted_disclosures_source_text: Optional[str] = Field(default=None, description="Exact quote about permitted disclosures")
+
+    # Return or destruction of confidential information
+    has_return_or_destroy: Optional[bool] = Field(default=None, description="True if the clause requires return or destruction of Confidential Information upon termination or request")
+    return_destroy_source_text: Optional[str] = Field(default=None, description="Exact quote about return/destruction obligations")
+
+    # Residuals clause (right to use general knowledge retained in memory)
+    has_residuals_clause: Optional[bool] = Field(default=None, description="True if a residuals clause permits use of ideas retained in unaided memory")
+    residuals_source_text: Optional[str] = Field(default=None, description="Exact quote about residuals")
+
+    # Injunctive relief (right to seek injunction for breach)
+    has_injunctive_relief: Optional[bool] = Field(default=None, description="True if the clause states that breach entitles the discloser to injunctive or equitable relief")
+    injunctive_relief_source_text: Optional[str] = Field(default=None, description="Exact quote about injunctive relief")
+
+    # Mutual vs one-sided
+    is_mutual: Optional[bool] = Field(default=None, description="True if confidentiality obligations apply equally to both parties")
+    mutuality_source_text: Optional[str] = Field(default=None, description="Exact quote showing mutuality or one-sidedness")
+
+    # Overall confidence
+    extraction_confidence: float = Field(default=0.0, ge=0.0, le=1.0, description="Model's confidence in the extraction (0-1)")
+
+
 # ── Mapping for future categories ────────────────────────────────────────────
 
 EXTRACTION_SCHEMAS = {
     "liability": LiabilityExtraction,
     "termination": TerminationExtraction,
     "payment": PaymentExtraction,
+    "confidentiality": ConfidentialityExtraction,
 }
