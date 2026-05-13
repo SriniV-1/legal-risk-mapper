@@ -135,6 +135,43 @@ def health_check():
     )
 
 
+@app.get("/corpus/stats", tags=["Meta"])
+def corpus_stats():
+    """
+    Return corpus coverage statistics: contracts, chunks by type,
+    and extraction coverage for each clause category.
+    """
+    try:
+        from backend.corpus.db import _get_client
+        client = _get_client()
+
+        r_contracts = client.table("contracts").select("id", count="exact").execute()
+        r_chunks = client.table("clause_chunks").select("id", count="exact").execute()
+
+        clause_types = ["liability", "termination", "payment", "confidentiality", "ip", "governing_law"]
+        chunk_counts, extraction_counts = {}, {}
+        for ct in clause_types:
+            rc = client.table("clause_chunks").select("id", count="exact").eq("clause_type", ct).execute()
+            re = client.table("structured_extractions").select("id", count="exact").eq("clause_type", ct).execute()
+            chunk_counts[ct] = rc.count or 0
+            extraction_counts[ct] = re.count or 0
+
+        return {
+            "contracts": r_contracts.count,
+            "total_chunks": r_chunks.count,
+            "clause_types": {
+                ct: {
+                    "chunks": chunk_counts[ct],
+                    "extractions": extraction_counts[ct],
+                    "coverage_pct": round(extraction_counts[ct] / chunk_counts[ct] * 100, 1) if chunk_counts[ct] > 0 else 0,
+                }
+                for ct in clause_types
+            },
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Stats unavailable: {e}")
+
+
 @app.post("/analyze", response_model=AnalyzeResponse, tags=["Analysis"])
 @limiter.limit("30/minute")
 def analyze_text(request: Request, body: AnalyzeRequest):
