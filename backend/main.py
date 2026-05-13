@@ -31,15 +31,15 @@ from backend.redline.schemas import RedlineResult
 
 # ── Logging ──────────────────────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(name)s | %(message)s")
-logger = logging.getLogger("alrm")
+logger = logging.getLogger("lrm")
 
 # ── Rate Limiting ────────────────────────────────────────────────────────────
 limiter = Limiter(key_func=get_remote_address)
 
 # ── API Key Auth ─────────────────────────────────────────────────────────────
-# If ALRM_API_KEY is set, /benchmark and /redline require X-API-Key header.
+# If LRM_API_KEY is set, /benchmark and /redline require X-API-Key header.
 # If not set, auth is disabled (local dev mode).
-_API_KEY = os.environ.get("ALRM_API_KEY")
+_API_KEY = os.environ.get("LRM_API_KEY")
 _api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 

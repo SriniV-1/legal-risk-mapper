@@ -37,9 +37,9 @@ log = logging.getLogger(__name__)
 import os
 
 OLLAMA_BASE_URL = "http://localhost:11434"
-DEFAULT_MODEL = os.environ.get("ALRM_EXTRACTION_MODEL", "llama3.1:8b")
+DEFAULT_MODEL = os.environ.get("LRM_EXTRACTION_MODEL", "llama3.1:8b")
 
-# Set ALRM_EXTRACTION_MODEL=claude-haiku-4-5-20251001 (or any claude-* model)
+# Set LRM_EXTRACTION_MODEL=claude-haiku-4-5-20251001 (or any claude-* model)
 # to use Anthropic API instead of Ollama. Requires ANTHROPIC_API_KEY env var.
 _USE_ANTHROPIC = DEFAULT_MODEL.startswith("claude-")
 
@@ -543,7 +543,7 @@ def extract_clause(
         clause_text: Raw clause text to extract from.
         clause_type: Category of clause (determines schema + prompt).
         model: Ollama model name (llama3.1:8b) or Anthropic model (claude-*).
-               Defaults to ALRM_EXTRACTION_MODEL env var, or llama3.1:8b.
+               Defaults to LRM_EXTRACTION_MODEL env var, or llama3.1:8b.
         max_retries: Number of retry attempts on failure.
 
     Returns:

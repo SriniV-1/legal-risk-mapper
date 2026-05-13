@@ -27,7 +27,7 @@ import numpy as np
 
 from backend.models import embeddings as emb
 
-logger = logging.getLogger("alrm.classifier")
+logger = logging.getLogger("lrm.classifier")
 
 # ── Config ───────────────────────────────────────────────────────────────────
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
