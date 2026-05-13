@@ -3,290 +3,497 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Legal Risk Mapper — Hybrid AI Contract Analyzer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="style.css" />
+  <title>Legal Risk Mapper — Contract Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a0b;
+      --surface:   #111113;
+      --surface2:  #18181c;
+      --border:    #1e1e24;
+      --border2:   #2a2a32;
+      --accent:    #2563eb;
+      --accent-dim:#1d4ed8;
+      --text:      #e8e8ee;
+      --text-2:    #9090a0;
+      --text-3:    #505060;
+      --mono:      'IBM Plex Mono', monospace;
+      --serif:     'Cormorant Garamond', Georgia, serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,11,0.92);
+      backdrop-filter: blur(12px);
+      padding: 0 2.5rem;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-logo {
+      font-family: var(--mono);
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .header-logo span { color: var(--accent); }
+    .header-right {
+      font-size: 11px;
+      color: var(--text-3);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 7rem 2.5rem 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      font-weight: 300;
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--text-2);
+    }
+
+    .hero-sub {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-2);
+      max-width: 520px;
+      line-height: 1.8;
+      margin-bottom: 3rem;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.9rem 2rem;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .hero-cta:hover { background: var(--accent-dim); }
+    .hero-cta-arrow {
+      font-size: 16px;
+      transition: transform 0.2s;
+    }
+    .hero-cta:hover .hero-cta-arrow { transform: translateX(4px); }
+
+    /* ── STATS TICKER ── */
+    .stats-bar {
+      margin-top: 5rem;
+      border-top: 1px solid var(--border);
+      padding-top: 2rem;
+      display: flex;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+    .stat-item {}
+    .stat-value {
+      font-family: var(--serif);
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1;
+    }
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-top: 0.3rem;
+    }
+
+    /* ── SECTION DIVIDER ── */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 6rem 2.5rem;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 300;
+      color: var(--text);
+      margin-bottom: 3.5rem;
+    }
+
+    /* ── CAPABILITIES GRID ── */
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .cap-card {
+      background: var(--bg);
+      padding: 2.5rem;
+      position: relative;
+    }
+    .cap-card:hover { background: var(--surface); }
+    .cap-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+    }
+    .cap-title {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+      line-height: 1.2;
+    }
+    .cap-desc {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--text-2);
+      line-height: 1.8;
+    }
+    .cap-metric {
+      display: inline-block;
+      margin-top: 1.25rem;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.2rem 0.6rem;
+    }
+
+    /* ── PIPELINE ── */
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .pipeline-step {
+      padding: 2rem;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+    .pipeline-step:last-child { border-right: none; }
+    .pipeline-step::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: -1px;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: none;
+    }
+    .pipeline-n {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--text-3);
+      margin-bottom: 1rem;
+    }
+    .pipeline-title {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .pipeline-desc {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+
+    /* ── BOTTOM CTA ── */
+    .bottom-cta-section {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .bottom-cta-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .bottom-cta-text {
+      font-family: var(--serif);
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 300;
+      color: var(--text);
+      max-width: 500px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-left {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-3);
+    }
+    .footer-right {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-3);
+    }
+    .footer-right a {
+      color: var(--text-3);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border2);
+    }
+    .footer-right a:hover { color: var(--text-2); }
+
+    /* ── LINE DECORATIONS ── */
+    .rule-h {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      .cap-grid { grid-template-columns: 1fr; }
+      .pipeline { grid-template-columns: 1fr 1fr; }
+      .pipeline-step { border-bottom: 1px solid var(--border); }
+      .stats-bar { gap: 2rem; }
+    }
+    @media (max-width: 480px) {
+      .pipeline { grid-template-columns: 1fr; }
+      .hero-title { font-size: 3rem; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- ─────────────────────────────────────────── HEADER ─────────────────────────────────────────── -->
-<header class="header">
-  <div class="header-inner">
-    <div class="brand">
-      <div class="brand-icon">⚖</div>
-      <div class="brand-text">
-        <h1>Legal Risk Mapper</h1>
-        <span class="brand-tag">Hybrid AI contract & policy risk analysis</span>
-      </div>
-    </div>
-    <div class="health-pill" id="healthPill">
-      <span class="health-dot"></span>
-      <span id="healthLabel">Checking backend…</span>
-    </div>
-  </div>
+<header class="site-header">
+  <a class="header-logo" href="index.html">L<span>.</span>R<span>.</span>M</a>
+  <span class="header-right">LEGAL RISK MAPPER &nbsp;/&nbsp; v2.0</span>
 </header>
 
-<!-- ─────────────────────────────────────────── MAIN ─────────────────────────────────────────── -->
-<main class="container">
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-eyebrow">Contract Intelligence Platform</div>
+  <h1 class="hero-title">Know the risk<br><em>before you sign.</em></h1>
+  <p class="hero-sub">
+    ML-powered analysis of SaaS contract clauses against 116 real SEC EDGAR filings.
+    Structured extraction, market benchmarking, and grounded redline suggestions — in seconds.
+  </p>
+  <a class="hero-cta" href="app.html">
+    Analyze a Contract
+    <span class="hero-cta-arrow">→</span>
+  </a>
 
-  <!-- ============ INPUT CARD ============ -->
-  <section class="card input-card">
-    <div class="card-header">
-      <div>
-        <h2 class="card-title">Document Input</h2>
-        <p class="card-subtitle">Paste text, upload a file, or try a sample contract</p>
-      </div>
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-value">116</div>
+      <div class="stat-label">SEC EDGAR Contracts</div>
     </div>
-
-    <!-- Tab bar -->
-    <div class="tab-bar" id="inputTabs" role="tablist">
-      <button class="tab active" data-tab="text" role="tab">
-        <span class="tab-icon">✎</span> Paste Text
-      </button>
-      <button class="tab" data-tab="file" role="tab">
-        <span class="tab-icon">↑</span> Upload File
-      </button>
-      <button class="tab" data-tab="sample" role="tab">
-        <span class="tab-icon">✦</span> Samples
-      </button>
+    <div class="stat-item">
+      <div class="stat-value">18,001</div>
+      <div class="stat-label">Clause Chunks</div>
     </div>
-
-    <!-- PASTE TAB -->
-    <div class="tab-content active" id="tab-text">
-      <label class="field-label" for="docTitle">Document title <span class="optional">(optional)</span></label>
-      <input type="text" id="docTitle" placeholder="e.g. SaaS Service Agreement" />
-
-      <label class="field-label" for="textInput">Contract / Policy / Business Text</label>
-      <textarea id="textInput" rows="14"
-        placeholder="Paste your contract, terms of service, privacy policy, or business description here…"></textarea>
+    <div class="stat-item">
+      <div class="stat-value">0.965</div>
+      <div class="stat-label">Avg Detection F1</div>
     </div>
-
-    <!-- FILE TAB -->
-    <div class="tab-content" id="tab-file">
-      <div class="dropzone" id="dropzone">
-        <div class="drop-icon">📄</div>
-        <div class="drop-title">Drag & drop a file here</div>
-        <div class="drop-hint"><code>.pdf</code> · <code>.txt</code> · <code>.md</code></div>
-        <label class="btn btn-outline" for="fileInput">Choose file</label>
-        <input type="file" id="fileInput" accept=".txt,.md,.pdf" hidden />
-        <div class="drop-filename" id="fileName">No file selected</div>
-      </div>
-    </div>
-
-    <!-- SAMPLES TAB -->
-    <div class="tab-content" id="tab-sample">
-      <div class="sample-grid">
-        <button class="sample-card" data-sample="contract">
-          <div class="sample-icon">📋</div>
-          <div class="sample-title">SaaS Contract</div>
-          <div class="sample-desc">Hostile service agreement with liability shifts and auto-renewal</div>
-        </button>
-        <button class="sample-card" data-sample="privacy">
-          <div class="sample-icon">🔒</div>
-          <div class="sample-title">Privacy Policy</div>
-          <div class="sample-desc">App privacy policy with data sharing and tracking</div>
-        </button>
-        <button class="sample-card" data-sample="startup">
-          <div class="sample-icon">🚀</div>
-          <div class="sample-title">Startup Pitch</div>
-          <div class="sample-desc">Business description with compliance and privacy risks</div>
-        </button>
-        <button class="sample-card" data-sample="sneaky">
-          <div class="sample-icon">🧠</div>
-          <div class="sample-title">Paraphrased Contract</div>
-          <div class="sample-desc">Tests the semantic layer — no obvious legal keywords</div>
-        </button>
-      </div>
-    </div>
-
-    <!-- Action bar -->
-    <div class="action-bar">
-      <div class="action-left">
-        <button class="btn btn-primary btn-lg" id="analyzeBtn">
-          <span class="btn-icon-svg">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16" y2="16"/>
-            </svg>
-          </span>
-          Analyze Risk
-        </button>
-        <select class="clause-type-select" id="clauseTypeSelect" title="Clause type — auto-detected from text, or override">
-          <option value="auto">Auto-detect type</option>
-          <option value="liability">Liability</option>
-          <option value="termination">Termination</option>
-          <option value="payment">Payment</option>
-          <option value="confidentiality">Confidentiality</option>
-          <option value="ip">IP / Intellectual Property</option>
-          <option value="governing_law">Governing Law</option>
-        </select>
-        <button class="btn btn-accent btn-lg" id="benchmarkBtn">
-          <span class="btn-icon-svg">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 5-10"/>
-            </svg>
-          </span>
-          Benchmark &amp; Redline
-        </button>
-        <button class="btn btn-ghost" id="clearBtn">Clear</button>
-      </div>
-      <div class="action-right">
-        <span class="char-count" id="charCount">0 characters</span>
-      </div>
-    </div>
-
-    <div class="error-box hidden" id="errorBox"></div>
-  </section>
-
-  <!-- ============ RESULTS SECTION ============ -->
-  <section class="results-section hidden" id="resultsSection">
-
-    <!-- Hero stats -->
-    <div class="hero-card">
-      <div class="hero-top">
-        <div class="hero-left">
-          <div class="hero-label">Overall Risk Level</div>
-          <div class="hero-badge" id="overallBadge">—</div>
-          <div class="hero-doctitle" id="heroDocTitle"></div>
-        </div>
-        <div class="hero-stats">
-          <div class="stat stat-total">
-            <div class="stat-num" id="statTotal">0</div>
-            <div class="stat-label">Total Risks</div>
-          </div>
-          <div class="stat stat-high">
-            <div class="stat-num" id="statHigh">0</div>
-            <div class="stat-label">High</div>
-          </div>
-          <div class="stat stat-med">
-            <div class="stat-num" id="statMed">0</div>
-            <div class="stat-label">Medium</div>
-          </div>
-          <div class="stat stat-low">
-            <div class="stat-num" id="statLow">0</div>
-            <div class="stat-label">Low</div>
-          </div>
-          <button class="btn btn-ghost btn-sm" id="exportRiskBtn" title="Download analysis as JSON">
-            ↓ Export JSON
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Charts -->
-    <div class="charts-grid">
-      <div class="card chart-card">
-        <h3 class="chart-title">Risks by Category</h3>
-        <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
-      </div>
-      <div class="card chart-card">
-        <h3 class="chart-title">Severity Breakdown</h3>
-        <div class="chart-wrap"><canvas id="severityChart"></canvas></div>
-      </div>
-      <div class="card chart-card">
-        <h3 class="chart-title">Detection Layer</h3>
-        <div class="chart-wrap"><canvas id="sourceChart"></canvas></div>
-      </div>
-    </div>
-
-    <!-- Filter toolbar -->
-    <div class="filter-toolbar card">
-      <div class="filter-group">
-        <span class="filter-label">Severity</span>
-        <button class="filter-btn active" data-filter-sev="all">All</button>
-        <button class="filter-btn high" data-filter-sev="High">● High</button>
-        <button class="filter-btn med" data-filter-sev="Medium">● Medium</button>
-        <button class="filter-btn low" data-filter-sev="Low">● Low</button>
-      </div>
-      <div class="filter-group">
-        <span class="filter-label">Source</span>
-        <button class="filter-btn active" data-filter-src="all">All</button>
-        <button class="filter-btn" data-filter-src="hybrid">Confirmed</button>
-        <button class="filter-btn" data-filter-src="regex">Pattern</button>
-        <button class="filter-btn" data-filter-src="semantic">Semantic</button>
-      </div>
-      <div class="filter-group filter-view">
-        <span class="filter-label">View</span>
-        <button class="filter-btn active" data-view="grouped">Grouped</button>
-        <button class="filter-btn" data-view="list">Flat list</button>
-      </div>
-    </div>
-
-    <!-- Risk list -->
-    <div id="riskContainer"></div>
-
-    <!-- Notes -->
-    <div class="notes-card" id="notesCard"></div>
-  </section>
-
-  <!-- ============ BENCHMARK + REDLINE RESULTS ============ -->
-  <section class="results-section hidden" id="benchmarkSection">
-
-    <!-- Benchmark hero -->
-    <div class="hero-card benchmark-hero">
-      <div class="hero-top">
-        <div class="hero-left">
-          <div class="hero-label">Market Benchmark</div>
-          <div class="hero-badge benchmark-badge" id="benchSampleSize">-</div>
-          <div class="hero-doctitle" id="benchSubtitle">Similar clauses from SEC EDGAR filings</div>
-        </div>
-        <div class="hero-stats">
-          <div class="stat">
-            <div class="stat-num" id="benchExamples">0</div>
-            <div class="stat-label">Cited Examples</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num" id="benchRedlines">0</div>
-            <div class="stat-label">Suggestions</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- User extraction summary -->
-    <div class="card" id="extractionCard">
-      <h3 class="section-title">Your Clause Extraction</h3>
-      <div class="extraction-grid" id="extractionGrid"></div>
-    </div>
-
-    <!-- Market distributions -->
-    <div class="card" id="distributionCard">
-      <h3 class="section-title">Market Comparison</h3>
-      <p class="section-subtitle">How your clause compares to similar clauses in real SEC filings</p>
-      <div id="distributionBars"></div>
-    </div>
-
-    <!-- Cited examples -->
-    <div class="card" id="citedCard">
-      <h3 class="section-title">Cited SEC Filings</h3>
-      <div id="citedExamples"></div>
-    </div>
-
-    <!-- Redline suggestions -->
-    <div class="card" id="redlineCard">
-      <h3 class="section-title">Redline Suggestions</h3>
-      <p class="section-subtitle" id="redlineSummary"></p>
-      <div id="redlineSuggestions"></div>
-    </div>
-
-  </section>
-
-  <!-- Loader -->
-  <div class="loader-overlay hidden" id="loaderOverlay">
-    <div class="loader-box">
-      <div class="spinner"></div>
-      <div class="loader-title">Analyzing document…</div>
-      <div class="loader-hint" id="loaderHint">Running hybrid NLP pipeline</div>
+    <div class="stat-item">
+      <div class="stat-value">6</div>
+      <div class="stat-label">Clause Categories</div>
     </div>
   </div>
+</section>
 
-</main>
+<hr class="rule-h" />
 
-<footer class="footer">
-  Legal Risk Mapper v2 — Hybrid regex + semantic analysis. Not legal advice. Always consult a qualified attorney.
+<!-- ── CAPABILITIES ── -->
+<section class="section">
+  <div class="section-label">What it does</div>
+  <h2 class="section-title">Four layers of<br>contract intelligence</h2>
+
+  <div class="cap-grid">
+    <div class="cap-card">
+      <div class="cap-num">01 &nbsp;/&nbsp; ML RISK CLASSIFICATION</div>
+      <div class="cap-title">Five-Category Risk Scoring</div>
+      <p class="cap-desc">
+        Trained on 617 labeled clauses using all-MiniLM-L6-v2 sentence embeddings
+        and logistic regression. Detects Liability, Financial, Privacy/Data,
+        Compliance, and Contractual Ambiguity risks with confidence scores.
+      </p>
+      <span class="cap-metric">0.965 AVG DETECTION F1</span>
+    </div>
+    <div class="cap-card">
+      <div class="cap-num">02 &nbsp;/&nbsp; STRUCTURED EXTRACTION</div>
+      <div class="cap-title">Pydantic-Grounded Field Extraction</div>
+      <p class="cap-desc">
+        LLM-based extraction across six clause categories — liability, termination,
+        payment, confidentiality, IP, and governing law. Every field includes a
+        verbatim source text quote for verification.
+      </p>
+      <span class="cap-metric">0.953–1.000 GROUNDING SCORE</span>
+    </div>
+    <div class="cap-card">
+      <div class="cap-num">03 &nbsp;/&nbsp; MARKET BENCHMARKING</div>
+      <div class="cap-title">SEC EDGAR Percentile Ranking</div>
+      <p class="cap-desc">
+        pgvector similarity search retrieves the top 20 most similar clauses from
+        real EDGAR filings. Field-level market distributions show how your clause
+        compares to industry norms.
+      </p>
+      <span class="cap-metric">MRR@5 = 0.917 &nbsp;/&nbsp; NDCG@5 = 0.987</span>
+    </div>
+    <div class="cap-card">
+      <div class="cap-num">04 &nbsp;/&nbsp; GROUNDED REDLINES</div>
+      <div class="cap-title">Citation-Backed Edit Suggestions</div>
+      <p class="cap-desc">
+        Every redline suggestion cites specific market statistics and real SEC
+        filings — not LLM opinion. Original vs. proposed diff view with priority
+        scoring and risk labels.
+      </p>
+      <span class="cap-metric">CITES REAL EDGAR FILINGS</span>
+    </div>
+  </div>
+</section>
+
+<hr class="rule-h" />
+
+<!-- ── PIPELINE ── -->
+<section class="section">
+  <div class="section-label">How it works</div>
+  <h2 class="section-title">From clause to redline<br><em>in four steps</em></h2>
+
+  <div class="pipeline">
+    <div class="pipeline-step">
+      <div class="pipeline-n">STEP 01</div>
+      <div class="pipeline-title">Paste or Upload</div>
+      <p class="pipeline-desc">Submit any clause as text or upload a .pdf, .txt, or .md file. Clause type is auto-detected.</p>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-n">STEP 02</div>
+      <div class="pipeline-title">Risk Analysis</div>
+      <p class="pipeline-desc">ML classifier scores the clause across five risk categories with severity ratings and flagged text.</p>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-n">STEP 03</div>
+      <div class="pipeline-title">Market Benchmark</div>
+      <p class="pipeline-desc">pgvector search retrieves similar clauses from 116 EDGAR contracts. Field distributions computed.</p>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-n">STEP 04</div>
+      <div class="pipeline-title">Redline Generation</div>
+      <p class="pipeline-desc">LLM generates 2–4 edit suggestions, each citing specific market statistics from real SEC filings.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── BOTTOM CTA ── -->
+<div class="bottom-cta-section">
+  <div class="bottom-cta-inner">
+    <div class="bottom-cta-text">
+      Ready to analyze<br><em>your first clause?</em>
+    </div>
+    <a class="hero-cta" href="app.html">
+      Open the Tool
+      <span class="hero-cta-arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-left">
+    © 2025 Legal Risk Mapper &nbsp;·&nbsp; Portfolio project
+  </div>
+  <div class="footer-right">
+    Not legal advice. Always consult a licensed attorney. &nbsp;·&nbsp;
+    <a href="https://github.com/SriniV-1/legal-risk-mapper" target="_blank" rel="noopener">GitHub</a>
+  </div>
 </footer>
 
-<script src="config.js"></script>
-<script src="app.js"></script>
 </body>
 </html>

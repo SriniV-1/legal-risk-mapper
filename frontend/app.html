@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legal Risk Mapper — Analysis Tool</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a0b;
+      --surface:   #111113;
+      --surface2:  #18181c;
+      --border:    #1e1e24;
+      --border2:   #2a2a32;
+      --accent:    #2563eb;
+      --accent-dim:#1d4ed8;
+      --success:   #16a34a;
+      --warning:   #d97706;
+      --danger:    #dc2626;
+      --text:      #e8e8ee;
+      --text-2:    #9090a0;
+      --text-3:    #505060;
+      --mono:      'IBM Plex Mono', monospace;
+      --serif:     'Cormorant Garamond', Georgia, serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── APP HEADER ── */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,11,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    .back-link {
+      color: var(--text-3);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--text-2); }
+    .app-header-title {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+    .header-spacer { flex: 1; }
+    .health-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 11px;
+      color: var(--text-3);
+    }
+    .health-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-3);
+    }
+    .health-dot.ok { background: var(--success); }
+    .health-dot.err { background: var(--danger); }
+
+    /* ── LAYOUT ── */
+    .app-body {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    /* ── PANEL / CARD ── */
+    .panel {
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .panel-header {
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .panel-title {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+    .panel-body { padding: 1.25rem; }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      padding: 0.65rem 1.25rem;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-3);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      margin-bottom: -1px;
+    }
+    .tab-btn:hover { color: var(--text-2); }
+    .tab-btn.active { color: var(--text); border-bottom-color: var(--accent); }
+
+    .tab-panel { display: none; padding: 1.25rem; }
+    .tab-panel.active { display: block; }
+
+    /* ── TEXTAREA ── */
+    .clause-input {
+      width: 100%;
+      min-height: 220px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 1.7;
+      padding: 0.9rem;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .clause-input:focus { border-color: var(--border2); }
+    .clause-input::placeholder { color: var(--text-3); }
+
+    .char-count {
+      margin-top: 0.4rem;
+      font-size: 10px;
+      color: var(--text-3);
+      text-align: right;
+    }
+
+    /* ── FILE UPLOAD ── */
+    .dropzone {
+      border: 1px dashed var(--border2);
+      padding: 2.5rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      color: var(--text-3);
+    }
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--accent);
+      background: rgba(37,99,235,0.04);
+      color: var(--text-2);
+    }
+    .dropzone-icon { font-size: 1.6rem; margin-bottom: 0.75rem; }
+    .dropzone-label { font-size: 12px; margin-bottom: 0.3rem; color: var(--text-2); }
+    .dropzone-hint { font-size: 10px; letter-spacing: 0.08em; }
+    .file-name {
+      margin-top: 0.75rem;
+      font-size: 11px;
+      color: var(--accent);
+    }
+
+    /* ── CONTROLS ── */
+    .controls { padding: 1rem 1.25rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.75rem; }
+
+    label.field-label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.35rem;
+    }
+
+    select.clause-select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 0.6rem 0.75rem;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23505060'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+    }
+    select.clause-select:focus { border-color: var(--border2); }
+
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+
+    .btn {
+      padding: 0.7rem 1rem;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-dim); }
+    .btn-ghost { background: var(--surface2); color: var(--text-2); border: 1px solid var(--border); }
+    .btn-ghost:hover:not(:disabled) { background: var(--border); }
+    .btn-full { grid-column: 1 / -1; }
+
+    /* ── ERROR BOX ── */
+    .error-box {
+      margin: 0 1.25rem 1rem;
+      background: rgba(220,38,38,0.08);
+      border: 1px solid rgba(220,38,38,0.25);
+      color: #fca5a5;
+      font-size: 11px;
+      padding: 0.75rem;
+      white-space: pre-wrap;
+    }
+    .hidden { display: none !important; }
+
+    /* ── LOADER ── */
+    .loader-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,10,11,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+    }
+    .loader-spinner {
+      width: 32px; height: 32px;
+      border: 2px solid var(--border2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader-hint {
+      font-size: 12px;
+      color: var(--text-2);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── RESULTS PANEL ── */
+    .results-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* ── OVERALL BADGE ── */
+    .overall-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .overall-badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      padding: 0.3rem 0.75rem;
+      border: 1px solid;
+    }
+    .overall-badge.high { color: #fca5a5; border-color: var(--danger); background: rgba(220,38,38,0.1); }
+    .overall-badge.medium { color: #fcd34d; border-color: var(--warning); background: rgba(217,119,6,0.1); }
+    .overall-badge.low { color: #86efac; border-color: var(--success); background: rgba(22,163,74,0.1); }
+    .overall-badge.none { color: var(--text-2); border-color: var(--border2); background: var(--surface2); }
+
+    .risk-stats-row {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 0.75rem;
+    }
+    .risk-stat { text-align: center; }
+    .risk-stat-n {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 300;
+      line-height: 1;
+    }
+    .risk-stat-n.high { color: #fca5a5; }
+    .risk-stat-n.medium { color: #fcd34d; }
+    .risk-stat-n.low { color: #86efac; }
+    .risk-stat-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-3);
+      margin-top: 0.2rem;
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .filter-btn {
+      padding: 0.25rem 0.65rem;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { color: var(--text-2); border-color: var(--border2); }
+    .filter-btn.active { color: var(--text); border-color: var(--accent); background: rgba(37,99,235,0.1); }
+
+    /* ── RISK CARDS ── */
+    .risk-list { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .risk-card {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      padding: 1rem;
+    }
+    .risk-card.High { border-left: 2px solid var(--danger); }
+    .risk-card.Medium { border-left: 2px solid var(--warning); }
+    .risk-card.Low { border-left: 2px solid var(--success); }
+
+    .risk-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.6rem;
+    }
+    .sev-badge {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      padding: 0.15rem 0.5rem;
+    }
+    .sev-badge.High { background: rgba(220,38,38,0.12); color: #fca5a5; }
+    .sev-badge.Medium { background: rgba(217,119,6,0.12); color: #fcd34d; }
+    .sev-badge.Low { background: rgba(22,163,74,0.12); color: #86efac; }
+
+    .risk-type {
+      font-size: 11px;
+      color: var(--text-2);
+    }
+    .src-badges { display: flex; gap: 0.3rem; margin-left: auto; }
+    .src-badge {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      padding: 0.1rem 0.4rem;
+      border: 1px solid;
+    }
+    .src-badge.hybrid { color: #67e8f9; border-color: #0891b2; }
+    .src-badge.regex { color: var(--text-3); border-color: var(--border2); }
+    .src-badge.semantic { color: #c4b5fd; border-color: #7c3aed; }
+
+    .risk-snippet {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--text-2);
+      font-style: italic;
+      border-left: 2px solid var(--border2);
+      padding-left: 0.75rem;
+      margin-bottom: 0.6rem;
+    }
+    .risk-explanation { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+
+    .confidence-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    .conf-label { font-size: 10px; color: var(--text-3); min-width: 70px; }
+    .conf-track { flex: 1; height: 2px; background: var(--border); }
+    .conf-fill { height: 100%; background: var(--accent); }
+    .conf-pct { font-size: 10px; color: var(--text-3); min-width: 28px; text-align: right; }
+
+    /* ── BENCHMARK SECTION ── */
+    .bench-stats {
+      display: flex;
+      gap: 2rem;
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .bench-stat-val {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 300;
+      line-height: 1;
+      color: var(--text);
+    }
+    .bench-stat-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-3);
+      margin-top: 0.2rem;
+    }
+
+    /* ── EXTRACTION GRID ── */
+    .extraction-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .ext-item {
+      background: var(--bg);
+      padding: 0.65rem 0.75rem;
+    }
+    .ext-label {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.25rem;
+    }
+    .ext-value {
+      font-size: 12px;
+      color: var(--text-2);
+    }
+    .ext-value.true { color: #86efac; }
+    .ext-value.false { color: var(--text-3); }
+
+    /* ── DISTRIBUTION BARS ── */
+    .dist-rows { display: flex; flex-direction: column; gap: 0.75rem; }
+    .dist-row { display: flex; flex-direction: column; gap: 0.3rem; }
+    .dist-row-header { display: flex; justify-content: space-between; align-items: center; }
+    .dist-name { font-size: 11px; color: var(--text-2); }
+    .dist-meta { font-size: 10px; color: var(--text-3); }
+    .dist-track { height: 4px; background: var(--border); position: relative; }
+    .dist-fill { height: 100%; background: var(--accent); transition: width 0.4s ease; }
+    .dist-user-tag {
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      padding: 0.1rem 0.4rem;
+      border: 1px solid;
+      align-self: flex-start;
+    }
+    .dist-user-tag.has { color: #86efac; border-color: var(--success); }
+    .dist-user-tag.lacks { color: #fca5a5; border-color: var(--danger); }
+
+    /* ── CITED EXAMPLES ── */
+    .cited-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .cited-card {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      padding: 1rem;
+    }
+    .cited-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .cited-company { font-size: 12px; color: var(--text); }
+    .cited-sim {
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+    }
+    .cited-snippet {
+      font-size: 11px;
+      color: var(--text-3);
+      font-style: italic;
+      font-family: var(--mono);
+      font-weight: 300;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+      border-left: 2px solid var(--border2);
+      padding-left: 0.75rem;
+    }
+    .cited-link {
+      font-size: 10px;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+    }
+    .cited-link:hover { text-decoration: underline; }
+
+    /* ── REDLINES ── */
+    .redline-summary {
+      font-size: 12px;
+      color: var(--text-2);
+      line-height: 1.7;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      font-style: italic;
+    }
+    .redline-list { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+    .redline-item {
+      border: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .redline-item.high { border-left: 2px solid var(--danger); }
+    .redline-item.medium { border-left: 2px solid var(--warning); }
+    .redline-item.low { border-left: 2px solid var(--text-3); }
+
+    .redline-item-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .redline-priority {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      padding: 0.15rem 0.5rem;
+    }
+    .redline-priority.high { background: rgba(220,38,38,0.12); color: #fca5a5; }
+    .redline-priority.medium { background: rgba(217,119,6,0.12); color: #fcd34d; }
+    .redline-priority.low { background: var(--surface2); color: var(--text-3); }
+    .redline-risk-label { font-size: 11px; color: var(--text-2); flex: 1; }
+    .btn-copy {
+      padding: 0.2rem 0.6rem;
+      background: none;
+      border: 1px solid var(--border2);
+      color: var(--text-3);
+      font-family: var(--mono);
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-copy:hover { color: var(--text); border-color: var(--text-3); }
+
+    .redline-diff { padding: 0.75rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .diff-label {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.1rem;
+    }
+    .diff-original {
+      background: rgba(220,38,38,0.06);
+      border-left: 2px solid rgba(220,38,38,0.3);
+      padding: 0.5rem 0.65rem;
+      font-size: 11px;
+      color: #fca5a5;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+    .diff-proposed {
+      background: rgba(22,163,74,0.06);
+      border-left: 2px solid rgba(22,163,74,0.3);
+      padding: 0.5rem 0.65rem;
+      font-size: 11px;
+      color: #86efac;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+    .redline-justification {
+      padding: 0.5rem 1rem 0.25rem;
+      font-size: 11px;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+    .redline-citation {
+      padding: 0.25rem 1rem 0.75rem;
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.03em;
+    }
+
+    /* ── NOTES ── */
+    .notes-card {
+      padding: 0.75rem 1.25rem;
+      font-size: 11px;
+      color: var(--text-3);
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    /* ── EXPORT ── */
+    .export-row {
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-export {
+      padding: 0.4rem 0.9rem;
+      background: none;
+      border: 1px solid var(--border2);
+      color: var(--text-3);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-export:hover { color: var(--text); border-color: var(--text-3); }
+
+    /* ── PLACEHOLDER STATE ── */
+    .placeholder-state {
+      padding: 3rem 1.25rem;
+      text-align: center;
+      color: var(--text-3);
+    }
+    .placeholder-icon {
+      font-family: var(--serif);
+      font-size: 3rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+      opacity: 0.3;
+    }
+    .placeholder-title {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--text-3);
+      margin-bottom: 0.5rem;
+    }
+    .placeholder-hint { font-size: 11px; }
+
+    /* ── SECTION HEADING ── */
+    .section-heading {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--text);
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    @media (max-width: 900px) {
+      .app-body { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOADER ── -->
+<div class="loader-overlay hidden" id="loaderOverlay">
+  <div class="loader-spinner"></div>
+  <div class="loader-hint" id="loaderHint">Running analysis pipeline…</div>
+</div>
+
+<!-- ── HEADER ── -->
+<header class="app-header">
+  <a class="back-link" href="index.html">← BACK</a>
+  <span class="app-header-title">Analysis Tool</span>
+  <div class="header-spacer"></div>
+  <div class="health-pill">
+    <div class="health-dot" id="healthDot"></div>
+    <span id="healthLabel">Connecting…</span>
+  </div>
+</header>
+
+<!-- ── BODY ── -->
+<div class="app-body">
+
+  <!-- ── LEFT: INPUT PANEL ── -->
+  <div>
+    <div class="panel">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="text">Paste Text</button>
+        <button class="tab-btn" data-tab="file">Upload File</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-text">
+        <textarea
+          class="clause-input"
+          id="clauseInput"
+          placeholder="Paste a contract clause here…
+
+e.g. Each party's aggregate liability under this Agreement shall not exceed the fees paid in the twelve months preceding the claim…"></textarea>
+        <div class="char-count" id="charCount">0 characters</div>
+      </div>
+
+      <div class="tab-panel" id="tab-file">
+        <div class="dropzone" id="dropzone">
+          <div class="dropzone-icon">↑</div>
+          <div class="dropzone-label">Drop file or click to browse</div>
+          <div class="dropzone-hint">Accepts .pdf · .txt · .md</div>
+        </div>
+        <div class="file-name hidden" id="fileName"></div>
+        <input type="file" id="fileInput" accept=".pdf,.txt,.md" style="display:none" />
+      </div>
+
+      <!-- ERROR -->
+      <div class="error-box hidden" id="errorBox"></div>
+
+      <!-- CONTROLS -->
+      <div class="controls">
+        <div>
+          <label class="field-label" for="clauseTypeSelect">Clause type</label>
+          <select class="clause-select" id="clauseTypeSelect">
+            <option value="auto">Auto-detect</option>
+            <option value="liability">Liability</option>
+            <option value="termination">Termination</option>
+            <option value="payment">Payment</option>
+            <option value="confidentiality">Confidentiality</option>
+            <option value="ip">Intellectual Property</option>
+            <option value="governing_law">Governing Law</option>
+          </select>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="analyzeBtn">Analyze Risk</button>
+          <button class="btn btn-ghost" id="benchmarkBtn">Benchmark + Redline</button>
+        </div>
+        <button class="btn btn-ghost btn-full" id="clearBtn" style="font-size:10px;padding:.5rem">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT: RESULTS ── -->
+  <div class="results-col">
+
+    <!-- PLACEHOLDER -->
+    <div class="panel" id="placeholderPanel">
+      <div class="placeholder-state">
+        <div class="placeholder-icon">⚖</div>
+        <div class="placeholder-title">No analysis yet</div>
+        <div class="placeholder-hint">Paste a clause and click Analyze Risk or Benchmark + Redline</div>
+      </div>
+    </div>
+
+    <!-- RISK RESULTS -->
+    <div class="panel hidden" id="riskPanel">
+      <div class="panel-header">
+        <span class="panel-title">Risk Analysis</span>
+        <button class="btn-export" id="exportBtn">↓ Export JSON</button>
+      </div>
+      <div style="padding:1.25rem; border-bottom:1px solid var(--border)">
+        <div class="overall-row">
+          <span id="overallBadge" class="overall-badge">—</span>
+          <span style="font-size:11px; color:var(--text-3)" id="riskSubtitle"></span>
+        </div>
+        <div class="risk-stats-row">
+          <div class="risk-stat">
+            <div class="risk-stat-n" id="statTotal">0</div>
+            <div class="risk-stat-label">Total</div>
+          </div>
+          <div class="risk-stat">
+            <div class="risk-stat-n high" id="statHigh">0</div>
+            <div class="risk-stat-label">High</div>
+          </div>
+          <div class="risk-stat">
+            <div class="risk-stat-n medium" id="statMed">0</div>
+            <div class="risk-stat-label">Medium</div>
+          </div>
+          <div class="risk-stat">
+            <div class="risk-stat-n low" id="statLow">0</div>
+            <div class="risk-stat-label">Low</div>
+          </div>
+        </div>
+      </div>
+      <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" data-filter-sev="all">All</button>
+        <button class="filter-btn" data-filter-sev="High">High</button>
+        <button class="filter-btn" data-filter-sev="Medium">Medium</button>
+        <button class="filter-btn" data-filter-sev="Low">Low</button>
+      </div>
+      <div class="risk-list" id="riskList"></div>
+      <div class="notes-card hidden" id="notesCard"></div>
+    </div>
+
+    <!-- BENCHMARK + REDLINE RESULTS -->
+    <div class="panel hidden" id="benchmarkPanel">
+      <div class="panel-header">
+        <span class="panel-title">Market Benchmark</span>
+        <span style="font-size:10px; color:var(--text-3)" id="benchSubtitle"></span>
+      </div>
+      <div class="bench-stats">
+        <div>
+          <div class="bench-stat-val" id="benchSampleSize">—</div>
+          <div class="bench-stat-label">Similar Clauses</div>
+        </div>
+        <div>
+          <div class="bench-stat-val" id="benchExamples">—</div>
+          <div class="bench-stat-label">Cited Examples</div>
+        </div>
+        <div>
+          <div class="bench-stat-val" id="benchRedlines">—</div>
+          <div class="bench-stat-label">Redline Suggestions</div>
+        </div>
+      </div>
+
+      <!-- Extraction -->
+      <div class="section-heading">Your Clause — Extracted Fields</div>
+      <div style="padding:1.25rem">
+        <div class="extraction-grid" id="extractionGrid"></div>
+      </div>
+
+      <!-- Distributions -->
+      <div class="section-heading">Market Distributions</div>
+      <div style="padding:1.25rem">
+        <div class="dist-rows" id="distributionRows"></div>
+      </div>
+
+      <!-- Cited examples -->
+      <div class="section-heading">Cited SEC EDGAR Examples</div>
+      <div style="padding:1.25rem">
+        <div class="cited-list" id="citedExamples"></div>
+      </div>
+    </div>
+
+    <!-- REDLINE RESULTS -->
+    <div class="panel hidden" id="redlinePanel">
+      <div class="panel-header">
+        <span class="panel-title">Redline Suggestions</span>
+      </div>
+      <div class="redline-summary" id="redlineSummary"></div>
+      <div class="redline-list" id="redlineList"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+const API_BASE = window.LRM_API_BASE || "http://localhost:8000";
+
+// ── STATE ──
+const state = {
+  tab: "text",
+  file: null,
+  risks: [],
+  severityFilter: "all",
+  lastAnalysis: null,
+  lastRedline: null,
+};
+
+// ── DOM ──
+const $ = id => document.getElementById(id);
+const analyzeBtn    = $("analyzeBtn");
+const benchmarkBtn  = $("benchmarkBtn");
+const clearBtn      = $("clearBtn");
+const clauseInput   = $("clauseInput");
+const fileInput     = $("fileInput");
+const dropzone      = $("dropzone");
+const charCount     = $("charCount");
+const errorBox      = $("errorBox");
+const loaderOverlay = $("loaderOverlay");
+const loaderHint    = $("loaderHint");
+
+// ── HEALTH CHECK ──
+(async () => {
+  try {
+    const r = await fetch(`${API_BASE}/health`);
+    const d = await r.json();
+    $("healthDot").className = "health-dot ok";
+    $("healthLabel").textContent = `Backend v${d.version || "?"} · online`;
+  } catch {
+    $("healthDot").className = "health-dot err";
+    $("healthLabel").textContent = "Backend offline";
+  }
+})();
+
+// ── TABS ──
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    state.tab = btn.dataset.tab;
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    $("tab-" + state.tab).classList.add("active");
+  });
+});
+
+// ── CHAR COUNT ──
+clauseInput.addEventListener("input", () => {
+  const n = clauseInput.value.length;
+  charCount.textContent = `${n.toLocaleString()} character${n !== 1 ? "s" : ""}`;
+});
+
+// ── FILE UPLOAD ──
+fileInput.addEventListener("change", e => e.target.files[0] && setFile(e.target.files[0]));
+dropzone.addEventListener("click", () => fileInput.click());
+dropzone.addEventListener("dragover", e => { e.preventDefault(); dropzone.classList.add("dragover"); });
+dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
+dropzone.addEventListener("drop", e => {
+  e.preventDefault();
+  dropzone.classList.remove("dragover");
+  if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+});
+function setFile(file) {
+  state.file = file;
+  const fn = $("fileName");
+  fn.textContent = `${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+  fn.classList.remove("hidden");
+}
+
+// ── CLEAR ──
+clearBtn.addEventListener("click", () => {
+  clauseInput.value = "";
+  charCount.textContent = "0 characters";
+  state.file = null;
+  state.risks = [];
+  state.lastAnalysis = null;
+  fileInput.value = "";
+  $("fileName").classList.add("hidden");
+  $("placeholderPanel").classList.remove("hidden");
+  $("riskPanel").classList.add("hidden");
+  $("benchmarkPanel").classList.add("hidden");
+  $("redlinePanel").classList.add("hidden");
+  hideError();
+});
+
+// ── ANALYZE ──
+analyzeBtn.addEventListener("click", async () => {
+  hideError();
+  if (state.tab === "file" && state.file) {
+    await analyzeFile(state.file);
+    return;
+  }
+  const text = clauseInput.value.trim();
+  if (text.length < 10) return showError("Please enter at least 10 characters.");
+  await analyzeText(text);
+});
+
+async function analyzeText(text) {
+  showLoader("Running ML risk classifier…");
+  try {
+    const res = await fetch(`${API_BASE}/analyze`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    });
+    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).detail || res.statusText);
+    renderRiskResults(await res.json());
+  } catch (e) {
+    showError(`⚠ Could not reach the backend.\n${e.message}`);
+  } finally {
+    hideLoader();
+  }
+}
+
+async function analyzeFile(file) {
+  showLoader("Extracting text and analyzing…");
+  try {
+    const form = new FormData();
+    form.append("file", file);
+    const res = await fetch(`${API_BASE}/analyze/upload`, { method: "POST", body: form });
+    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).detail || res.statusText);
+    renderRiskResults(await res.json());
+  } catch (e) {
+    showError(`⚠ Upload failed.\n${e.message}`);
+  } finally {
+    hideLoader();
+  }
+}
+
+// ── RENDER RISK RESULTS ──
+function renderRiskResults(data) {
+  state.risks = data.risks || [];
+  state.lastAnalysis = data;
+
+  const lvl = (data.overall_risk_level || "none").toLowerCase();
+  const badge = $("overallBadge");
+  badge.textContent = lvl.toUpperCase();
+  badge.className = `overall-badge ${lvl}`;
+  $("riskSubtitle").textContent = `${data.total_risks} risk${data.total_risks !== 1 ? "s" : ""} detected`;
+
+  $("statTotal").textContent = data.total_risks;
+  $("statHigh").textContent  = data.severity_breakdown?.High   || 0;
+  $("statMed").textContent   = data.severity_breakdown?.Medium || 0;
+  $("statLow").textContent   = data.severity_breakdown?.Low    || 0;
+
+  if (data.analysis_notes) {
+    const n = $("notesCard");
+    n.textContent = data.analysis_notes;
+    n.classList.remove("hidden");
+  }
+
+  renderRiskList();
+  $("placeholderPanel").classList.add("hidden");
+  $("riskPanel").classList.remove("hidden");
+  $("riskPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function renderRiskList() {
+  const container = $("riskList");
+  let filtered = state.risks;
+  if (state.severityFilter !== "all") {
+    filtered = filtered.filter(r => r.severity === state.severityFilter);
+  }
+
+  if (!filtered.length) {
+    container.innerHTML = `<div style="color:var(--text-3);font-size:12px;padding:.5rem 0">No risks match the current filter.</div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(r => {
+    const sources = new Set(r.sources || []);
+    const hasBoth = sources.has("regex") && sources.has("semantic");
+    const srcHtml = hasBoth
+      ? `<span class="src-badge hybrid">CONFIRMED</span>`
+      : [
+          sources.has("regex")    ? `<span class="src-badge regex">PATTERN</span>` : "",
+          sources.has("semantic") ? `<span class="src-badge semantic">SEMANTIC</span>` : "",
+        ].join("");
+
+    const confPct = Math.round(r.score * 100);
+    return `
+      <div class="risk-card ${r.severity}">
+        <div class="risk-card-header">
+          <span class="sev-badge ${r.severity}">${r.severity}</span>
+          <span class="risk-type">${esc(r.risk_type)}</span>
+          <div class="src-badges">${srcHtml}</div>
+        </div>
+        <div class="risk-snippet">${esc(r.text_snippet || "")}</div>
+        <div class="risk-explanation">${esc(r.explanation || "")}</div>
+        <div class="confidence-row">
+          <span class="conf-label">Confidence</span>
+          <div class="conf-track"><div class="conf-fill" style="width:${confPct}%"></div></div>
+          <span class="conf-pct">${confPct}%</span>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+// ── SEVERITY FILTERS ──
+document.querySelectorAll("[data-filter-sev]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("[data-filter-sev]").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    state.severityFilter = btn.dataset.filterSev;
+    renderRiskList();
+  });
+});
+
+// ── EXPORT ──
+$("exportBtn").addEventListener("click", () => {
+  if (!state.lastAnalysis) return;
+  const blob = new Blob([JSON.stringify(state.lastAnalysis, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "legal_risk_analysis.json";
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// ── BENCHMARK + REDLINE ──
+benchmarkBtn.addEventListener("click", async () => {
+  hideError();
+  const text = clauseInput.value.trim();
+  if (text.length < 30) return showError("Please enter at least 30 characters to benchmark.");
+  const clauseType = $("clauseTypeSelect").value;
+
+  showLoader("Benchmarking against SEC EDGAR corpus…");
+  try {
+    const benchRes = await fetch(`${API_BASE}/benchmark`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, clause_type: clauseType }),
+    });
+    if (!benchRes.ok) throw new Error((await benchRes.json().catch(() => ({}))).detail || benchRes.statusText);
+    const benchmark = await benchRes.json();
+
+    loaderHint.textContent = `Generating ${benchmark.clause_type.replace(/_/g," ")} redlines…`;
+
+    const redlineRes = await fetch(`${API_BASE}/redline`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, clause_type: benchmark.clause_type }),
+    });
+    if (!redlineRes.ok) throw new Error((await redlineRes.json().catch(() => ({}))).detail || redlineRes.statusText);
+    const redline = await redlineRes.json();
+    state.lastRedline = redline;
+
+    renderBenchmark(benchmark, redline);
+  } catch (e) {
+    showError(`⚠ Benchmark error: ${e.message}`);
+  } finally {
+    hideLoader();
+  }
+});
+
+function renderBenchmark(b, redline) {
+  const typeLabel = b.clause_type.replace(/_/g, " ");
+  $("benchSubtitle").textContent = `${typeLabel} · ${b.sample_size} similar clauses from EDGAR`;
+  $("benchSampleSize").textContent = b.sample_size;
+  $("benchExamples").textContent = b.cited_examples.length;
+  $("benchRedlines").textContent = redline.suggestions.length;
+
+  renderExtraction(b.user_extraction, b.clause_type);
+  renderDistributions(b.field_distributions, b.user_extraction, b.clause_type);
+  renderCited(b.cited_examples);
+  renderRedlines(redline);
+
+  $("placeholderPanel").classList.add("hidden");
+  $("riskPanel").classList.add("hidden");
+  $("benchmarkPanel").classList.remove("hidden");
+  $("redlinePanel").classList.remove("hidden");
+  $("benchmarkPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// ── EXTRACTION FIELDS ──
+const EXTRACTION_FIELDS = {
+  liability: [
+    { label: "Liability Cap",           get: e => e.liability_cap?.has_cap },
+    { label: "Cap Type",                get: e => e.liability_cap?.cap_type || "—" },
+    { label: "Mutual",                  get: e => e.is_mutual },
+    { label: "Carve-Outs",              get: e => e.has_carve_outs },
+    { label: "Consequential Excluded",  get: e => e.consequential_damages?.excluded },
+    { label: "Indemnification",         get: e => e.has_indemnification },
+    { label: "Warranty Disclaimer",     get: e => e.has_warranty_disclaimer },
+  ],
+  termination: [
+    { label: "For Cause",          get: e => e.has_termination_for_cause },
+    { label: "For Convenience",    get: e => e.has_termination_for_convenience },
+    { label: "Cure Period",        get: e => e.cure_period?.has_cure_period },
+    { label: "Cure Days",          get: e => e.cure_period?.cure_days ?? "—" },
+    { label: "Notice Period",      get: e => e.notice_period?.has_notice_period },
+    { label: "Auto-Renewal",       get: e => e.has_auto_renewal },
+    { label: "Survival Clause",    get: e => e.has_survival_clause },
+    { label: "Termination Fee",    get: e => e.has_termination_fee },
+  ],
+  payment: [
+    { label: "Payment Terms",      get: e => e.has_payment_terms },
+    { label: "Payment Days",       get: e => e.payment_days ?? "—" },
+    { label: "Late Fee",           get: e => e.late_fee?.has_late_fee },
+    { label: "Price Escalation",   get: e => e.has_price_escalation },
+    { label: "Non-Refundable",     get: e => e.has_non_refundable },
+    { label: "Min. Commitment",    get: e => e.has_minimum_commitment },
+    { label: "Dispute Process",    get: e => e.has_dispute_process },
+  ],
+  confidentiality: [
+    { label: "Broad Definition",   get: e => e.has_broad_definition },
+    { label: "Std. Exclusions",    get: e => e.has_standard_exclusions },
+    { label: "Duration",           get: e => e.has_duration },
+    { label: "Permitted Discl.",   get: e => e.has_permitted_disclosures },
+    { label: "Return/Destroy",     get: e => e.has_return_or_destroy },
+    { label: "Residuals Clause",   get: e => e.has_residuals_clause },
+    { label: "Injunctive Relief",  get: e => e.has_injunctive_relief },
+    { label: "Mutual",             get: e => e.is_mutual },
+  ],
+  ip: [
+    { label: "Customer Owns",      get: e => e.has_customer_owns_deliverables },
+    { label: "Provider Owns",      get: e => e.has_provider_owns_deliverables },
+    { label: "Pre-Existing IP",    get: e => e.has_pre_existing_ip_carveout },
+    { label: "Work for Hire",      get: e => e.has_work_for_hire },
+    { label: "IP Assignment",      get: e => e.has_ip_assignment },
+    { label: "License Grant",      get: e => e.has_license_grant },
+    { label: "Feedback Clause",    get: e => e.has_feedback_clause },
+    { label: "Source Escrow",      get: e => e.has_source_code_escrow },
+    { label: "Non-Compete",        get: e => e.has_non_compete },
+  ],
+  governing_law: [
+    { label: "Governing Law",      get: e => e.has_governing_law },
+    { label: "Jurisdiction",       get: e => e.governing_law_jurisdiction || "—" },
+    { label: "Venue Selection",    get: e => e.has_venue_selection },
+    { label: "Arbitration",        get: e => e.has_arbitration },
+    { label: "Jury Waiver",        get: e => e.has_jury_waiver },
+    { label: "Class Action Wvr.",  get: e => e.has_class_action_waiver },
+    { label: "Prevailing Fees",    get: e => e.has_prevailing_party_fees },
+  ],
+};
+
+function renderExtraction(ext, clauseType) {
+  const grid = $("extractionGrid");
+  if (!ext) { grid.innerHTML = `<div class="ext-item"><div class="ext-value">Extraction failed</div></div>`; return; }
+  const defs = EXTRACTION_FIELDS[clauseType] || EXTRACTION_FIELDS.liability;
+  const items = [...defs, { label: "Confidence", get: e => e.extraction_confidence != null ? (e.extraction_confidence * 100).toFixed(0) + "%" : "—" }];
+  grid.innerHTML = items.map(f => {
+    const val = f.get(ext);
+    const isB = typeof val === "boolean";
+    const cls = isB ? (val ? "true" : "false") : "";
+    return `<div class="ext-item"><div class="ext-label">${esc(f.label)}</div><div class="ext-value ${cls}">${esc(String(isB ? (val ? "Yes" : "No") : val))}</div></div>`;
+  }).join("");
+}
+
+// ── DISTRIBUTION FIELDS ──
+const DIST_CONFIG = {
+  liability:      { labels: { has_cap:"Liability Cap", is_mutual:"Mutual", has_carve_outs:"Carve-Outs", consequential_excluded:"Consequential Excl.", has_indemnification:"Indemnification", has_warranty_disclaimer:"Warranty Disclaimer" }, getUserVal: (e,f) => f==="has_cap"?e?.liability_cap?.has_cap:f==="consequential_excluded"?e?.consequential_damages?.excluded:e?.[f] },
+  termination:    { labels: { has_termination_for_cause:"For Cause", has_termination_for_convenience:"For Convenience", has_cure_period:"Cure Period", has_notice_period:"Notice Period", has_auto_renewal:"Auto-Renewal", has_survival_clause:"Survival Clause", has_termination_fee:"Termination Fee" }, getUserVal: (e,f) => f==="has_cure_period"?e?.cure_period?.has_cure_period:f==="has_notice_period"?e?.notice_period?.has_notice_period:e?.[f] },
+  payment:        { labels: { has_payment_terms:"Payment Terms", has_late_fee:"Late Fee", has_price_escalation:"Price Escalation", has_non_refundable:"Non-Refundable", has_minimum_commitment:"Min. Commitment", has_dispute_process:"Dispute Process", has_right_of_setoff:"Right of Setoff" }, getUserVal: (e,f) => f==="has_late_fee"?e?.late_fee?.has_late_fee:e?.[f] },
+  confidentiality:{ labels: { has_broad_definition:"Broad Definition", has_standard_exclusions:"Std. Exclusions", has_duration:"Duration", has_permitted_disclosures:"Permitted Discl.", has_return_or_destroy:"Return/Destroy", has_residuals_clause:"Residuals Clause", has_injunctive_relief:"Injunctive Relief", is_mutual:"Mutual" }, getUserVal: (e,f) => e?.[f] },
+  ip:             { labels: { has_customer_owns_deliverables:"Customer Owns", has_provider_owns_deliverables:"Provider Owns", has_pre_existing_ip_carveout:"Pre-Existing IP", has_work_for_hire:"Work for Hire", has_ip_assignment:"IP Assignment", has_license_grant:"License Grant", has_feedback_clause:"Feedback Clause", has_source_code_escrow:"Source Escrow", has_non_compete:"Non-Compete" }, getUserVal: (e,f) => e?.[f] },
+  governing_law:  { labels: { has_governing_law:"Governing Law", has_venue_selection:"Venue Selection", has_arbitration:"Arbitration", has_jury_waiver:"Jury Waiver", has_class_action_waiver:"Class Action Wvr.", has_prevailing_party_fees:"Prevailing Fees" }, getUserVal: (e,f) => e?.[f] },
+};
+
+function renderDistributions(dists, userExt, clauseType) {
+  const container = $("distributionRows");
+  const cfg = DIST_CONFIG[clauseType] || DIST_CONFIG.liability;
+  const rows = Object.entries(dists)
+    .filter(([k, v]) => v.total > 0 && !v.value_counts?.length && cfg.labels[k])
+    .map(([field, dist]) => {
+      const userVal = cfg.getUserVal(userExt, field);
+      const pct = Math.max(dist.true_pct, 2);
+      const userTag = userVal === true
+        ? `<span class="dist-user-tag has">You have this</span>`
+        : userVal === false
+        ? `<span class="dist-user-tag lacks">You lack this</span>`
+        : "";
+      return `
+        <div class="dist-row">
+          <div class="dist-row-header">
+            <span class="dist-name">${cfg.labels[field]}</span>
+            <span class="dist-meta">${dist.true_count}/${dist.total} · ${dist.true_pct.toFixed(0)}%</span>
+          </div>
+          <div class="dist-track"><div class="dist-fill" style="width:${pct}%"></div></div>
+          ${userTag}
+        </div>`;
+    });
+  container.innerHTML = rows.join("") || `<div style="color:var(--text-3);font-size:12px">No distribution data available.</div>`;
+}
+
+function renderCited(examples) {
+  const container = $("citedExamples");
+  if (!examples.length) { container.innerHTML = `<div style="color:var(--text-3);font-size:12px">No examples found.</div>`; return; }
+  container.innerHTML = examples.map(ex => {
+    const link = ex.exhibit_url ? `<a class="cited-link" href="${esc(ex.exhibit_url)}" target="_blank" rel="noopener">View SEC Filing →</a>` : "";
+    return `
+      <div class="cited-card">
+        <div class="cited-card-header">
+          <span class="cited-company">${esc(ex.company || ex.contract_id)}</span>
+          <span class="cited-sim">${(ex.similarity*100).toFixed(1)}% match</span>
+        </div>
+        <div class="cited-snippet">${esc(ex.text_snippet)}</div>
+        ${link}
+      </div>`;
+  }).join("");
+}
+
+function renderRedlines(redline) {
+  $("redlineSummary").textContent = redline.summary || "";
+  const container = $("redlineList");
+  if (!redline.suggestions.length) {
+    container.innerHTML = `<div style="color:var(--text-3);font-size:12px;padding:.5rem 0">No redline suggestions — your clause aligns with market norms.</div>`;
+    return;
+  }
+  container.innerHTML = redline.suggestions.map((s, i) => `
+    <div class="redline-item ${s.priority}">
+      <div class="redline-item-header">
+        <span class="redline-priority ${s.priority}">${esc(s.priority)}</span>
+        <span class="redline-risk-label">${esc(s.risk_addressed)}</span>
+        <button class="btn-copy" data-idx="${i}">Copy</button>
+      </div>
+      <div class="redline-diff">
+        <div class="diff-label">Original</div>
+        <div class="diff-original">${esc(s.original_text)}</div>
+        <div class="diff-label" style="margin-top:.5rem">Proposed</div>
+        <div class="diff-proposed">${esc(s.proposed_text)}</div>
+      </div>
+      <div class="redline-justification">${esc(s.justification)}</div>
+      ${s.market_citation ? `<div class="redline-citation">${esc(s.market_citation)}</div>` : ""}
+    </div>`).join("");
+
+  container.querySelectorAll(".btn-copy").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const text = redline.suggestions[parseInt(btn.dataset.idx)]?.proposed_text || "";
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = "Copied!";
+        setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+      }).catch(() => { btn.textContent = "Error"; });
+    });
+  });
+}
+
+// ── HELPERS ──
+function showLoader(hint) {
+  loaderHint.textContent = hint || "Running…";
+  loaderOverlay.classList.remove("hidden");
+  analyzeBtn.disabled = benchmarkBtn.disabled = true;
+}
+function hideLoader() {
+  loaderOverlay.classList.add("hidden");
+  analyzeBtn.disabled = benchmarkBtn.disabled = false;
+}
+function showError(msg) { errorBox.textContent = msg; errorBox.classList.remove("hidden"); }
+function hideError() { errorBox.classList.add("hidden"); }
+function esc(str) {
+  return String(str ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+</script>
+</body>
+</html>
