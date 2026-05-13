@@ -67,37 +67,37 @@ confidence score
 
 ### Risk Classification — 617 labeled examples, 5-fold cross-validation
 
-| Category | Detection F1 | Severity Macro F1 | CV Score |
-|---|---|---|---|
-| Privacy/Data Risk | 1.000 | 1.000 | 0.994 |
-| Financial Risk | 0.980 | 0.984 | 0.955 |
-| Contractual Ambiguity | 0.977 | 0.980 | 0.957 |
-| Liability Risk | 0.941 | 0.830 | 0.959 |
-| Compliance Risk | 0.927 | 0.966 | 0.979 |
-| **Average** | **0.965** | **0.952** | — |
+| Category               | Detection F1 | Severity Macro F1 | CV Score |
+|------------------------|:------------:|:-----------------:|:--------:|
+| Privacy/Data Risk      | 1.000        | 1.000             | 0.994    |
+| Financial Risk         | 0.980        | 0.984             | 0.955    |
+| Contractual Ambiguity  | 0.977        | 0.980             | 0.957    |
+| Liability Risk         | 0.941        | 0.830             | 0.959    |
+| Compliance Risk        | 0.927        | 0.966             | 0.979    |
+| **Average**            | **0.965**    | **0.952**         | —        |
 
 Regularization parameter C was cross-validated independently per category. Per-category reports (precision, recall, F1 by severity level) are stored in `data/models/risk_classifier.pkl` under the `metrics` key.
 
 ### Extraction — 35 hand-labeled examples per category (42 for liability)
 
-| Clause Type | Core Field F1 | Success Rate | Avg Grounding Score | Eval Examples |
-|---|---|---|---|---|
-| Governing Law | 0.971 | 100% | 1.000 | 35 |
-| Payment | 0.941 | 100% | 1.000 | 35 |
-| IP | 0.921 | 100% | 0.996 | 35 |
-| Confidentiality | 0.920 | 100% | 0.953 | 35 |
-| Termination | 0.881 | 94.3% | 0.973 | 35 |
-| Liability | 0.762 | 97.6% | 0.975 | 42 |
+| Clause Type     | Core Field F1 | Success Rate | Avg Grounding Score | Eval Examples |
+|-----------------|:-------------:|:------------:|:-------------------:|:-------------:|
+| Governing Law   | 0.971         | 100%         | 1.000               | 35            |
+| Payment         | 0.941         | 100%         | 1.000               | 35            |
+| IP              | 0.921         | 100%         | 0.996               | 35            |
+| Confidentiality | 0.920         | 100%         | 0.953               | 35            |
+| Termination     | 0.881         | 94.3%        | 0.973               | 35            |
+| Liability       | 0.762         | 97.6%        | 0.975               | 42            |
 
 Grounding score measures the fraction of extracted field values where the accompanying `source_text` is a verified substring of the input clause. A grounding score below 1.0 indicates fields where the model generated a source quote that drifts from the exact contract language.
 
 ### Retrieval — pgvector over 18,001 chunks from 116 contracts
 
-| Metric | Value |
-|---|---|
-| MRR@5 | 0.917 |
-| NDCG@5 | 0.987 |
-| Avg query latency | 0.243s |
+| Metric             | Value  |
+|--------------------|--------|
+| MRR@5              | 0.917  |
+| NDCG@5             | 0.987  |
+| Avg query latency  | 0.243s |
 
 All evaluation code is in `scripts/` and labeled datasets are in `data/eval/`. To regenerate:
 
@@ -121,14 +121,14 @@ The Supabase schema has three tables: `contracts` (id, company, form_type, filed
 
 **Current extraction coverage:**
 
-| Clause Type | Chunks | Extracted | Coverage |
-|---|---|---|---|
-| Governing Law | 874 | 708 | 81.0% |
-| Liability | 1,999 | 981 | 49.1% |
-| Confidentiality | 2,423 | 990 | 40.9% |
-| IP | 656 | 18 | 2.7% |
-| Termination | 1,434 | 11 | 0.8% |
-| Payment | 2,156 | 15 | 0.7% |
+| Clause Type     | Chunks | Extracted | Coverage |
+|-----------------|-------:|----------:|:--------:|
+| Governing Law   | 874    | 708       | 81.0%    |
+| Liability       | 1,999  | 981       | 49.1%    |
+| Confidentiality | 2,423  | 990       | 40.9%    |
+| IP              | 656    | 18        | 2.7%     |
+| Termination     | 1,434  | 11        | 0.8%     |
+| Payment         | 2,156  | 15        | 0.7%     |
 
 Batch extraction is in progress using Claude Haiku (`claude-haiku-4-5-20251001`) via the Anthropic API. The extractor script supports resume — it skips chunks with existing rows in `structured_extractions`.
 
@@ -136,31 +136,31 @@ Batch extraction is in progress using Claude Haiku (`claude-haiku-4-5-20251001`)
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Backend | FastAPI 0.111, Gunicorn 22 + Uvicorn workers |
-| ML Classifier | sklearn LogisticRegression (5 independent models), sentence-transformers all-MiniLM-L6-v2 (384-dim) |
-| LLM Inference | Groq API, llama-3.3-70b-versatile (extraction + redlines) |
-| Database | Supabase PostgreSQL + pgvector, IVFFlat index |
-| NLP | spaCy en_core_web_sm (clause segmentation), MiniLM-L6-v2 (embeddings) |
-| PDF Extraction | PyMuPDF (MuPDF bindings) |
-| Frontend | Vanilla HTML/CSS/JS, no framework, Vercel static hosting |
-| Deployment | Docker on Hugging Face Spaces (backend, free CPU tier) |
-| CI | GitHub Actions, pytest on push and PR |
+| Layer           | Technology                                                                                          |
+|-----------------|-----------------------------------------------------------------------------------------------------|
+| Backend         | FastAPI 0.111, Gunicorn 22 + Uvicorn workers                                                        |
+| ML Classifier   | sklearn LogisticRegression (5 independent models), sentence-transformers all-MiniLM-L6-v2 (384-dim) |
+| LLM Inference   | Groq API, llama-3.3-70b-versatile (extraction + redlines)                                           |
+| Database        | Supabase PostgreSQL + pgvector, IVFFlat index                                                       |
+| NLP             | spaCy en_core_web_sm (clause segmentation), MiniLM-L6-v2 (embeddings)                              |
+| PDF Extraction  | PyMuPDF (MuPDF bindings)                                                                            |
+| Frontend        | Vanilla HTML/CSS/JS, no framework, Vercel static hosting                                            |
+| Deployment      | Docker on Hugging Face Spaces (backend, free CPU tier)                                              |
+| CI              | GitHub Actions, pytest on push and PR                                                               |
 
 ---
 
 ## API Reference
 
-| Method | Path | Auth | Rate Limit | Description |
-|---|---|---|---|---|
-| GET | `/health` | None | — | Version and NLP engine status |
-| GET | `/corpus/stats` | None | — | Live extraction coverage per clause type |
-| POST | `/analyze` | None | 30/min | ML risk classification of raw text |
-| POST | `/analyze/upload` | None | 30/min | Upload and analyze .pdf, .txt, or .md |
-| POST | `/extract` | None | 30/min | Extract raw text from an uploaded file |
-| POST | `/benchmark` | Optional API key | 10/min | RAG benchmarking against EDGAR corpus |
-| POST | `/redline` | Optional API key | 10/min | Benchmark then generate grounded redlines |
+| Method | Path              | Auth             | Rate Limit | Description                               |
+|--------|-------------------|------------------|:----------:|-------------------------------------------|
+| GET    | `/health`         | None             | —          | Version and NLP engine status             |
+| GET    | `/corpus/stats`   | None             | —          | Live extraction coverage per clause type  |
+| POST   | `/analyze`        | None             | 30/min     | ML risk classification of raw text        |
+| POST   | `/analyze/upload` | None             | 30/min     | Upload and analyze .pdf, .txt, or .md     |
+| POST   | `/extract`        | None             | 30/min     | Extract raw text from an uploaded file    |
+| POST   | `/benchmark`      | Optional API key | 10/min     | RAG benchmarking against EDGAR corpus     |
+| POST   | `/redline`        | Optional API key | 10/min     | Benchmark then generate grounded redlines |
 
 Live health check: `https://sriniv-1-legal-risk-mapper.hf.space/health`
 
@@ -214,15 +214,15 @@ python -m spacy download en_core_web_sm
 
 **Environment variables:**
 
-| Variable | Required | Purpose |
-|---|---|---|
-| `SUPABASE_URL` | Yes | Supabase project URL |
-| `SUPABASE_KEY` | Yes | Supabase service-role key |
-| `GROQ_API_KEY` | Yes | Groq API key for extraction and redlines |
-| `ANTHROPIC_API_KEY` | No | Use Claude for extraction (falls back to Groq) |
-| `LRM_EXTRACTION_MODEL` | No | Override extraction model (default: `llama3.1:8b`, auto-switched to Groq when key present) |
-| `LRM_API_KEY` | No | Require `X-API-Key` header on `/benchmark` and `/redline` |
-| `CORS_ORIGINS` | No | Comma-separated allowed origins (default: `*`) |
+| Variable                | Required | Purpose                                                                                  |
+|-------------------------|:--------:|------------------------------------------------------------------------------------------|
+| `SUPABASE_URL`          | Yes      | Supabase project URL                                                                     |
+| `SUPABASE_KEY`          | Yes      | Supabase service-role key                                                                |
+| `GROQ_API_KEY`          | Yes      | Groq API key for extraction and redlines                                                 |
+| `ANTHROPIC_API_KEY`     | No       | Use Claude for extraction (falls back to Groq)                                           |
+| `LRM_EXTRACTION_MODEL`  | No       | Override extraction model (default: `llama3.1:8b`, auto-switched to Groq when key present) |
+| `LRM_API_KEY`           | No       | Require `X-API-Key` header on `/benchmark` and `/redline`                               |
+| `CORS_ORIGINS`          | No       | Comma-separated allowed origins (default: `*`)                                           |
 
 ```bash
 cp .env.example .env
