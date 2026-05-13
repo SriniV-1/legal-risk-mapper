@@ -282,12 +282,9 @@ legal-risk-mapper/
 │       ├── risk_knowledge_base.py   # 30 canonical clause embeddings (cluster centroids)
 │       └── semantic_analyzer.py     # Cosine similarity layer, spaCy segmentation
 ├── data/
-│   ├── eval/                        # Hand-labeled evaluation datasets (35-42 examples each)
+│   ├── eval/                        # Hand-labeled evaluation datasets
 │   │   ├── liability_eval.json      # 42 examples with full ground truth
 │   │   ├── termination_eval.json
-│   │   ├── payment_eval.json
-│   │   ├── confidentiality_eval.json
-│   │   ├── ip_eval.json
 │   │   └── governing_law_eval.json
 │   └── models/
 │       ├── risk_classifier.pkl      # Trained sklearn bundle: 5 LR models + per-category metrics
