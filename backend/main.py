@@ -10,6 +10,7 @@ import io
 import logging
 import os
 from collections import Counter
+from contextlib import asynccontextmanager
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Request, Security
@@ -50,11 +51,25 @@ async def _verify_api_key(api_key: Optional[str] = Security(_api_key_header)):
         raise HTTPException(status_code=403, detail="Invalid or missing API key")
 
 
+# ── Lifespan (startup/shutdown) ────────────────────────────────────────────────
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Warm the semantic layer at startup so the first request doesn't stall."""
+    try:
+        from backend.services.semantic_analyzer import warmup
+        ready = warmup()
+        logger.info(f"Semantic layer {'READY' if ready else 'DISABLED (regex-only mode)'}")
+    except Exception as e:
+        logger.warning(f"Semantic warmup failed: {e}")
+    yield  # application runs here
+
+
 # ── App ───────────────────────────────────────────────────────────────────────
 app = FastAPI(
     title="Legal Risk Mapper",
     description="NLP-powered legal risk analysis for contracts, policies, and business text.",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.state.limiter = limiter
@@ -68,22 +83,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-# ── Startup: warm the semantic layer ──────────────────────────────────────────
-@app.on_event("startup")
-def _warmup_semantic_layer():
-    """
-    Preload spaCy + sentence-transformers at boot so the first /analyze
-    request doesn't pay the cold-start cost (~2-3s for the model load).
-    Safe no-op if dependencies aren't installed.
-    """
-    try:
-        from backend.services.semantic_analyzer import warmup
-        ready = warmup()
-        logger.info(f"Semantic layer {'READY' if ready else 'DISABLED (regex-only mode)'}")
-    except Exception as e:
-        logger.warning(f"Semantic warmup failed: {e}")
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
