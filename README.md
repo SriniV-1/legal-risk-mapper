@@ -1,3 +1,12 @@
+---
+title: Legal Risk Mapper
+emoji: ⚖️
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+---
+
 # Legal Risk Mapper
 
 ![CI](https://github.com/SriniV-1/legal-risk-mapper/actions/workflows/ci.yml/badge.svg)
