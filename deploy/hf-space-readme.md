@@ -1,5 +1,5 @@
 ---
-title: Legal Risk Mapper
+title: ALRM — Automated Legal Risk Monitor
 emoji: ⚖️
 colorFrom: blue
 colorTo: indigo
@@ -8,7 +8,7 @@ pinned: false
 app_port: 8000
 ---
 
-# Legal Risk Mapper
+# ALRM — Automated Legal Risk Monitor
 
 A contract analysis platform that performs ML-based risk classification, structured clause extraction, RAG-based market benchmarking against real SEC EDGAR filings, and grounded redline generation for SaaS Master Service Agreements.
 

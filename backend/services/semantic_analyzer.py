@@ -33,7 +33,7 @@ from backend.services.risk_knowledge_base import (
 )
 from backend.utils.text_utils import extract_sentences, clean_text
 
-logger = logging.getLogger("lrm.semantic")
+logger = logging.getLogger("alrm.semantic")
 
 # ── Config: similarity thresholds ─────────────────────────────────────────────
 # all-MiniLM-L6-v2 produces cosine sims in roughly [0.1, 0.9] for related text.

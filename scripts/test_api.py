@@ -1,5 +1,5 @@
 """
-Test script for Legal Risk Mapper API.
+Test script for ALRM — Automated Legal Risk Monitor API.
 Runs several test cases and pretty-prints results.
 
 Usage:
@@ -92,7 +92,7 @@ TEST_CASES = [
 
 
 def run_tests(base_url: str):
-    print(f"\n{BOLD}Legal Risk Mapper — API Test Suite{RESET}")
+    print(f"\n{BOLD}ALRM — API Test Suite{RESET}")
     print(f"Target: {BLUE}{base_url}{RESET}\n")
 
     # Health check
@@ -163,7 +163,7 @@ def run_tests(base_url: str):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Test the Legal Risk Mapper API")
+    parser = argparse.ArgumentParser(description="Test the ALRM API")
     parser.add_argument("--url", default="http://localhost:8000", help="API base URL")
     args = parser.parse_args()
     run_tests(args.url)

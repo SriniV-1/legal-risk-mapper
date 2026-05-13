@@ -36,7 +36,7 @@ from backend.services import semantic_analyzer
 from backend.services import risk_classifier
 from backend.services.explanation_engine import generate_explanation
 
-logger = logging.getLogger("lrm.analyzer")
+logger = logging.getLogger("alrm.analyzer")
 
 
 # ─────────────────────────────────────────────

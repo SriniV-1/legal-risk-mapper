@@ -26,7 +26,7 @@ from typing import List, Optional
 
 import numpy as np
 
-logger = logging.getLogger("lrm.embeddings")
+logger = logging.getLogger("alrm.embeddings")
 
 # ── Config ────────────────────────────────────────────────────────────────────
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"

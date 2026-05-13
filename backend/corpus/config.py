@@ -16,7 +16,7 @@ CORPUS_RAW_DIR.mkdir(parents=True, exist_ok=True)
 # ── EDGAR ────────────────────────────────────────────────────────────────────
 EDGAR_USER_AGENT = os.getenv(
     "EDGAR_USER_AGENT",
-    "LegalRiskMapper research@example.com",
+    "ALRM research@example.com",
 )
 EDGAR_RATE_LIMIT = 10  # requests per second (SEC policy)
 EDGAR_EFTS_BASE = "https://efts.sec.gov/LATEST/search-index"

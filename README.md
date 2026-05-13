@@ -220,8 +220,8 @@ python -m spacy download en_core_web_sm
 | `SUPABASE_KEY` | Yes | Supabase service-role key |
 | `GROQ_API_KEY` | Yes | Groq API key for extraction and redlines |
 | `ANTHROPIC_API_KEY` | No | Use Claude for extraction (falls back to Groq) |
-| `LRM_EXTRACTION_MODEL` | No | Override extraction model (default: `llama3.1:8b`, auto-switched to Groq when key present) |
-| `LRM_API_KEY` | No | Require `X-API-Key` header on `/benchmark` and `/redline` |
+| `ALRM_EXTRACTION_MODEL` | No | Override extraction model (default: `llama3.1:8b`, auto-switched to Groq when key present) |
+| `ALRM_API_KEY` | No | Require `X-API-Key` header on `/benchmark` and `/redline` |
 | `CORS_ORIGINS` | No | Comma-separated allowed origins (default: `*`) |
 
 ```bash

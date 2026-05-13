@@ -1,5 +1,5 @@
 """
-Legal Risk Mapper — FastAPI Backend
+ALRM — Automated Legal Risk Monitor — FastAPI Backend
 Endpoints:
   POST /analyze    → analyze text for legal risks
   POST /benchmark  → benchmark a clause against EDGAR market data
@@ -31,15 +31,15 @@ from backend.redline.schemas import RedlineResult
 
 # ── Logging ──────────────────────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(name)s | %(message)s")
-logger = logging.getLogger("lrm")
+logger = logging.getLogger("alrm")
 
 # ── Rate Limiting ────────────────────────────────────────────────────────────
 limiter = Limiter(key_func=get_remote_address)
 
 # ── API Key Auth ─────────────────────────────────────────────────────────────
-# If LRM_API_KEY is set, /benchmark and /redline require X-API-Key header.
+# If ALRM_API_KEY is set, /benchmark and /redline require X-API-Key header.
 # If not set, auth is disabled (local dev mode).
-_API_KEY = os.environ.get("LRM_API_KEY")
+_API_KEY = os.environ.get("ALRM_API_KEY")
 _api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 
@@ -66,7 +66,7 @@ async def lifespan(app: FastAPI):
 
 # ── App ───────────────────────────────────────────────────────────────────────
 app = FastAPI(
-    title="Legal Risk Mapper",
+    title="ALRM — Automated Legal Risk Monitor",
     description="NLP-powered legal risk analysis for contracts, policies, and business text.",
     version="1.0.0",
     lifespan=lifespan,

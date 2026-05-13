@@ -149,7 +149,7 @@ def analyze_regex_only(text):
 # ─────────────────────────────────────────────────────────────────────────────
 
 def main():
-    section("Legal Risk Mapper v2 — Semantic vs Regex-Only Comparison")
+    section("ALRM — Semantic vs Regex-Only Comparison")
 
     # Report engine status
     print(f"  Semantic model available : {embeddings.is_available()}")

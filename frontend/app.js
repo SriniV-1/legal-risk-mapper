@@ -1,5 +1,5 @@
 /**
- * Legal Risk Mapper v2 — Frontend (vanilla JS)
+ * ALRM — Automated Legal Risk Monitor — Frontend (vanilla JS)
  * Talks to FastAPI backend at /analyze and /health.
  * Renders hero stats, three charts, filter bar, and grouped risk cards.
  */
