@@ -95,6 +95,7 @@ const state = {
   sourceFilter: "all",
   viewMode: "grouped",
   charts: { category: null, severity: null, source: null },
+  lastAnalysis: null,
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -202,6 +203,26 @@ clearBtn.addEventListener("click", () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+//  EXPORT
+// ─────────────────────────────────────────────────────────────────────────────
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("#exportRiskBtn");
+  if (btn && state.lastAnalysis) {
+    const blob = new Blob(
+      [JSON.stringify(state.lastAnalysis, null, 2)],
+      { type: "application/json" },
+    );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const title = (state.lastAnalysis.document_title || "analysis").replace(/[^a-z0-9]/gi, "_").toLowerCase();
+    a.href = url;
+    a.download = `legal_risk_${title}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 //  ANALYZE
 // ─────────────────────────────────────────────────────────────────────────────
 analyzeBtn.addEventListener("click", runAnalyze);
@@ -259,6 +280,7 @@ async function handleResponse(res) {
 // ─────────────────────────────────────────────────────────────────────────────
 function renderResults(data) {
   state.risks = data.risks || [];
+  state.lastAnalysis = data;  // store for export
 
   // Hero
   const lvl = data.overall_risk_level;
@@ -803,11 +825,12 @@ function renderRedlines(redline) {
     return;
   }
 
-  container.innerHTML = redline.suggestions.map((s) => `
+  container.innerHTML = redline.suggestions.map((s, i) => `
     <div class="redline-item ${s.priority}">
       <div class="redline-header">
         <span class="redline-priority ${s.priority}">${escHtml(s.priority)}</span>
         <span class="redline-risk">${escHtml(s.risk_addressed)}</span>
+        <button class="btn-copy-redline" data-idx="${i}" title="Copy proposed text">Copy</button>
       </div>
       <div class="redline-diff">
         <div class="redline-diff-label">Original</div>
@@ -819,4 +842,18 @@ function renderRedlines(redline) {
       ${s.market_citation ? `<div class="redline-citation">${escHtml(s.market_citation)}</div>` : ''}
     </div>
   `).join("");
+
+  // Wire copy buttons (after innerHTML is set)
+  container.querySelectorAll(".btn-copy-redline").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const idx = parseInt(btn.dataset.idx, 10);
+      const text = redline.suggestions[idx]?.proposed_text || "";
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = "Copied!";
+        setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+      }).catch(() => {
+        btn.textContent = "Error";
+      });
+    });
+  });
 }

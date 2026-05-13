@@ -853,6 +853,25 @@ textarea {
 .btn-accent:active { transform: translateY(0); }
 .btn-accent:disabled { opacity: .6; cursor: not-allowed; transform: none; box-shadow: none; }
 
+/* ── Small ghost button (export / copy) ── */
+.btn-sm {
+  padding: .4rem .85rem;
+  font-size: .8rem;
+}
+.btn-copy-redline {
+  margin-left: auto;
+  padding: .3rem .7rem;
+  font-size: .75rem;
+  font-family: inherit;
+  border: 1px solid var(--border-dark);
+  border-radius: 6px;
+  background: rgba(255,255,255,.06);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.btn-copy-redline:hover { background: var(--primary-lo); color: var(--primary); border-color: var(--primary); }
+
 /* ── Clause type selector ── */
 .clause-type-select {
   padding: .65rem 1rem;
