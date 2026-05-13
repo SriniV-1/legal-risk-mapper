@@ -130,8 +130,6 @@ The Supabase schema has three tables: `contracts` (id, company, form_type, filed
 | Termination     | 1,434  | 11        | 0.8%     |
 | Payment         | 2,156  | 15        | 0.7%     |
 
-Batch extraction is in progress using Claude Haiku (`claude-haiku-4-5-20251001`) via the Anthropic API. The extractor script supports resume — it skips chunks with existing rows in `structured_extractions`.
-
 ---
 
 ## Tech Stack
@@ -186,7 +184,7 @@ Swagger docs at `/docs` when running locally.
 
 **Current limitations:**
 
-The corpus extraction coverage is uneven: governing law is 81% complete, but termination (0.8%), payment (0.7%), and IP (2.7%) have almost no structured extractions. Benchmarking against these clause types returns thin market samples and unreliable distributions. Batch extraction is in progress.
+The corpus extraction coverage is uneven across clause types. Governing law (81%) and liability (49%) have substantial structured extraction data; confidentiality, IP, payment, and termination have partial coverage. Benchmarking results for low-coverage types return smaller market samples and less reliable distributions than governing law and liability.
 
 The corpus was extracted with Ollama 8B locally; user clauses are extracted with Groq 70B. These models have different extraction tendencies, which causes occasional cross-model inconsistencies where a field appears in the user extraction but rarely in the corpus extractions. The correct fix is to re-extract the corpus with the same model used at inference time.
 
@@ -196,7 +194,7 @@ ALRM is English-only and US law only. It does not support scanned PDFs (no OCR).
 
 **Planned improvements:**
 
-Complete batch extraction for termination, payment, and IP to reach meaningful market sample sizes. Re-extract the corpus with Groq 70B for cross-model consistency. Iterate on the liability extraction prompt and expand the eval set to target 0.85+ F1. Add confidence calibration to the risk classifier using Platt scaling. Expand beyond SaaS MSAs to NDA templates, employment agreements, and vendor contracts.
+Iterate on the liability extraction prompt and expand the eval set to target 0.85+ F1. Add confidence calibration to the risk classifier using Platt scaling. Expand beyond SaaS MSAs to NDA templates, employment agreements, and vendor contracts.
 
 ---
 
@@ -296,7 +294,7 @@ legal-risk-mapper/
 │       └── canonical_clauses.json   # 30 canonical clause embeddings for semantic layer
 ├── scripts/                         # One-time training and evaluation scripts
 │   ├── run_corpus_pipeline.py       # EDGAR scrape → chunk → embed → store
-│   ├── run_batch_extraction.py      # Batch LLM extraction with resume support
+│   ├── run_batch_extraction.py      # LLM extraction over corpus chunks (resume-safe, per-type)
 │   ├── generate_training_data.py    # 617 labeled example generator
 │   ├── train_risk_classifier.py     # Train 5 LR classifiers + generate canonicals
 │   ├── eval_classifier.py           # ML vs regex comparison
