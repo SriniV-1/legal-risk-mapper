@@ -99,6 +99,11 @@ def run_batch(limit: int = 0, clause_type: str = "liability"):
 
         extraction = extractor_fn(text)
 
+        # Throttle for Anthropic API rate limit (50 req/min = 1.2s between calls).
+        # No-op when using Ollama (DEFAULT_MODEL doesn't start with "claude-").
+        if DEFAULT_MODEL.startswith("claude-"):
+            time.sleep(1.3)
+
         if extraction is not None:
             row = {
                 "chunk_id": chunk_id,
