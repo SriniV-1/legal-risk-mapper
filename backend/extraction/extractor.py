@@ -1,7 +1,12 @@
 """
 LLM-Based Clause Extractor
 ───────────────────────────
-Uses Ollama (Llama 3.1 8B) to extract structured fields from contract clauses.
+Extracts structured fields from contract clauses using a pluggable LLM backend.
+
+LLM routing (priority order):
+  1. ANTHROPIC_API_KEY + claude-* model  → Anthropic API
+  2. GROQ_API_KEY set                    → Groq free API (llama-3.1-8b-instant)
+  3. fallback                            → Ollama local (llama3.1:8b)
 
 Each extractor call:
   1. Takes raw clause text + clause type
@@ -438,14 +443,51 @@ def _call_anthropic(
     return message.content[0].text
 
 
+def _call_groq(
+    prompt: str,
+    model: str = "llama-3.1-8b-instant",
+    max_tokens: int = 2000,
+) -> str:
+    """Call Groq API and return the response text. Requires GROQ_API_KEY.
+
+    Free tier: 14,400 req/day. Sign up at https://console.groq.com (no credit card).
+    """
+    try:
+        from groq import Groq
+    except ImportError:
+        raise RuntimeError(
+            "groq package not installed. Run: pip install groq"
+        )
+    api_key = os.environ.get("GROQ_API_KEY")
+    if not api_key:
+        raise RuntimeError("GROQ_API_KEY environment variable not set")
+
+    client = Groq(api_key=api_key)
+    response = client.chat.completions.create(
+        model=model,
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=max_tokens,
+        temperature=0,
+    )
+    return response.choices[0].message.content
+
+
 def _call_llm(
     prompt: str,
     model: str = DEFAULT_MODEL,
     max_tokens: int = 2000,
 ) -> str:
-    """Route to Anthropic API or Ollama based on the model name."""
+    """Route to the appropriate LLM backend based on model name and available keys.
+
+    Priority:
+      1. claude-*  → Anthropic API (requires ANTHROPIC_API_KEY)
+      2. GROQ_API_KEY set → Groq API (free, no credit card)
+      3. fallback  → Ollama local (requires Ollama running)
+    """
     if model.startswith("claude-"):
         return _call_anthropic(prompt, model=model, max_tokens=max_tokens)
+    if os.environ.get("GROQ_API_KEY"):
+        return _call_groq(prompt, model=model, max_tokens=max_tokens)
     return _call_ollama(prompt, model=model, max_tokens=max_tokens)
 
 

@@ -30,8 +30,10 @@ slowapi>=0.1.9                # rate limiting for FastAPI (built on `limits`)
 gunicorn>=22.0.0              # production WSGI/ASGI server for Railway
 
 # ── LLM providers ─────────────────────────────────────────────────────────────
-# Ollama (default): free, local, no additional install required
-# To use Anthropic API: set ANTHROPIC_API_KEY + LRM_EXTRACTION_MODEL=claude-haiku-4-5-20251001
+# Priority: claude-* model → Anthropic; GROQ_API_KEY set → Groq; else → Ollama local
+# Groq (recommended free option): set GROQ_API_KEY. Sign up at console.groq.com (no credit card).
+#   LRM_EXTRACTION_MODEL=llama-3.1-8b-instant
+groq>=0.9.0                   # Groq SDK (free cloud inference, Llama 3.1 8B)
 anthropic>=0.25.0             # Anthropic SDK (optional — enables claude-* models)
 
 # ── PDF support ───────────────────────────────────────────────────────────────

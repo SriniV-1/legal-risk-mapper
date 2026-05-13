@@ -165,7 +165,10 @@ Trained on 617 labeled clauses using MiniLM-L6-v2 embeddings (384-dim) + sklearn
 ### Prerequisites
 - Python 3.10+
 - Supabase project with pgvector enabled
-- **Either** [Ollama](https://ollama.com) with `llama3.1:8b` (free, local) **or** Anthropic API key (faster)
+- LLM backend — choose one:
+  - **[Groq](https://console.groq.com)** (recommended, free API, no credit card): `GROQ_API_KEY=gsk_...`
+  - **[Ollama](https://ollama.com)** with `llama3.1:8b` (free, local): requires Ollama running
+  - **Anthropic API** (~$0.007/clause, fastest quality): `ANTHROPIC_API_KEY=sk-ant-...`
 
 ### Setup
 
@@ -176,14 +179,7 @@ python -m spacy download en_core_web_sm
 
 # Configure environment
 cp .env.example .env
-# Edit .env with your Supabase URL/key
-
-# Option A: Local LLM (free, ~10s/clause)
-ollama pull llama3.1:8b
-
-# Option B: Anthropic API (~1s/clause, ~$0.007/clause)
-# Add to .env: ANTHROPIC_API_KEY=sk-ant-...
-#              LRM_EXTRACTION_MODEL=claude-haiku-4-5-20251001
+# Edit .env: set SUPABASE_URL, SUPABASE_KEY, and one of GROQ_API_KEY / ANTHROPIC_API_KEY
 
 # Start the backend
 python -m uvicorn backend.main:app --reload
@@ -230,15 +226,17 @@ python -m pytest tests/ -v
 
 42 tests covering schema validation, API endpoints, extraction pipeline integrity, and risk analysis.
 
-### Docker / Railway Deployment
+### Deployment (free, no credit card)
+
+Backend runs on **Hugging Face Spaces** (Docker, free CPU tier). Frontend deploys to **Vercel** (static, free).
 
 ```bash
+# Local Docker test
 docker build -t legal-risk-mapper .
 docker run -p 8000:8000 --env-file .env legal-risk-mapper
-
-# Or deploy to Railway
-railway up
 ```
+
+See [`deploy/DEPLOYMENT.md`](deploy/DEPLOYMENT.md) for the full step-by-step guide.
 
 ---
 
@@ -310,7 +308,7 @@ legal-risk-mapper/
 
 | Decision | Rationale |
 |----------|-----------|
-| **Ollama/Llama 3.1 8B** over API models | Zero cost, fully local. Trades ~10% accuracy for free inference. Sonnet/Haiku is a drop-in upgrade. |
+| **Pluggable LLM backend** | Routes to Groq (free cloud), Anthropic (paid, fastest), or Ollama (local) based on env vars. Same prompts, same Pydantic schemas. |
 | **6 clause categories** with shared pattern | Each category follows: Pydantic schema -> LLM prompt with critical rules -> eval dataset -> field registry -> benchmarking -> redline integration. Consistent architecture scales to new categories. |
 | **pgvector** over Pinecone/Weaviate | Colocated with structured data in Supabase. No separate vector DB. IVFFlat index handles ~18k vectors. |
 | **all-MiniLM-L6-v2** (384-dim) | Same embedding model across semantic analysis, retrieval, and risk classification. Consistent embedding space. |
@@ -323,10 +321,8 @@ legal-risk-mapper/
 
 ## Limitations
 
-- **8B model accuracy**: Llama 3.1 8B struggles with subjective fields like `is_mutual` and `has_pre_existing_ip_carveout`. A 70B or API model would improve precision on boundary cases.
-- **No PDF parsing**: Accepts .txt input only. PDF support can be added with PyMuPDF.
+- **8B model boundary cases**: Llama 3.1 8B struggles with subjective fields like `is_mutual` and `has_pre_existing_ip_carveout`. Groq's `llama-3.1-70b-versatile` (also free) or Anthropic Sonnet improve precision on these.
 - **Market sample size**: Benchmark quality depends on EDGAR corpus coverage per clause type. IP (636 chunks) and governing law (853 chunks) have smaller samples than liability (1,976).
-- **Local deployment only**: No hosted version. Requires Ollama + Supabase setup.
 
 ---
 

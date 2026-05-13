@@ -18,10 +18,12 @@ COPY frontend/ frontend/
 COPY data/ data/
 COPY migrations/ migrations/
 
-# Railway injects PORT env var (default 8000)
+# PORT defaults to 8000 for local/Railway.
+# Hugging Face Spaces injects PORT=7860 at runtime — no change needed.
 ENV PORT=8000
 
-EXPOSE ${PORT}
+EXPOSE 8000
+EXPOSE 7860
 
 # Production server: gunicorn with uvicorn workers
 CMD gunicorn backend.main:app \
