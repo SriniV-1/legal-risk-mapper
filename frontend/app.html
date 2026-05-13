@@ -1435,7 +1435,7 @@ function renderRiskList() {
           sources.has("regex")    ? `<span class="src-chip">Pattern</span>` : "",
           sources.has("semantic") ? `<span class="src-chip">Semantic</span>` : "",
         ].join("");
-    const conf = Math.round(r.score * 100);
+    const conf = Math.min(100, Math.round(r.score));
     return `
       <div class="risk-card ${r.severity}">
         <div class="risk-card-header">
