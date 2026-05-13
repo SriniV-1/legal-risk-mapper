@@ -29,5 +29,10 @@ httpx>=0.27.0                 # async HTTP client for FastAPI TestClient
 slowapi>=0.1.9                # rate limiting for FastAPI (built on `limits`)
 gunicorn>=22.0.0              # production WSGI/ASGI server for Railway
 
+# ── LLM providers ─────────────────────────────────────────────────────────────
+# Ollama (default): free, local, no additional install required
+# To use Anthropic API: set ANTHROPIC_API_KEY + LRM_EXTRACTION_MODEL=claude-haiku-4-5-20251001
+anthropic>=0.25.0             # Anthropic SDK (optional — enables claude-* models)
+
 # ── PDF support ───────────────────────────────────────────────────────────────
 pymupdf>=1.24.0               # fast PDF text extraction (MuPDF bindings)
