@@ -18,11 +18,9 @@ COPY frontend/ frontend/
 COPY data/ data/
 COPY migrations/ migrations/
 
-# PORT defaults to 8000 for local/Railway.
-# Hugging Face Spaces injects PORT=7860 at runtime — no change needed.
-ENV PORT=8000
+# HF Spaces expects port 7860. Local/Railway can override with PORT env var.
+ENV PORT=7860
 
-EXPOSE 8000
 EXPOSE 7860
 
 # Production server: gunicorn with uvicorn workers
