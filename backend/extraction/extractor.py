@@ -445,7 +445,7 @@ def _call_anthropic(
 
 def _call_groq(
     prompt: str,
-    model: str = "llama-3.1-8b-instant",
+    model: str = "llama-3.3-70b-versatile",
     max_tokens: int = 2000,
 ) -> str:
     """Call Groq API and return the response text. Requires GROQ_API_KEY.
@@ -487,7 +487,7 @@ def _call_llm(
     if model.startswith("claude-"):
         return _call_anthropic(prompt, model=model, max_tokens=max_tokens)
     if os.environ.get("GROQ_API_KEY"):
-        groq_model = "llama-3.1-8b-instant" if model == DEFAULT_MODEL else model
+        groq_model = "llama-3.3-70b-versatile" if model == DEFAULT_MODEL else model
         return _call_groq(prompt, model=groq_model, max_tokens=max_tokens)
     return _call_ollama(prompt, model=model, max_tokens=max_tokens)
 
