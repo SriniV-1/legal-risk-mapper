@@ -487,7 +487,8 @@ def _call_llm(
     if model.startswith("claude-"):
         return _call_anthropic(prompt, model=model, max_tokens=max_tokens)
     if os.environ.get("GROQ_API_KEY"):
-        return _call_groq(prompt, model=model, max_tokens=max_tokens)
+        groq_model = "llama-3.1-8b-instant" if model == DEFAULT_MODEL else model
+        return _call_groq(prompt, model=groq_model, max_tokens=max_tokens)
     return _call_ollama(prompt, model=model, max_tokens=max_tokens)
 
 
