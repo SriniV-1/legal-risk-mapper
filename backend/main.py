@@ -152,6 +152,26 @@ def analyze_text(request: Request, body: AnalyzeRequest):
         raise HTTPException(status_code=500, detail=f"Analysis error: {str(e)}")
 
 
+def _extract_text_from_upload(filename: str, content: bytes) -> str:
+    """Extract plain text from an uploaded file (txt, md, or pdf)."""
+    if filename.lower().endswith(".pdf"):
+        try:
+            import pymupdf  # fitz
+            doc = pymupdf.open(stream=content, filetype="pdf")
+            pages = [page.get_text() for page in doc]
+            doc.close()
+            return "\n\n".join(pages)
+        except Exception as e:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Could not extract text from PDF: {e}. Try saving as .txt."
+            )
+    try:
+        return content.decode("utf-8")
+    except UnicodeDecodeError:
+        return content.decode("latin-1")
+
+
 @app.post("/analyze/upload", response_model=AnalyzeResponse, tags=["Analysis"])
 @limiter.limit("30/minute")
 async def analyze_upload(
@@ -160,20 +180,18 @@ async def analyze_upload(
     document_title: Optional[str] = Form(default=None),
 ):
     """
-    Analyze an uploaded .txt file for legal risks.
-    PDF support can be added via pdfminer or PyMuPDF.
+    Analyze an uploaded file (.txt, .md, or .pdf) for legal risks.
+    PDF text is extracted with PyMuPDF.
     """
-    if not file.filename.endswith((".txt", ".md")):
+    allowed = (".txt", ".md", ".pdf")
+    if not file.filename.lower().endswith(allowed):
         raise HTTPException(
             status_code=400,
-            detail="Only .txt and .md files are supported. For PDF, use /analyze with extracted text."
+            detail="Only .txt, .md, and .pdf files are supported."
         )
 
     content = await file.read()
-    try:
-        text = content.decode("utf-8")
-    except UnicodeDecodeError:
-        text = content.decode("latin-1")  # Fallback encoding
+    text = _extract_text_from_upload(file.filename, content)
 
     if len(text.strip()) < 10:
         raise HTTPException(status_code=400, detail="Uploaded file appears to be empty or too short.")

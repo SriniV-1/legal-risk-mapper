@@ -73,9 +73,25 @@ class TestAnalyzeUploadEndpoint:
     def test_upload_invalid_extension(self):
         r = client.post(
             "/analyze/upload",
-            files={"file": ("test.pdf", b"fake pdf content", "application/pdf")},
+            files={"file": ("test.docx", b"fake docx content", "application/octet-stream")},
         )
         assert r.status_code == 400
+
+    def test_upload_pdf_accepted(self):
+        # Real minimal PDF bytes so pymupdf can open it
+        import pymupdf
+        doc = pymupdf.open()
+        page = doc.new_page()
+        page.insert_text((72, 72), "This agreement is provided AS-IS without warranty.")
+        pdf_bytes = doc.tobytes()
+        doc.close()
+        r = client.post(
+            "/analyze/upload",
+            files={"file": ("contract.pdf", pdf_bytes, "application/pdf")},
+        )
+        assert r.status_code == 200
+        data = r.json()
+        assert data["total_risks"] >= 0
 
 
 class TestBenchmarkEndpoint:
