@@ -3,497 +3,864 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Legal Risk Mapper — Contract Intelligence</title>
+  <title>Legal Risk Mapper</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0a0a0b;
-      --surface:   #111113;
-      --surface2:  #18181c;
-      --border:    #1e1e24;
-      --border2:   #2a2a32;
-      --accent:    #2563eb;
-      --accent-dim:#1d4ed8;
-      --text:      #e8e8ee;
-      --text-2:    #9090a0;
-      --text-3:    #505060;
-      --mono:      'IBM Plex Mono', monospace;
-      --serif:     'Cormorant Garamond', Georgia, serif;
+      /* Gray scale */
+      --g50:  #F9F9F8;
+      --g100: #F2F1EF;
+      --g150: #EAEAE7;
+      --g200: #E0DED9;
+      --g300: #CCCAC5;
+      --g400: #A9A7A2;
+      --g500: #84827D;
+      --g600: #5C5A55;
+      --g700: #3B3935;
+      --g800: #232119;
+      --g900: #131210;
+
+      /* Accent */
+      --accent:      #1E3A5F;
+      --accent-2:    #EBF0F8;
+      --accent-3:    #CBD8ED;
+
+      /* Semantic */
+      --danger:         #B91C1C;
+      --danger-bg:      #FEF2F2;
+      --danger-border:  #FECACA;
+      --warning:        #92400E;
+      --warning-bg:     #FFFBEB;
+      --warning-border: #FDE68A;
+      --success:        #14532D;
+      --success-bg:     #F0FDF4;
+      --success-border: #BBF7D0;
+
+      /* Surfaces */
+      --surface:  #FFFFFF;
+
+      /* Typography */
+      --display: 'Playfair Display', Georgia, serif;
+      --sans:    'DM Sans', system-ui, sans-serif;
+
+      /* Shadows */
+      --sh-xs: 0 1px 2px rgba(0,0,0,0.07);
+      --sh-sm: 0 2px 6px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.06);
+      --sh-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.05);
+      --sh-lg: 0 8px 28px rgba(0,0,0,0.09), 0 4px 8px rgba(0,0,0,0.05);
+      --sh-xl: 0 16px 48px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.06);
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 14px;
+      background: var(--g150);
+      color: var(--g800);
+      font-family: var(--sans);
+      font-size: 15px;
       line-height: 1.6;
-      min-height: 100vh;
-      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── HEADER ── */
-    .site-header {
+    [data-lucide] { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+
+    /* ─── NAV ─── */
+    nav {
       position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      border-bottom: 1px solid var(--border);
-      background: rgba(10,10,11,0.92);
-      backdrop-filter: blur(12px);
-      padding: 0 2.5rem;
-      height: 52px;
+      inset: 0 0 auto 0;
+      z-index: 200;
+      height: 60px;
+      background: var(--surface);
+      box-shadow: var(--sh-sm);
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      padding: 0 48px;
+      gap: 32px;
     }
-    .header-logo {
-      font-family: var(--mono);
+    .nav-logo {
+      font-family: var(--display);
+      font-size: 17px;
       font-weight: 500;
-      font-size: 13px;
-      letter-spacing: 0.15em;
-      color: var(--text);
+      color: var(--g900);
       text-decoration: none;
+      letter-spacing: 0.01em;
     }
-    .header-logo span { color: var(--accent); }
-    .header-right {
-      font-size: 11px;
-      color: var(--text-3);
-      letter-spacing: 0.1em;
-    }
-
-    /* ── HERO ── */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 7rem 2.5rem 4rem;
-      max-width: 1100px;
-      margin: 0 auto;
-      position: relative;
-    }
-
-    .hero-eyebrow {
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 400;
-      letter-spacing: 0.25em;
-      color: var(--accent);
-      text-transform: uppercase;
-      margin-bottom: 2rem;
-    }
-
-    .hero-title {
-      font-family: var(--serif);
-      font-size: clamp(3.5rem, 8vw, 7rem);
-      font-weight: 300;
-      line-height: 1.0;
-      letter-spacing: -0.01em;
-      color: var(--text);
-      margin-bottom: 1.5rem;
-    }
-    .hero-title em {
-      font-style: italic;
-      color: var(--text-2);
-    }
-
-    .hero-sub {
-      font-family: var(--mono);
-      font-size: 14px;
-      font-weight: 300;
-      color: var(--text-2);
-      max-width: 520px;
-      line-height: 1.8;
-      margin-bottom: 3rem;
-    }
-
-    .hero-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      background: var(--accent);
-      color: #fff;
-      text-decoration: none;
-      font-family: var(--mono);
+    .nav-spacer { flex: 1; }
+    .nav-label {
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 400;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      padding: 0.9rem 2rem;
-      border: none;
-      cursor: pointer;
-      transition: background 0.15s;
+      color: var(--g400);
     }
-    .hero-cta:hover { background: var(--accent-dim); }
-    .hero-cta-arrow {
-      font-size: 16px;
-      transition: transform 0.2s;
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(180deg, var(--accent) 0%, #162E4D 100%);
+      color: #FFFFFF;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      padding: 9px 20px;
+      border-radius: 3px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08);
+      transition: box-shadow 0.15s, transform 0.1s;
     }
-    .hero-cta:hover .hero-cta-arrow { transform: translateX(4px); }
+    .nav-cta:hover { box-shadow: 0 3px 8px rgba(30,58,95,0.40), inset 0 1px 0 rgba(255,255,255,0.08); transform: translateY(-1px); }
+    .nav-cta svg { width: 14px; height: 14px; }
 
-    /* ── STATS TICKER ── */
-    .stats-bar {
-      margin-top: 5rem;
-      border-top: 1px solid var(--border);
-      padding-top: 2rem;
-      display: flex;
-      gap: 3rem;
-      flex-wrap: wrap;
-    }
-    .stat-item {}
-    .stat-value {
-      font-family: var(--serif);
-      font-size: 2.5rem;
-      font-weight: 300;
-      color: var(--text);
-      line-height: 1;
-    }
-    .stat-label {
-      font-family: var(--mono);
-      font-size: 10px;
-      font-weight: 400;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-3);
-      margin-top: 0.3rem;
-    }
-
-    /* ── SECTION DIVIDER ── */
-    .section {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 6rem 2.5rem;
-    }
-
-    .section-label {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--text-3);
-      margin-bottom: 0.75rem;
-    }
-    .section-title {
-      font-family: var(--serif);
-      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-      font-weight: 300;
-      color: var(--text);
-      margin-bottom: 3.5rem;
-    }
-
-    /* ── CAPABILITIES GRID ── */
-    .cap-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-    .cap-card {
-      background: var(--bg);
-      padding: 2.5rem;
+    /* ─── HERO (dark section) ─── */
+    .hero-section {
+      background: var(--g900);
+      padding-top: 60px;
       position: relative;
+      overflow: hidden;
     }
-    .cap-card:hover { background: var(--surface); }
-    .cap-num {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      color: var(--accent);
-      margin-bottom: 1.25rem;
-    }
-    .cap-title {
-      font-family: var(--serif);
-      font-size: 1.4rem;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 0.75rem;
-      line-height: 1.2;
-    }
-    .cap-desc {
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 300;
-      color: var(--text-2);
-      line-height: 1.8;
-    }
-    .cap-metric {
-      display: inline-block;
-      margin-top: 1.25rem;
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      padding: 0.2rem 0.6rem;
-    }
-
-    /* ── PIPELINE ── */
-    .pipeline {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0;
-    }
-    .pipeline-step {
-      padding: 2rem;
-      border-right: 1px solid var(--border);
-      position: relative;
-    }
-    .pipeline-step:last-child { border-right: none; }
-    .pipeline-step::before {
-      content: '';
+    /* subtle dot texture */
+    .hero-section::before {
+      content: "";
       position: absolute;
-      top: 50%;
-      right: -1px;
-      transform: translateY(-50%);
-      width: 8px;
-      height: 8px;
-      background: var(--accent);
-      border-radius: 50%;
-      display: none;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
     }
-    .pipeline-n {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      color: var(--text-3);
-      margin-bottom: 1rem;
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 88px 48px 80px;
+      display: grid;
+      grid-template-columns: 1fr 480px;
+      gap: 64px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
     }
-    .pipeline-title {
-      font-family: var(--serif);
-      font-size: 1.1rem;
+    .hero-left {}
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-3);
+      margin-bottom: 28px;
+    }
+    .eyebrow-line { width: 22px; height: 1px; background: var(--accent-3); display: inline-block; }
+    h1 {
+      font-family: var(--display);
+      font-size: clamp(48px, 6.5vw, 84px);
       font-weight: 400;
-      color: var(--text);
-      margin-bottom: 0.5rem;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--g50);
+      margin-bottom: 24px;
+      max-width: 14ch;
     }
-    .pipeline-desc {
-      font-family: var(--mono);
+    h1 em { font-style: italic; color: var(--g400); }
+    .hero-lead {
+      font-size: clamp(15px, 1.8vw, 17px);
+      font-weight: 300;
+      color: var(--g500);
+      max-width: 50ch;
+      line-height: 1.75;
+      margin-bottom: 40px;
+    }
+    .btn-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(180deg, var(--accent) 0%, #152B4A 100%);
+      color: #FFFFFF;
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: 3px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.10);
+      transition: box-shadow 0.15s, transform 0.1s;
+      letter-spacing: 0.01em;
+    }
+    .btn-hero:hover { box-shadow: 0 4px 20px rgba(30,58,95,0.5), inset 0 1px 0 rgba(255,255,255,0.10); transform: translateY(-1px); }
+    .btn-hero svg { width: 16px; height: 16px; transition: transform 0.2s; }
+    .btn-hero:hover svg { transform: translateX(3px); }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 52px;
+      padding-top: 36px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .hs-n {
+      display: block;
+      font-family: var(--display);
+      font-size: 32px;
+      font-weight: 400;
+      color: var(--g100);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .hs-l {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--g500);
+    }
+
+    /* ─── PREVIEW WIDGET ─── */
+    .preview-widget {
+      background: var(--g800);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px;
+      box-shadow: var(--sh-xl);
+      overflow: hidden;
+      font-size: 13px;
+    }
+    .pw-bar {
+      height: 32px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 6px;
+    }
+    .pw-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.12); }
+    .pw-bar-title {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--g500);
+      margin-left: 8px;
+    }
+    .pw-section-head {
+      padding: 14px 16px 10px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--g500);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .pw-section-head svg { width: 12px; height: 12px; }
+    .pw-badge {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      padding: 2px 7px;
+      border-radius: 2px;
+    }
+    .pw-badge.high { background: rgba(185,28,28,0.25); color: #FCA5A5; }
+    .pw-badge.med  { background: rgba(146,64,14,0.25);  color: #FCD34D; }
+    .pw-risk-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .pw-risk-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+    .pw-sev {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      padding: 2px 7px;
+      border-radius: 2px;
+    }
+    .pw-sev.high { background: rgba(185,28,28,0.25); color: #FCA5A5; }
+    .pw-sev.med  { background: rgba(146,64,14,0.22);  color: #FCD34D; }
+    .pw-risk-type { font-size: 12px; color: var(--g400); }
+    .pw-snippet {
       font-size: 11px;
       font-weight: 300;
-      color: var(--text-2);
+      font-style: italic;
+      color: var(--g500);
+      line-height: 1.6;
+      margin-bottom: 9px;
+    }
+    .pw-conf {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      color: var(--g600);
+    }
+    .pw-track { flex: 1; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+    .pw-fill { height: 100%; background: #3B74B9; border-radius: 2px; }
+    .pw-redline-section { padding: 12px 16px; }
+    .pw-redline-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--g500);
+    }
+    .pw-redline-head svg { width: 12px; height: 12px; }
+    .pw-diff-orig {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      font-weight: 300;
+      padding: 8px 12px;
+      background: rgba(185,28,28,0.15);
+      border-left: 2px solid rgba(185,28,28,0.6);
+      color: #FCA5A5;
+      border-radius: 0 2px 2px 0;
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+    .pw-diff-new {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      font-weight: 300;
+      padding: 8px 12px;
+      background: rgba(20,83,45,0.20);
+      border-left: 2px solid rgba(74,222,128,0.5);
+      color: #86EFAC;
+      border-radius: 0 2px 2px 0;
+      line-height: 1.6;
+    }
+
+    /* ─── SECTION WRAPPER ─── */
+    .section-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* ─── CAPABILITIES (white background) ─── */
+    .capabilities-section {
+      background: var(--surface);
+      padding: 96px 0;
+      box-shadow: inset 0 1px 0 var(--g200), inset 0 -1px 0 var(--g200);
+    }
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--g400);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-eyebrow::after { content: ""; flex: 0 0 20px; height: 1px; background: var(--g300); }
+    h2 {
+      font-family: var(--display);
+      font-size: clamp(30px, 4vw, 46px);
+      font-weight: 400;
+      line-height: 1.12;
+      letter-spacing: -0.01em;
+      color: var(--g800);
+      margin-bottom: 56px;
+    }
+    h2 em { font-style: italic; color: var(--g500); }
+
+    /* Asymmetric capabilities grid */
+    .cap-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 20px;
+    }
+    .cap-card {
+      background: var(--surface);
+      border: 1px solid var(--g200);
+      border-radius: 4px;
+      padding: 36px;
+      box-shadow: var(--sh-sm);
+      transition: box-shadow 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .cap-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 4px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+      pointer-events: none;
+    }
+    .cap-card:hover { box-shadow: var(--sh-lg); transform: translateY(-3px); }
+    .cap-card.featured {
+      grid-row: 1 / 3;
+      padding: 48px;
+      background: linear-gradient(145deg, var(--surface) 0%, var(--g50) 100%);
+    }
+    .cap-card.featured .cap-icon { width: 52px; height: 52px; }
+    .cap-card.featured .cap-icon svg { width: 24px; height: 24px; }
+    .cap-card.featured h3 { font-size: 26px; margin-bottom: 16px; }
+    .cap-card.featured .cap-desc { font-size: 15px; }
+    .cap-icon {
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent-2);
+      border-radius: 3px;
+      color: var(--accent);
+      margin-bottom: 24px;
+      box-shadow: 0 2px 6px rgba(30,58,95,0.12);
+    }
+    .cap-icon svg { width: 18px; height: 18px; }
+    .cap-num {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--g400);
+      margin-bottom: 10px;
+    }
+    h3 {
+      font-family: var(--display);
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--g800);
+      margin-bottom: 12px;
+      line-height: 1.25;
+    }
+    .cap-desc {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--g600);
+      line-height: 1.75;
+      margin-bottom: 20px;
+    }
+    .cap-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-2);
+      padding: 4px 10px;
+      border-radius: 2px;
+      box-shadow: 0 1px 3px rgba(30,58,95,0.10);
+    }
+
+    /* ─── PIPELINE (gray background) ─── */
+    .pipeline-section {
+      background: var(--g100);
+      padding: 96px 0;
+      border-top: 1px solid var(--g200);
+      border-bottom: 1px solid var(--g200);
+    }
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      position: relative;
+    }
+    .pipeline-grid::before {
+      content: "";
+      position: absolute;
+      top: 36px;
+      left: calc(12.5% + 10px);
+      right: calc(12.5% + 10px);
+      height: 1px;
+      background: var(--g300);
+      z-index: 0;
+    }
+    .pipe-card {
+      background: var(--surface);
+      border: 1px solid var(--g200);
+      border-radius: 4px;
+      padding: 28px 24px 28px;
+      box-shadow: var(--sh-sm);
+      position: relative;
+      z-index: 1;
+    }
+    .pipe-number {
+      width: 28px;
+      height: 28px;
+      background: var(--g900);
+      color: var(--g50);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .pipe-icon {
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .pipe-icon svg { width: 16px; height: 16px; }
+    .pipe-title {
+      font-family: var(--display);
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--g800);
+      margin-bottom: 8px;
+    }
+    .pipe-desc {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--g600);
       line-height: 1.7;
     }
 
-    /* ── BOTTOM CTA ── */
-    .bottom-cta-section {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+    /* ─── CTA (dark) ─── */
+    .cta-section {
+      background: var(--g900);
+      padding: 88px 0;
+      position: relative;
+      overflow: hidden;
     }
-    .bottom-cta-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 5rem 2.5rem;
+    .cta-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .cta-inner {
+      position: relative;
+      z-index: 1;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 2rem;
+      gap: 40px;
       flex-wrap: wrap;
     }
-    .bottom-cta-text {
-      font-family: var(--serif);
-      font-size: clamp(1.5rem, 3vw, 2.2rem);
-      font-weight: 300;
-      color: var(--text);
-      max-width: 500px;
+    .cta-text {
+      font-family: var(--display);
+      font-size: clamp(26px, 3.5vw, 40px);
+      font-weight: 400;
+      color: var(--g50);
+      line-height: 1.2;
     }
-
-    /* ── FOOTER ── */
-    footer {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 2.5rem;
-      display: flex;
-      justify-content: space-between;
+    .cta-text em { font-style: italic; color: var(--g500); }
+    .btn-primary {
+      display: inline-flex;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    .footer-left {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--text-3);
-    }
-    .footer-right {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--text-3);
-    }
-    .footer-right a {
-      color: var(--text-3);
+      gap: 10px;
+      background: linear-gradient(180deg, var(--accent) 0%, #152B4A 100%);
+      color: #FFFFFF;
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
       text-decoration: none;
-      border-bottom: 1px solid var(--border2);
-    }
-    .footer-right a:hover { color: var(--text-2); }
-
-    /* ── LINE DECORATIONS ── */
-    .rule-h {
+      padding: 14px 28px;
+      border-radius: 3px;
       border: none;
-      border-top: 1px solid var(--border);
-      margin: 0;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.10);
+      transition: box-shadow 0.15s, transform 0.1s;
+      white-space: nowrap;
     }
+    .btn-primary:hover { box-shadow: 0 4px 20px rgba(30,58,95,0.5), inset 0 1px 0 rgba(255,255,255,0.10); transform: translateY(-1px); }
+    .btn-primary svg { width: 16px; height: 16px; transition: transform 0.2s; }
+    .btn-primary:hover svg { transform: translateX(3px); }
 
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--g800);
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-text {
+      font-size: 13px;
+      color: var(--g500);
+    }
+    .footer-text a {
+      color: var(--g500);
+      text-decoration: none;
+      border-bottom: 1px solid var(--g700);
+      transition: color 0.15s;
+    }
+    .footer-text a:hover { color: var(--g400); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      nav { padding: 0 32px; }
+      .hero-inner { padding: 72px 32px 64px; gap: 48px; }
+      .section-wrap { padding: 0 32px; }
+      .capabilities-section, .pipeline-section { padding: 72px 0; }
+      .cta-section { padding: 72px 0; }
+      .footer-inner { padding: 24px 32px; }
+      .hero-inner { grid-template-columns: 1fr 380px; }
+    }
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .cap-layout { grid-template-columns: 1fr; }
+      .cap-card.featured { grid-row: auto; }
+      .pipeline-grid { grid-template-columns: 1fr 1fr; }
+      .pipeline-grid::before { display: none; }
+    }
     @media (max-width: 768px) {
-      .cap-grid { grid-template-columns: 1fr; }
-      .pipeline { grid-template-columns: 1fr 1fr; }
-      .pipeline-step { border-bottom: 1px solid var(--border); }
-      .stats-bar { gap: 2rem; }
+      nav { padding: 0 20px; gap: 16px; }
+      .nav-label { display: none; }
+      .hero-inner { padding: 64px 20px 56px; }
+      .section-wrap { padding: 0 20px; }
+      .capabilities-section, .pipeline-section { padding: 56px 0; }
+      .cta-section { padding: 56px 0; }
+      .cta-inner { flex-direction: column; align-items: flex-start; }
+      .footer-inner { padding: 20px; flex-direction: column; align-items: flex-start; }
+      .hero-stats { flex-wrap: wrap; gap: 28px; }
     }
     @media (max-width: 480px) {
-      .pipeline { grid-template-columns: 1fr; }
-      .hero-title { font-size: 3rem; }
+      .pipeline-grid { grid-template-columns: 1fr; }
+      h2 { margin-bottom: 36px; }
+      .cap-layout { gap: 14px; }
     }
   </style>
 </head>
 <body>
 
-<header class="site-header">
-  <a class="header-logo" href="index.html">L<span>.</span>R<span>.</span>M</a>
-  <span class="header-right">LEGAL RISK MAPPER &nbsp;/&nbsp; v2.0</span>
-</header>
-
-<!-- ── HERO ── -->
-<section class="hero">
-  <div class="hero-eyebrow">Contract Intelligence Platform</div>
-  <h1 class="hero-title">Know the risk<br><em>before you sign.</em></h1>
-  <p class="hero-sub">
-    ML-powered analysis of SaaS contract clauses against 116 real SEC EDGAR filings.
-    Structured extraction, market benchmarking, and grounded redline suggestions — in seconds.
-  </p>
-  <a class="hero-cta" href="app.html">
-    Analyze a Contract
-    <span class="hero-cta-arrow">→</span>
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">Legal Risk Mapper</a>
+  <div class="nav-spacer"></div>
+  <span class="nav-label">Contract Intelligence</span>
+  <a class="nav-cta" href="app.html">
+    Open Tool
+    <i data-lucide="arrow-right"></i>
   </a>
+</nav>
 
-  <div class="stats-bar">
-    <div class="stat-item">
-      <div class="stat-value">116</div>
-      <div class="stat-label">SEC EDGAR Contracts</div>
+<!-- HERO (dark) -->
+<section class="hero-section">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="eyebrow">
+        <i data-lucide="scale" style="width:13px;height:13px"></i>
+        <span class="eyebrow-line"></span>
+        Contract Intelligence Platform
+      </div>
+      <h1>Know the risk<br>before you <em>sign.</em></h1>
+      <p class="hero-lead">
+        ML-powered analysis of SaaS contract clauses against 116 real SEC EDGAR filings.
+        Structured extraction, market benchmarking, and grounded redlines — in seconds.
+      </p>
+      <a class="btn-hero" href="app.html">
+        Analyze a Contract
+        <i data-lucide="arrow-right"></i>
+      </a>
+      <div class="hero-stats">
+        <div>
+          <span class="hs-n">116</span>
+          <span class="hs-l">EDGAR Contracts</span>
+        </div>
+        <div>
+          <span class="hs-n">18,001</span>
+          <span class="hs-l">Clause Chunks</span>
+        </div>
+        <div>
+          <span class="hs-n">0.965</span>
+          <span class="hs-l">Avg Detection F1</span>
+        </div>
+        <div>
+          <span class="hs-n">6</span>
+          <span class="hs-l">Clause Categories</span>
+        </div>
+      </div>
     </div>
-    <div class="stat-item">
-      <div class="stat-value">18,001</div>
-      <div class="stat-label">Clause Chunks</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value">0.965</div>
-      <div class="stat-label">Avg Detection F1</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value">6</div>
-      <div class="stat-label">Clause Categories</div>
+
+    <div class="hero-right">
+      <div class="preview-widget">
+        <div class="pw-bar">
+          <div class="pw-dot"></div>
+          <div class="pw-dot"></div>
+          <div class="pw-dot"></div>
+          <span class="pw-bar-title">Risk Analysis · Liability Clause</span>
+        </div>
+        <div class="pw-section-head">
+          <i data-lucide="shield-alert"></i>
+          Risks Detected
+          <span class="pw-badge high">3 Risks Found</span>
+        </div>
+        <div class="pw-risk-item">
+          <div class="pw-risk-header">
+            <span class="pw-sev high">High</span>
+            <span class="pw-risk-type">Liability Risk</span>
+          </div>
+          <div class="pw-snippet">"Company's aggregate liability shall not exceed $5,000 regardless of…"</div>
+          <div class="pw-conf">
+            <span>Confidence</span>
+            <div class="pw-track"><div class="pw-fill" style="width:82%"></div></div>
+            <span>82%</span>
+          </div>
+        </div>
+        <div class="pw-risk-item">
+          <div class="pw-risk-header">
+            <span class="pw-sev med">Medium</span>
+            <span class="pw-risk-type">Contractual Ambiguity</span>
+          </div>
+          <div class="pw-snippet">"Company may modify these terms at any time without notice…"</div>
+          <div class="pw-conf">
+            <span>Confidence</span>
+            <div class="pw-track"><div class="pw-fill" style="width:61%"></div></div>
+            <span>61%</span>
+          </div>
+        </div>
+        <div class="pw-redline-section">
+          <div class="pw-redline-head">
+            <i data-lucide="git-pull-request"></i>
+            Redline Suggestion
+            <span class="pw-badge high" style="margin-left:auto">High Priority</span>
+          </div>
+          <div class="pw-diff-orig">— "shall not exceed $5,000 regardless of damages"</div>
+          <div class="pw-diff-new">+ "shall not exceed fees paid in prior 12 months"</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<hr class="rule-h" />
+<!-- CAPABILITIES (white) -->
+<section class="capabilities-section">
+  <div class="section-wrap">
+    <div class="section-eyebrow">What it does</div>
+    <h2>Four layers of <em>contract intelligence</em></h2>
+    <div class="cap-layout">
+      <!-- Featured card (tall, left) -->
+      <div class="cap-card featured">
+        <div class="cap-icon"><i data-lucide="shield-alert"></i></div>
+        <div class="cap-num">01 — ML Risk Classification</div>
+        <h3>Five-Category Risk Scoring</h3>
+        <p class="cap-desc">
+          Trained on 617 labeled clauses using all-MiniLM-L6-v2 embeddings and logistic regression.
+          Detects Liability, Financial, Privacy, Compliance, and Contractual Ambiguity risks with severity
+          scores and source attribution. Replaces brittle regex rules with a model that generalizes to new language.
+        </p>
+        <span class="cap-badge">0.965 Avg Detection F1</span>
+      </div>
 
-<!-- ── CAPABILITIES ── -->
-<section class="section">
-  <div class="section-label">What it does</div>
-  <h2 class="section-title">Four layers of<br>contract intelligence</h2>
+      <!-- Two stacked cards (right column) -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div class="cap-card">
+          <div class="cap-icon"><i data-lucide="file-search"></i></div>
+          <div class="cap-num">02 — Structured Extraction</div>
+          <h3>Pydantic-Grounded Fields</h3>
+          <p class="cap-desc">LLM extraction across six clause categories. Every field includes a verbatim source quote. Grounding scores 0.953–1.000 across categories.</p>
+          <span class="cap-badge">0.953–1.000 Grounding</span>
+        </div>
+        <div class="cap-card">
+          <div class="cap-icon"><i data-lucide="bar-chart-2"></i></div>
+          <div class="cap-num">03 — Market Benchmarking</div>
+          <h3>SEC EDGAR Percentile Ranking</h3>
+          <p class="cap-desc">pgvector search retrieves the 20 most similar clauses from real EDGAR filings. Field-level distributions show where your clause stands.</p>
+          <span class="cap-badge">MRR@5 = 0.917</span>
+        </div>
+      </div>
 
-  <div class="cap-grid">
-    <div class="cap-card">
-      <div class="cap-num">01 &nbsp;/&nbsp; ML RISK CLASSIFICATION</div>
-      <div class="cap-title">Five-Category Risk Scoring</div>
-      <p class="cap-desc">
-        Trained on 617 labeled clauses using all-MiniLM-L6-v2 sentence embeddings
-        and logistic regression. Detects Liability, Financial, Privacy/Data,
-        Compliance, and Contractual Ambiguity risks with confidence scores.
-      </p>
-      <span class="cap-metric">0.965 AVG DETECTION F1</span>
-    </div>
-    <div class="cap-card">
-      <div class="cap-num">02 &nbsp;/&nbsp; STRUCTURED EXTRACTION</div>
-      <div class="cap-title">Pydantic-Grounded Field Extraction</div>
-      <p class="cap-desc">
-        LLM-based extraction across six clause categories — liability, termination,
-        payment, confidentiality, IP, and governing law. Every field includes a
-        verbatim source text quote for verification.
-      </p>
-      <span class="cap-metric">0.953–1.000 GROUNDING SCORE</span>
-    </div>
-    <div class="cap-card">
-      <div class="cap-num">03 &nbsp;/&nbsp; MARKET BENCHMARKING</div>
-      <div class="cap-title">SEC EDGAR Percentile Ranking</div>
-      <p class="cap-desc">
-        pgvector similarity search retrieves the top 20 most similar clauses from
-        real EDGAR filings. Field-level market distributions show how your clause
-        compares to industry norms.
-      </p>
-      <span class="cap-metric">MRR@5 = 0.917 &nbsp;/&nbsp; NDCG@5 = 0.987</span>
-    </div>
-    <div class="cap-card">
-      <div class="cap-num">04 &nbsp;/&nbsp; GROUNDED REDLINES</div>
-      <div class="cap-title">Citation-Backed Edit Suggestions</div>
-      <p class="cap-desc">
-        Every redline suggestion cites specific market statistics and real SEC
-        filings — not LLM opinion. Original vs. proposed diff view with priority
-        scoring and risk labels.
-      </p>
-      <span class="cap-metric">CITES REAL EDGAR FILINGS</span>
+      <!-- Full-width bottom card -->
+      <div class="cap-card" style="grid-column: 1 / -1; display:flex; align-items:flex-start; gap:36px;">
+        <div style="flex:0 0 auto">
+          <div class="cap-icon"><i data-lucide="git-pull-request"></i></div>
+        </div>
+        <div style="flex:1">
+          <div class="cap-num">04 — Grounded Redlines</div>
+          <h3>Citation-Backed Edit Suggestions</h3>
+          <p class="cap-desc" style="max-width:80ch">Every redline suggestion cites specific market statistics and real SEC filings — not LLM opinion. Original vs. proposed diff view with priority scoring and risk labels. Each suggestion is traceable to a real contract.</p>
+        </div>
+        <div style="flex:0 0 auto; align-self:center">
+          <span class="cap-badge">Cites Real Filings</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<hr class="rule-h" />
-
-<!-- ── PIPELINE ── -->
-<section class="section">
-  <div class="section-label">How it works</div>
-  <h2 class="section-title">From clause to redline<br><em>in four steps</em></h2>
-
-  <div class="pipeline">
-    <div class="pipeline-step">
-      <div class="pipeline-n">STEP 01</div>
-      <div class="pipeline-title">Paste or Upload</div>
-      <p class="pipeline-desc">Submit any clause as text or upload a .pdf, .txt, or .md file. Clause type is auto-detected.</p>
-    </div>
-    <div class="pipeline-step">
-      <div class="pipeline-n">STEP 02</div>
-      <div class="pipeline-title">Risk Analysis</div>
-      <p class="pipeline-desc">ML classifier scores the clause across five risk categories with severity ratings and flagged text.</p>
-    </div>
-    <div class="pipeline-step">
-      <div class="pipeline-n">STEP 03</div>
-      <div class="pipeline-title">Market Benchmark</div>
-      <p class="pipeline-desc">pgvector search retrieves similar clauses from 116 EDGAR contracts. Field distributions computed.</p>
-    </div>
-    <div class="pipeline-step">
-      <div class="pipeline-n">STEP 04</div>
-      <div class="pipeline-title">Redline Generation</div>
-      <p class="pipeline-desc">LLM generates 2–4 edit suggestions, each citing specific market statistics from real SEC filings.</p>
+<!-- PIPELINE (gray bg) -->
+<section class="pipeline-section">
+  <div class="section-wrap">
+    <div class="section-eyebrow">How it works</div>
+    <h2>From clause to redline <em>in four steps</em></h2>
+    <div class="pipeline-grid">
+      <div class="pipe-card">
+        <div class="pipe-number">1</div>
+        <div class="pipe-icon"><i data-lucide="upload"></i></div>
+        <div class="pipe-title">Paste or Upload</div>
+        <p class="pipe-desc">Submit any clause as text or upload a .pdf, .txt, or .md file. Clause type is auto-detected or set manually.</p>
+      </div>
+      <div class="pipe-card">
+        <div class="pipe-number">2</div>
+        <div class="pipe-icon"><i data-lucide="cpu"></i></div>
+        <div class="pipe-title">Risk Analysis</div>
+        <p class="pipe-desc">ML classifier scores across five risk categories with severity ratings, confidence scores, and flagged text.</p>
+      </div>
+      <div class="pipe-card">
+        <div class="pipe-number">3</div>
+        <div class="pipe-icon"><i data-lucide="database"></i></div>
+        <div class="pipe-title">Market Benchmark</div>
+        <p class="pipe-desc">pgvector search retrieves similar clauses from 116 EDGAR contracts. Field distributions computed against the market.</p>
+      </div>
+      <div class="pipe-card">
+        <div class="pipe-number">4</div>
+        <div class="pipe-icon"><i data-lucide="pen-tool"></i></div>
+        <div class="pipe-title">Redline Generation</div>
+        <p class="pipe-desc">LLM generates 2–4 edit suggestions, each citing specific market statistics from real SEC filings.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ── BOTTOM CTA ── -->
-<div class="bottom-cta-section">
-  <div class="bottom-cta-inner">
-    <div class="bottom-cta-text">
-      Ready to analyze<br><em>your first clause?</em>
+<!-- CTA (dark) -->
+<section class="cta-section">
+  <div class="section-wrap">
+    <div class="cta-inner">
+      <div class="cta-text">Ready to analyze<br><em>your first clause?</em></div>
+      <a class="btn-primary" href="app.html">
+        Open the Tool
+        <i data-lucide="arrow-right"></i>
+      </a>
     </div>
-    <a class="hero-cta" href="app.html">
-      Open the Tool
-      <span class="hero-cta-arrow">→</span>
-    </a>
   </div>
-</div>
+</section>
 
-<!-- ── FOOTER ── -->
+<!-- FOOTER -->
 <footer>
-  <div class="footer-left">
-    © 2025 Legal Risk Mapper &nbsp;·&nbsp; Portfolio project
-  </div>
-  <div class="footer-right">
-    Not legal advice. Always consult a licensed attorney. &nbsp;·&nbsp;
-    <a href="https://github.com/SriniV-1/legal-risk-mapper" target="_blank" rel="noopener">GitHub</a>
+  <div class="footer-inner">
+    <span class="footer-text">Legal Risk Mapper — Portfolio project. Not legal advice.</span>
+    <span class="footer-text">
+      <a href="https://github.com/SriniV-1/legal-risk-mapper" target="_blank" rel="noopener">GitHub</a>
+      &nbsp;&nbsp;Always consult a licensed attorney for legal decisions.
+    </span>
   </div>
 </footer>
 
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
 </body>
 </html>
