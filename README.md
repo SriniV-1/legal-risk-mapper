@@ -164,27 +164,34 @@ Trained on 617 labeled clauses using MiniLM-L6-v2 embeddings (384-dim) + sklearn
 
 ### Prerequisites
 - Python 3.10+
-- [Ollama](https://ollama.com) with `llama3.1:8b` model
 - Supabase project with pgvector enabled
+- **Either** [Ollama](https://ollama.com) with `llama3.1:8b` (free, local) **or** Anthropic API key (faster)
 
 ### Setup
 
 ```bash
 # Install dependencies
 pip install -r requirements.txt
+python -m spacy download en_core_web_sm
 
 # Configure environment
 cp .env.example .env
 # Edit .env with your Supabase URL/key
 
-# Pull the LLM model
+# Option A: Local LLM (free, ~10s/clause)
 ollama pull llama3.1:8b
 
+# Option B: Anthropic API (~1s/clause, ~$0.007/clause)
+# Add to .env: ANTHROPIC_API_KEY=sk-ant-...
+#              LRM_EXTRACTION_MODEL=claude-haiku-4-5-20251001
+
 # Start the backend
-python -c "from dotenv import load_dotenv; load_dotenv(); import uvicorn; uvicorn.run('backend.main:app', host='0.0.0.0', port=8000)"
+python -m uvicorn backend.main:app --reload
 ```
 
 Open `frontend/index.html` in your browser. The "Benchmark & Redline" button runs the full pipeline.
+
+**Accepts:** `.pdf`, `.txt`, `.md` file uploads. Clause type auto-detected from text (override via dropdown).
 
 ### Run Extraction Evals
 
@@ -203,9 +210,10 @@ python -m backend.extraction.eval governing_law
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/health` | Service health check |
+| `GET` | `/corpus/stats` | Real-time corpus coverage (contracts, chunks, extraction %) |
 | `POST` | `/analyze` | Analyze text for legal risks (ML classifier + semantic) |
-| `POST` | `/analyze/upload` | Upload a .txt file for analysis |
-| `POST` | `/benchmark` | Benchmark a clause against EDGAR market data |
+| `POST` | `/analyze/upload` | Upload .pdf, .txt, or .md for analysis |
+| `POST` | `/benchmark` | Benchmark a clause against EDGAR market data (auto-detect type) |
 | `POST` | `/redline` | Generate grounded redline suggestions |
 
 Swagger docs at `http://localhost:8000/docs`.
