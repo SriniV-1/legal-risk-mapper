@@ -2,7 +2,7 @@
 
 ML-based risk classification across 5 categories, structured extraction from 6 clause types with per-field F1 evaluation, pgvector market benchmarking against 116 real SEC EDGAR contracts, and grounded redline generation where every suggestion cites specific market statistics from actual filings.
 
-<!-- TODO: Add screenshot of redline view with market citations -->
+**[Live demo →](https://legal-risk-mapper.vercel.app)**
 
 What separates ALRM from a typical contract analysis project: the risk classifier is a trained ensemble of 5 independent LogisticRegression models over sentence embeddings — not API calls to a general-purpose LLM. The EDGAR corpus is 18,001 clause chunks scraped directly from SEC EX-10 exhibits, not synthetic data. Each of the 6 extraction categories has a hand-labeled evaluation set and a measured F1 score. And redline suggestions are constrained to cite specific market statistics ("73% of similar contracts include X") derived from structured extractions over the corpus, not LLM legal opinion.
 
@@ -305,7 +305,14 @@ legal-risk-mapper/
 │   ├── index.html                   # Landing page
 │   ├── app.html                     # Analysis tool — risk, benchmark, redline views
 │   └── config.js                    # window.LRM_API_BASE
+├── deploy/
+│   ├── hf-space-readme.md           # HuggingFace Spaces metadata (YAML frontmatter)
+│   ├── ec2-bootstrap.sh             # Optional EC2 host setup script
+│   └── start-app.sh                 # Entrypoint used by Dockerfile CMD
+├── migrations/
+│   └── 001_corpus_tables.sql        # Supabase schema — corpus_chunks, structured_extractions, embeddings
 ├── Dockerfile                       # python:3.12-slim, port 7860 for HF Spaces
+├── railway.json                     # Railway deployment config (alternative to HF Spaces)
 └── .github/workflows/ci.yml         # pytest on push and PR, Python 3.12
 ```
 
