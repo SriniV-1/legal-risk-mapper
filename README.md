@@ -1,207 +1,251 @@
----
-title: Legal Risk Mapper
-emoji: ⚖️
-colorFrom: blue
-colorTo: indigo
-sdk: docker
-pinned: false
----
+# ALRM — Automated Legal Risk Monitor
 
-# Legal Risk Mapper
+ML-based risk classification across 5 categories, structured extraction from 6 clause types with per-field F1 evaluation, pgvector market benchmarking against 116 real SEC EDGAR contracts, and grounded redline generation where every suggestion cites specific market statistics from actual filings.
 
-![CI](https://github.com/SriniV-1/legal-risk-mapper/actions/workflows/ci.yml/badge.svg)
+<!-- TODO: Add screenshot of redline view with market citations -->
 
-A contract analysis platform that performs **ML-based risk classification**, **structured clause extraction** across 6 clause categories, **RAG-based market benchmarking** against real SEC EDGAR filings, and **grounded redline generation** for SaaS Master Service Agreements. Built as a portfolio project demonstrating production-quality legal AI engineering.
-
----
-
-## What It Does
-
-1. **ML Risk Classification** — Classifies contract clauses across 5 risk categories (Compliance, Liability, Privacy/Data, Financial, Contractual Ambiguity) using trained sentence-embedding classifiers with 0.965 average detection F1.
-
-2. **Structured Extraction (6 categories)** — Extracts structured fields from liability, termination, payment, confidentiality, IP, and governing law clauses using LLM-based extraction with source text provenance for every field.
-
-3. **Market Benchmarking** — Retrieves similar clauses from a corpus of 116 real SEC EDGAR contracts using pgvector similarity search, then computes field-level market distributions and percentile ranks.
-
-4. **Grounded Redlines** — Generates contract edit suggestions where every recommendation cites specific market statistics and real SEC filings, not LLM opinion.
+What separates ALRM from a typical contract analysis project: the risk classifier is a trained ensemble of 5 independent LogisticRegression models over sentence embeddings — not API calls to a general-purpose LLM. The EDGAR corpus is 18,001 clause chunks scraped directly from SEC EX-10 exhibits, not synthetic data. Each of the 6 extraction categories has a hand-labeled evaluation set and a measured F1 score. And redline suggestions are constrained to cite specific market statistics ("73% of similar contracts include X") derived from structured extractions over the corpus, not LLM legal opinion.
 
 ---
 
 ## Architecture
 
 ```
-User Clause (text)
-    |
-    +---> ML Risk Classifier (MiniLM-L6-v2 + LogisticRegression)
-    |         -> 5 risk categories with severity scores
-    |
-    +---> LLM Extraction (Ollama/Llama 3.1 8B)
-    |         -> Pydantic schema with source_text grounding
-    |         -> 6 clause types: liability, termination, payment,
-    |            confidentiality, IP, governing law
-    |
-    +---> pgvector Retrieval (all-MiniLM-L6-v2, 384-dim)
-    |         -> Top-20 similar clauses from EDGAR corpus
-    |         -> Join with structured_extractions table
-    |
-    +---> Market Aggregation
-    |         -> Field distributions per clause type
-    |         -> User percentile ranking
-    |         -> 5 cited examples with SEC filing links
-    |
-    +---> Redline Generation (LLM + market context)
-              -> Original -> Proposed diffs
-              -> Each cites market stats + real filings
+Input text / PDF upload
+        │
+        ▼
+┌───────────────────────────────────┐
+│   spaCy clause segmentation       │  [traditional NLP]
+│   en_core_web_sm sentencizer      │
+└───────────────┬───────────────────┘
+                │
+        ┌───────┴────────┐
+        │                │
+        ▼                ▼
+┌──────────────┐  ┌──────────────────────────────────────┐
+│ ML Risk      │  │ LLM Structured Extraction             │
+│ Classifier   │  │ Groq llama-3.3-70b-versatile          │
+│ [ML]         │  │ 6 Pydantic schemas w/ source_text     │
+│              │  │ [LLM]                                 │
+│ 5 independent│  └──────────────────┬─────────────────── ┘
+│ LR models    │                     │
+│ MiniLM-L6-v2 │          ┌──────────┴──────────┐
+│ embeddings   │          │                     │
+│ [ML]         │          ▼                     ▼
+└──────┬───────┘  ┌──────────────────┐  ┌──────────────────┐
+       │          │ pgvector RAG     │  │ Redline          │
+       │          │ Benchmarking     │  │ Generation       │
+       │          │                  │  │                  │
+       │          │ MiniLM cosine    │  │ Groq LLM with    │
+       │          │ search over      │  │ market context   │
+       │          │ 18,001 chunks    │  │ injected into    │
+       │          │ [ML + DB]        │  │ prompt           │
+       │          │                  │  │ [LLM]            │
+       │          │ Field distrib.   │  │                  │
+       │          │ percentile rank  │  │ Every suggestion │
+       │          │ 5 cited examples │  │ cites a specific │
+       │          └──────────────────┘  │ market stat      │
+       │                                └──────────────────┘
+       ▼
+Risk results:
+category, severity,
+flagged snippet,
+confidence score
+```
+
+**Pipeline 1 — Risk Classification.** Five independent binary classifiers rather than a single multi-label model because each category has different class balance, different regularization requirements (C values range from 5.0 to 10.0 across categories), and threshold tuning that needs to happen per-category. A semantic similarity layer runs in parallel using cosine distance against 30 auto-generated canonical clause embeddings (cluster centroids from training data). When both layers flag the same clause for the same category, they merge into a single boosted-confidence result. Graceful degradation: if the pkl file is missing, the system falls back to regex rules; if sentence-transformers fails to load, the semantic layer is silently disabled.
+
+**Pipeline 2 — Structured Extraction.** Each of the 6 clause types has a dedicated Pydantic schema with every factual field accompanied by a `source_text` field requiring a verbatim quote. This is not optional — it is enforced in the prompt as a critical rule and validated at the schema level. Groq's llama-3.3-70b-versatile handles inference because the 8B model produces meaningful false positives on fields like `is_mutual` and `has_pre_existing_ip_carveout` where context sensitivity matters. The LLM router tries Anthropic first (if `ANTHROPIC_API_KEY` set), then Groq, then Ollama — same prompts and schemas across all backends.
+
+**Pipeline 3 — Benchmarking.** pgvector over Pinecone because the structured extraction data already lives in Supabase — co-locating the vector index with the relational data eliminates a service dependency and enables joining on extraction results in a single query. The `match_clauses()` Postgres RPC function handles cosine similarity over 18,001 384-dim vectors using IVFFlat. Percentile calculation: for a boolean field with 73% market prevalence, a user clause that has the feature is at the 73rd percentile; one that lacks it is at the 27th percentile. Retrieval quality: MRR@5 of 0.917.
+
+**Pipeline 4 — Redline Generation.** The prompt receives a formatted market context block containing field distributions, user percentile rankings, and 3 cited examples with their extracted fields. The LLM is explicitly constrained: every suggestion must cite a specific market statistic, `original_text` must be an exact quote from the clause, `proposed_text` must be a concrete replacement. This constraint exists because "you should consider adding X" is not useful to a lawyer. "X appears in 81% of similar contracts; your clause lacks it" is.
+
+---
+
+## Evaluation Results
+
+### Risk Classification — 617 labeled examples, 5-fold cross-validation
+
+| Category | Detection F1 | Severity Macro F1 | CV Score |
+|---|---|---|---|
+| Privacy/Data Risk | 1.000 | 1.000 | 0.994 |
+| Financial Risk | 0.980 | 0.984 | 0.955 |
+| Contractual Ambiguity | 0.977 | 0.980 | 0.957 |
+| Liability Risk | 0.941 | 0.830 | 0.959 |
+| Compliance Risk | 0.927 | 0.966 | 0.979 |
+| **Average** | **0.965** | **0.952** | — |
+
+Regularization parameter C was cross-validated independently per category. Per-category reports (precision, recall, F1 by severity level) are stored in `data/models/risk_classifier.pkl` under the `metrics` key.
+
+### Extraction — 35 hand-labeled examples per category (42 for liability)
+
+| Clause Type | Core Field F1 | Success Rate | Avg Grounding Score | Eval Examples |
+|---|---|---|---|---|
+| Governing Law | 0.971 | 100% | 1.000 | 35 |
+| Payment | 0.941 | 100% | 1.000 | 35 |
+| IP | 0.921 | 100% | 0.996 | 35 |
+| Confidentiality | 0.920 | 100% | 0.953 | 35 |
+| Termination | 0.881 | 94.3% | 0.973 | 35 |
+| Liability | 0.762 | 97.6% | 0.975 | 42 |
+
+Grounding score measures the fraction of extracted field values where the accompanying `source_text` is a verified substring of the input clause. A grounding score below 1.0 indicates fields where the model generated a source quote that drifts from the exact contract language.
+
+### Retrieval — pgvector over 18,001 chunks from 116 contracts
+
+| Metric | Value |
+|---|---|
+| MRR@5 | 0.917 |
+| NDCG@5 | 0.987 |
+| Avg query latency | 0.243s |
+
+All evaluation code is in `scripts/` and labeled datasets are in `data/eval/`. To regenerate:
+
+```bash
+python -m backend.extraction.eval --eval-file data/eval/liability_eval.json
+python -m scripts.eval_retrieval
+python -m scripts.eval_classifier
 ```
 
 ---
 
-## Extraction Metrics
+## Data Pipeline
 
-Each clause category has a dedicated Pydantic schema, LLM extraction prompt with critical rules, and a hand-labeled eval dataset (35 examples each). All extractors use Llama 3.1 8B running locally via Ollama.
+The EDGAR corpus was built in three stages. First, SEC EDGAR's full-text search API (`efts.sec.gov/LATEST/search-index`) was queried for EX-10 exhibit filings containing MSA-related terms across 2018–2023. EX-10 exhibits are material contracts that public companies are required to file; they include SaaS MSAs, software license agreements, and professional services contracts. 116 contracts passed content verification (minimum MSA content, successfully downloaded, adequate length).
 
-| Clause Category | Core F1 | Success Rate | Grounding | Eval Examples | Core Fields |
-|----------------|---------|-------------|-----------|--------------|-------------|
-| **Governing Law** | **0.971** | 100% | 1.000 | 35 | 6 booleans |
-| **Payment** | **0.941** | 100% | 1.000 | 35 | 7 booleans |
-| **IP** | **0.921** | 100% | 0.996 | 35 | 9 booleans |
-| **Confidentiality** | **0.920** | 100% | 0.953 | 35 | 8 booleans |
-| **Termination** | **0.881** | 94.3% | 0.973 | 35 | 8 booleans |
-| **Liability** | **0.762** | 97.6% | 0.975 | 42 | 6 booleans |
+Each contract was chunked at section boundaries using a regex pattern that detects numbered headings (`1.`, `1.1`, `ARTICLE I`) and all-caps section titles. Within sections, long paragraphs were sub-split to stay within 1,500 characters. Each chunk was classified into one of 6 target categories using keyword-density heuristics — this is a fast pre-filter, not the final extraction. Chunks classified as `other` remain in the database but are excluded from typed retrieval queries.
 
-### Per-Field Breakdown: Payment (F1=0.941)
+Embeddings were generated using `all-MiniLM-L6-v2` (384-dim) in batches of 64, matching the embedding model used across the ML classifier and semantic analysis layer for a consistent vector space. Vectors are stored in Supabase using the pgvector extension.
 
-| Field | F1 | Notes |
-|-------|-----|-------|
-| has_dispute_process | 1.000 | Perfect |
-| has_late_fee | 1.000 | Perfect |
-| has_minimum_commitment | 1.000 | Perfect |
-| has_price_escalation | 1.000 | Perfect |
-| has_non_refundable | 0.923 | |
-| has_payment_terms | 0.903 | |
-| has_right_of_setoff | 0.762 | Rare clause |
+The Supabase schema has three tables: `contracts` (id, company, form_type, filed_date, accession, exhibit_url), `clause_chunks` (id, contract_id, chunk_index, text, section_header, clause_type, embedding vector(384)), and `structured_extractions` (chunk_id, clause_type, extracted_data jsonb, model_used). The pgvector index uses IVFFlat with cosine distance.
 
-### Per-Field Breakdown: IP (F1=0.921)
+**Current extraction coverage:**
 
-| Field | F1 | Notes |
-|-------|-----|-------|
-| has_ip_assignment | 1.000 | Perfect |
-| has_work_for_hire | 1.000 | Perfect |
-| has_non_compete | 1.000 | Perfect |
-| has_source_code_escrow | 1.000 | Perfect |
-| has_license_grant | 0.936 | |
-| has_feedback_clause | 0.933 | |
-| has_provider_owns_deliverables | 0.867 | |
-| has_customer_owns_deliverables | 0.815 | |
-| has_pre_existing_ip_carveout | 0.741 | Hardest boundary |
+| Clause Type | Chunks | Extracted | Coverage |
+|---|---|---|---|
+| Governing Law | 874 | 708 | 81.0% |
+| Liability | 1,999 | 981 | 49.1% |
+| Confidentiality | 2,423 | 990 | 40.9% |
+| IP | 656 | 18 | 2.7% |
+| Termination | 1,434 | 11 | 0.8% |
+| Payment | 2,156 | 15 | 0.7% |
 
-### Per-Field Breakdown: Confidentiality (F1=0.920)
-
-| Field | F1 | Notes |
-|-------|-----|-------|
-| has_injunctive_relief | 1.000 | Perfect |
-| has_residuals_clause | 1.000 | Rare clause, correctly sparse |
-| has_return_or_destroy | 0.971 | |
-| has_permitted_disclosures | 0.941 | |
-| has_duration | 0.889 | |
-| has_standard_exclusions | 0.889 | |
-| has_broad_definition | 0.839 | |
-| is_mutual | 0.833 | |
-
-### Per-Field Breakdown: Governing Law (F1=0.971)
-
-| Field | F1 | Notes |
-|-------|-----|-------|
-| has_governing_law | 1.000 | Perfect |
-| has_arbitration | 1.000 | Perfect |
-| has_jury_waiver | 1.000 | Perfect |
-| has_class_action_waiver | 1.000 | Perfect |
-| has_prevailing_party_fees | 1.000 | Perfect |
-| has_venue_selection | 0.826 | Over-triggers on jurisdiction language |
-
-### Per-Field Breakdown: Termination (F1=0.881)
-
-| Field | F1 | Notes |
-|-------|-----|-------|
-| has_termination_for_convenience | 1.000 | Perfect |
-| has_termination_fee | 1.000 | Perfect |
-| has_auto_renewal | 0.941 | |
-| has_notice_period | 0.933 | |
-| has_termination_for_cause | 0.909 | |
-| has_cure_period | 0.857 | |
-| has_survival_clause | 0.750 | |
-| has_post_termination_obligations | 0.692 | Over-triggers |
+Batch extraction is in progress using Claude Haiku (`claude-haiku-4-5-20251001`) via the Anthropic API. The extractor script supports resume — it skips chunks with existing rows in `structured_extractions`.
 
 ---
 
-## ML Risk Classifier
+## Tech Stack
 
-Trained on 617 labeled clauses using MiniLM-L6-v2 embeddings (384-dim) + sklearn LogisticRegression with CV-tuned regularization. Replaces the original hardcoded regex rules.
-
-| Risk Category | Detection F1 | Severity Macro F1 |
-|---------------|-------------|-------------------|
-| Privacy/Data Risk | 1.000 | 1.000 |
-| Financial Risk | 0.980 | 0.984 |
-| Contractual Ambiguity | 0.977 | 0.980 |
-| Liability Risk | 0.941 | 0.830 |
-| Compliance Risk | 0.927 | 0.966 |
-| **Average** | **0.965** | **0.952** |
-
----
-
-## Retrieval Metrics
-
-| Metric | Value |
-|--------|-------|
-| MRR@5 | **0.917** |
-| NDCG@5 | **0.987** |
-| Avg latency | 0.243s |
-| Corpus size | 18,001 chunks from 116 SEC EDGAR contracts |
+| Layer | Technology |
+|---|---|
+| Backend | FastAPI 0.111, Gunicorn 22 + Uvicorn workers |
+| ML Classifier | sklearn LogisticRegression (5 independent models), sentence-transformers all-MiniLM-L6-v2 (384-dim) |
+| LLM Inference | Groq API, llama-3.3-70b-versatile (extraction + redlines) |
+| Database | Supabase PostgreSQL + pgvector, IVFFlat index |
+| NLP | spaCy en_core_web_sm (clause segmentation), MiniLM-L6-v2 (embeddings) |
+| PDF Extraction | PyMuPDF (MuPDF bindings) |
+| Frontend | Vanilla HTML/CSS/JS, no framework, Vercel static hosting |
+| Deployment | Docker on Hugging Face Spaces (backend, free CPU tier) |
+| CI | GitHub Actions, pytest on push and PR |
 
 ---
 
-## Corpus
+## API Reference
 
-- **116 contracts** scraped from SEC EDGAR (EX-10 exhibits, SaaS MSAs)
-- **18,001 clause chunks** with 384-dim embeddings
-- Clause type distribution: liability (1,976), payment (2,116), confidentiality (2,400), termination (1,399), IP (636), governing law (853)
-- Companies include Dynavax, Agile Therapeutics, Savara, Ecoark, Scilex, and more
+| Method | Path | Auth | Rate Limit | Description |
+|---|---|---|---|---|
+| GET | `/health` | None | — | Version and NLP engine status |
+| GET | `/corpus/stats` | None | — | Live extraction coverage per clause type |
+| POST | `/analyze` | None | 30/min | ML risk classification of raw text |
+| POST | `/analyze/upload` | None | 30/min | Upload and analyze .pdf, .txt, or .md |
+| POST | `/extract` | None | 30/min | Extract raw text from an uploaded file |
+| POST | `/benchmark` | Optional API key | 10/min | RAG benchmarking against EDGAR corpus |
+| POST | `/redline` | Optional API key | 10/min | Benchmark then generate grounded redlines |
+
+Live health check: `https://sriniv-1-legal-risk-mapper.hf.space/health`
+
+Swagger docs at `/docs` when running locally.
 
 ---
 
-## Quick Start
+## Key Technical Decisions
 
-### Prerequisites
-- Python 3.10+
-- Supabase project with pgvector enabled
-- LLM backend — choose one:
-  - **[Groq](https://console.groq.com)** (recommended, free API, no credit card): `GROQ_API_KEY=gsk_...`
-  - **[Ollama](https://ollama.com)** with `llama3.1:8b` (free, local): requires Ollama running
-  - **Anthropic API** (~$0.007/clause, fastest quality): `ANTHROPIC_API_KEY=sk-ant-...`
+**5 independent binary classifiers over one multi-label model.** Each risk category has different class balance and different optimal regularization. Per-category classifiers allow independent threshold tuning, produce cleaner per-category probability scores, and fail gracefully — if one category's training data is insufficient, the other four classifiers are unaffected. In practice, C values vary from 5.0 (Privacy/Data, Financial) to 10.0 (Compliance, Liability, Ambiguity) across categories, which a single model could not accommodate.
 
-### Setup
+**Source-text grounding on every extracted field.** Every boolean field in the 6 Pydantic schemas has a companion `source_text` field. The extraction prompt enforces this as a critical rule, and grounding scores are measured in eval (0.953–1.000 across categories). Legal professionals do not act on ungrounded output — a claim that a contract "has_carve_outs: true" is only useful if it cites the exact contract language that supports the claim.
+
+**pgvector over a dedicated vector database.** The structured extraction data already lives in Supabase. Co-locating the vector index eliminates an additional service dependency, allows SQL joins between similarity search results and `structured_extractions` in a single Postgres RPC call, and avoids paying for a separate managed vector store. At 18,001 384-dim vectors, IVFFlat performs adequately with 0.243s average query latency.
+
+**Groq 70B over local Ollama 8B for user-facing inference.** The 8B model produces measurable false positives on context-sensitive fields (`is_mutual`, `has_pre_existing_ip_carveout`, `has_residuals_clause`) that show up as extraction errors against the eval sets. Groq's free tier has no GPU requirement and handles portfolio-level traffic. The LLM router (Anthropic → Groq → Ollama) means the code works in all environments without changes.
+
+**Market-grounded redlines over pure LLM legal knowledge.** The redline generator receives a structured prompt block containing field distributions from real EDGAR filings and user percentile rankings, and is explicitly constrained to cite specific statistics in every suggestion. This is more persuasive to a transactional lawyer than LLM opinion, and it is verifiable — the cited statistic traces back to real SEC filings linked in the UI.
+
+---
+
+## Limitations and Future Work
+
+**Current limitations:**
+
+The corpus extraction coverage is uneven: governing law is 81% complete, but termination (0.8%), payment (0.7%), and IP (2.7%) have almost no structured extractions. Benchmarking against these clause types returns thin market samples and unreliable distributions. Batch extraction is in progress.
+
+The corpus was extracted with Ollama 8B locally; user clauses are extracted with Groq 70B. These models have different extraction tendencies, which causes occasional cross-model inconsistencies where a field appears in the user extraction but rarely in the corpus extractions. The correct fix is to re-extract the corpus with the same model used at inference time.
+
+Liability extraction F1 is 0.762 — the lowest category and the one with the most legal consequence. The weak fields are `consequential_excluded` (0.762 in the per-field breakdown) and `is_mutual` (which requires understanding whether both parties are subject to the same limitations). Both need more labeled examples and prompt iteration.
+
+ALRM is English-only and US law only. It does not support scanned PDFs (no OCR). The free HF Spaces tier cold-starts after inactivity with a 1–2 minute warmup. Groq's free tier allows approximately 1,000 requests per day.
+
+**Planned improvements:**
+
+Complete batch extraction for termination, payment, and IP to reach meaningful market sample sizes. Re-extract the corpus with Groq 70B for cross-model consistency. Iterate on the liability extraction prompt and expand the eval set to target 0.85+ F1. Add confidence calibration to the risk classifier using Platt scaling. Expand beyond SaaS MSAs to NDA templates, employment agreements, and vendor contracts.
+
+---
+
+## Local Development
+
+**Prerequisites:** Python 3.12+, a Supabase project with pgvector enabled, and a Groq API key (free at console.groq.com, no credit card).
 
 ```bash
-# Install dependencies
+git clone https://github.com/SriniV-1/legal-risk-mapper.git
+cd legal-risk-mapper
+
 pip install -r requirements.txt
 python -m spacy download en_core_web_sm
+```
 
-# Configure environment
+**Environment variables:**
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `SUPABASE_URL` | Yes | Supabase project URL |
+| `SUPABASE_KEY` | Yes | Supabase service-role key |
+| `GROQ_API_KEY` | Yes | Groq API key for extraction and redlines |
+| `ANTHROPIC_API_KEY` | No | Use Claude for extraction (falls back to Groq) |
+| `LRM_EXTRACTION_MODEL` | No | Override extraction model (default: `llama3.1:8b`, auto-switched to Groq when key present) |
+| `LRM_API_KEY` | No | Require `X-API-Key` header on `/benchmark` and `/redline` |
+| `CORS_ORIGINS` | No | Comma-separated allowed origins (default: `*`) |
+
+```bash
 cp .env.example .env
-# Edit .env: set SUPABASE_URL, SUPABASE_KEY, and one of GROQ_API_KEY / ANTHROPIC_API_KEY
+# Edit .env with your credentials
 
-# Start the backend
+# Start backend
+set -a; source .env; set +a
 python -m uvicorn backend.main:app --reload
 ```
 
-Open `frontend/index.html` in your browser. The "Benchmark & Redline" button runs the full pipeline.
+Open `frontend/index.html` in a browser, or serve with `python -m http.server 3000` from `frontend/`.
 
-**Accepts:** `.pdf`, `.txt`, `.md` file uploads. Clause type auto-detected from text (override via dropdown).
-
-### Run Extraction Evals
+**Run tests:**
 
 ```bash
-# Run eval for any clause category
+python -m pytest tests/ -v
+```
+
+49 tests covering schema validation, API endpoints, extraction pipeline integrity, and risk analysis. Tests stub Supabase credentials and do not require a live database.
+
+**Run extraction eval:**
+
+```bash
 python -m backend.extraction.eval liability
 python -m backend.extraction.eval termination
 python -m backend.extraction.eval payment
@@ -210,43 +254,6 @@ python -m backend.extraction.eval ip
 python -m backend.extraction.eval governing_law
 ```
 
-### API Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/health` | Service health check |
-| `GET` | `/corpus/stats` | Real-time corpus coverage (contracts, chunks, extraction %) |
-| `POST` | `/analyze` | Analyze text for legal risks (ML classifier + semantic) |
-| `POST` | `/analyze/upload` | Upload .pdf, .txt, or .md for analysis |
-| `POST` | `/benchmark` | Benchmark a clause against EDGAR market data (auto-detect type) |
-| `POST` | `/redline` | Generate grounded redline suggestions |
-
-Swagger docs at `http://localhost:8000/docs`.
-
-**Rate limiting:** `/analyze` at 30 req/min, `/benchmark` and `/redline` at 10 req/min per IP.
-
-**API key auth:** Set `LRM_API_KEY` env var to require `X-API-Key` header on `/benchmark` and `/redline`.
-
-### Run Tests
-
-```bash
-python -m pytest tests/ -v
-```
-
-42 tests covering schema validation, API endpoints, extraction pipeline integrity, and risk analysis.
-
-### Deployment (free, no credit card)
-
-Backend runs on **Hugging Face Spaces** (Docker, free CPU tier). Frontend deploys to **Vercel** (static, free).
-
-```bash
-# Local Docker test
-docker build -t legal-risk-mapper .
-docker run -p 8000:8000 --env-file .env legal-risk-mapper
-```
-
-See [`deploy/DEPLOYMENT.md`](deploy/DEPLOYMENT.md) for the full step-by-step guide.
-
 ---
 
 ## Project Structure
@@ -254,87 +261,61 @@ See [`deploy/DEPLOYMENT.md`](deploy/DEPLOYMENT.md) for the full step-by-step gui
 ```
 legal-risk-mapper/
 ├── backend/
-│   ├── main.py                     # FastAPI app (5 endpoints, rate limiting, API key auth)
-│   ├── corpus/                     # EDGAR pipeline
-│   │   ├── edgar_scraper.py        # SEC EDGAR EFTS scraper
-│   │   ├── chunker.py              # Clause segmentation + classification
-│   │   ├── embedder.py             # all-MiniLM-L6-v2 embeddings
-│   │   ├── db.py                   # Supabase client (CRUD + vector search)
-│   │   ├── retrieval.py            # pgvector similarity search
-│   │   └── pipeline.py             # Orchestrator (scrape -> chunk -> embed -> store)
-│   ├── extraction/                 # Structured extraction (6 categories)
-│   │   ├── schemas.py              # Pydantic models for all clause types
-│   │   ├── extractor.py            # Ollama LLM extractor with per-type prompts
-│   │   └── eval.py                 # Field-level P/R/F1 eval harness
-│   ├── benchmarking/               # RAG market benchmarking
-│   │   ├── schemas.py              # BenchmarkResult, FieldDistribution, CitedExample
-│   │   ├── aggregator.py           # Market stats with per-category field registry
-│   │   └── benchmarker.py          # Orchestrator (extract -> retrieve -> aggregate)
-│   ├── redline/                    # Grounded redline generation
-│   │   ├── schemas.py              # RedlineSuggestion, RedlineResult
-│   │   └── generator.py            # LLM redline with market context
-│   ├── services/                   # Risk analysis engine (ML-trained)
-│   │   ├── risk_analyzer.py        # Hybrid pipeline: ML classifier + semantic matching
-│   │   ├── risk_classifier.py      # Trained multi-label classifier inference
-│   │   ├── risk_knowledge_base.py  # Auto-generated canonical clause embeddings
-│   │   └── semantic_analyzer.py    # spaCy + sentence-transformers layer
-│   └── models/                     # Shared models
-├── frontend/
-│   ├── index.html                  # Dashboard with benchmark + redline UI
-│   ├── style.css                   # CSS (charts, diff viewer, cards)
-│   └── app.js                      # API integration + rendering
+│   ├── main.py                      # FastAPI app — 7 endpoints, rate limiting, API key auth
+│   ├── corpus/                      # EDGAR data pipeline (one-time collection)
+│   │   ├── edgar_scraper.py         # EFTS search + EX-10 exhibit downloader
+│   │   ├── chunker.py               # Section-boundary chunking + keyword-density classifier
+│   │   ├── embedder.py              # MiniLM-L6-v2 batch encoder (batch size 64)
+│   │   ├── db.py                    # Supabase client — CRUD + pgvector RPC wrapper
+│   │   └── retrieval.py             # Cosine similarity search with clause type filter
+│   ├── extraction/                  # LLM structured extraction
+│   │   ├── schemas.py               # 6 Pydantic models — all fields grounded with source_text
+│   │   ├── extractor.py             # LLM router (Anthropic → Groq → Ollama) + per-type prompts
+│   │   └── eval.py                  # Field-level precision/recall/F1 harness
+│   ├── benchmarking/                # RAG market statistics
+│   │   ├── aggregator.py            # Field distributions, percentile ranking, per-category registry
+│   │   └── benchmarker.py           # Orchestrator: extract → retrieve → join extractions → aggregate
+│   ├── redline/                     # Grounded suggestion generation
+│   │   ├── generator.py             # Market context formatter + LLM prompt + response parser
+│   │   └── schemas.py               # RedlineSuggestion, RedlineResult
+│   └── services/                   # ML risk classification engine
+│       ├── risk_analyzer.py         # Full pipeline: segment → classify → semantic → merge → score
+│       ├── risk_classifier.py       # Trained model loader + inference (5 LR classifiers)
+│       ├── risk_knowledge_base.py   # 30 canonical clause embeddings (cluster centroids)
+│       └── semantic_analyzer.py     # Cosine similarity layer, spaCy segmentation
 ├── data/
-│   ├── eval/                       # Hand-labeled eval datasets (35 examples each)
-│   │   ├── liability_eval.json
+│   ├── eval/                        # Hand-labeled evaluation datasets (35-42 examples each)
+│   │   ├── liability_eval.json      # 42 examples with full ground truth
 │   │   ├── termination_eval.json
 │   │   ├── payment_eval.json
 │   │   ├── confidentiality_eval.json
 │   │   ├── ip_eval.json
 │   │   └── governing_law_eval.json
 │   └── models/
-│       └── canonical_clauses.json  # Auto-generated canonical clauses (ML-derived)
-├── scripts/
-│   ├── run_corpus_pipeline.py      # EDGAR scrape + embed CLI
-│   ├── run_batch_extraction.py     # Batch extraction with resume support
-│   ├── eval_retrieval.py           # MRR@5 / NDCG@5 retrieval eval
-│   ├── generate_training_data.py   # Risk classifier training data generator
-│   ├── train_risk_classifier.py    # ML classifier training + canonical generation
-│   └── eval_classifier.py          # ML vs regex comparison eval
-├── tests/                          # Pytest suite (42 tests)
-│   ├── test_schemas.py             # Pydantic schema validation
-│   ├── test_extraction.py          # Extraction pipeline + registry integrity
-│   ├── test_risk_analyzer.py       # Risk detection + severity scoring
-│   └── test_api.py                 # FastAPI endpoint tests
-├── .github/workflows/ci.yml       # GitHub Actions CI (pytest on push/PR)
-├── Dockerfile                      # Production container (gunicorn + uvicorn)
-├── railway.json                    # Railway deployment config
-└── ROADMAP.md                      # Project roadmap + session handoff log
+│       ├── risk_classifier.pkl      # Trained sklearn bundle: 5 LR models + per-category metrics
+│       └── canonical_clauses.json   # 30 canonical clause embeddings for semantic layer
+├── scripts/                         # One-time training and evaluation scripts
+│   ├── run_corpus_pipeline.py       # EDGAR scrape → chunk → embed → store
+│   ├── run_batch_extraction.py      # Batch LLM extraction with resume support
+│   ├── generate_training_data.py    # 617 labeled example generator
+│   ├── train_risk_classifier.py     # Train 5 LR classifiers + generate canonicals
+│   ├── eval_classifier.py           # ML vs regex comparison
+│   └── eval_retrieval.py            # MRR@5 / NDCG@5 retrieval eval
+├── tests/                           # 49 pytest tests
+│   ├── test_api.py                  # FastAPI endpoint integration tests
+│   ├── test_extraction.py           # Prompt coverage, schema registry, grounding rules
+│   ├── test_risk_analyzer.py        # Risk detection and severity scoring
+│   └── test_schemas.py              # Pydantic schema validation and constraints
+├── frontend/
+│   ├── index.html                   # Landing page
+│   ├── app.html                     # Analysis tool — risk, benchmark, redline views
+│   └── config.js                    # window.LRM_API_BASE
+├── Dockerfile                       # python:3.12-slim, port 7860 for HF Spaces
+└── .github/workflows/ci.yml         # pytest on push and PR, Python 3.12
 ```
-
----
-
-## Technical Decisions
-
-| Decision | Rationale |
-|----------|-----------|
-| **Pluggable LLM backend** | Routes to Groq (free cloud), Anthropic (paid, fastest), or Ollama (local) based on env vars. Same prompts, same Pydantic schemas. |
-| **6 clause categories** with shared pattern | Each category follows: Pydantic schema -> LLM prompt with critical rules -> eval dataset -> field registry -> benchmarking -> redline integration. Consistent architecture scales to new categories. |
-| **pgvector** over Pinecone/Weaviate | Colocated with structured data in Supabase. No separate vector DB. IVFFlat index handles ~18k vectors. |
-| **all-MiniLM-L6-v2** (384-dim) | Same embedding model across semantic analysis, retrieval, and risk classification. Consistent embedding space. |
-| **Pydantic source_text grounding** | Every extracted field has a verbatim quote. Avg grounding score 0.953-1.000 across categories. |
-| **ML classifier over regex rules** | Trained on 617 labeled clauses. Detection F1=0.965 vs regex baseline. Auto-generates canonical clauses from training data. |
-| **Per-category field registry** | Generic aggregation engine looks up (bool_fields, cat_fields) per clause type. Adding a new category requires only field definitions, not code changes. |
-| **35 hand-labeled examples per category** | Consistent eval methodology. Each dataset covers all field combinations with realistic clause language from SaaS contracts. |
-
----
-
-## Limitations
-
-- **8B model boundary cases**: Llama 3.1 8B struggles with subjective fields like `is_mutual` and `has_pre_existing_ip_carveout`. Groq's `llama-3.1-70b-versatile` (also free) or Anthropic Sonnet improve precision on these.
-- **Market sample size**: Benchmark quality depends on EDGAR corpus coverage per clause type. IP (636 chunks) and governing law (853 chunks) have smaller samples than liability (1,976).
 
 ---
 
 ## Disclaimer
 
-This tool is a prototype for educational and portfolio purposes. It is not a substitute for qualified legal advice. Always consult a licensed attorney for legal decisions.
+ALRM is a research and portfolio project. It is not a substitute for qualified legal advice. Always consult a licensed attorney for legal decisions.
