@@ -605,7 +605,17 @@ function renderBenchmarkResults(benchmark, redline) {
   // Hero stats
   $("benchSampleSize").textContent = benchmark.sample_size;
   const typeLabel = benchmark.clause_type.replace(/_/g, " ");
-  $("benchSubtitle").textContent = `${typeLabel} clause · ${benchmark.sample_size} similar clauses from SEC EDGAR`;
+
+  if (benchmark.sample_size === 0) {
+    $("benchSubtitle").textContent = `${typeLabel} · No corpus data yet — batch extraction pending`;
+    showError(
+      `No ${typeLabel} extractions in the corpus yet. ` +
+      `Liability has 980 extractions and works well. ` +
+      `Other categories are being extracted via batch pipeline.`
+    );
+  } else {
+    $("benchSubtitle").textContent = `${typeLabel} clause · ${benchmark.sample_size} similar clauses from SEC EDGAR`;
+  }
   $("benchExamples").textContent = benchmark.cited_examples.length;
   $("benchRedlines").textContent = redline.suggestions.length;
 
