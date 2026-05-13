@@ -243,6 +243,23 @@ async def analyze_upload(
         raise HTTPException(status_code=500, detail=f"Analysis error: {str(e)}")
 
 
+@app.post("/extract", tags=["Analysis"])
+@limiter.limit("30/minute")
+async def extract_text(
+    request: Request,
+    file: UploadFile = File(...),
+):
+    """Extract plain text from an uploaded .txt, .md, or .pdf file."""
+    allowed = (".txt", ".md", ".pdf")
+    if not file.filename.lower().endswith(allowed):
+        raise HTTPException(status_code=400, detail="Only .txt, .md, and .pdf files are supported.")
+    content = await file.read()
+    text = _extract_text_from_upload(file.filename, content)
+    if len(text.strip()) < 10:
+        raise HTTPException(status_code=400, detail="File appears empty or too short.")
+    return {"text": text, "char_count": len(text)}
+
+
 def _resolve_clause_type(text: str, requested: str) -> str:
     """
     Resolve the effective clause type.

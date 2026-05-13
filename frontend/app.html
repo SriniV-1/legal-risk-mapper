@@ -1385,6 +1385,45 @@ async function analyzeFile(file) {
   }
 }
 
+async function benchmarkFile(file) {
+  showLoader("Extracting text from file…");
+  try {
+    let rawText = "";
+    if (!file.name.toLowerCase().endsWith(".pdf")) {
+      rawText = await file.text();
+    } else {
+      const form = new FormData();
+      form.append("file", file);
+      const extractRes = await fetch(`${API_BASE}/extract`, { method: "POST", body: form });
+      if (!extractRes.ok) throw new Error((await extractRes.json().catch(() => ({}))).detail || extractRes.statusText);
+      rawText = (await extractRes.json()).text;
+    }
+    if (rawText.trim().length < 30) throw new Error("Could not extract enough text from file to benchmark.");
+    const clauseType = $("clauseTypeSelect").value;
+    $("loaderHint").textContent = "Benchmarking against SEC EDGAR corpus…";
+    const benchRes = await fetch(`${API_BASE}/benchmark`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: rawText, clause_type: clauseType }),
+    });
+    if (!benchRes.ok) throw new Error((await benchRes.json().catch(() => ({}))).detail || benchRes.statusText);
+    const benchmark = await benchRes.json();
+    $("loaderHint").textContent = `Generating ${benchmark.clause_type.replace(/_/g, " ")} redlines…`;
+    const redlineRes = await fetch(`${API_BASE}/redline`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: rawText, clause_type: benchmark.clause_type }),
+    });
+    if (!redlineRes.ok) throw new Error((await redlineRes.json().catch(() => ({}))).detail || redlineRes.statusText);
+    const redline = await redlineRes.json();
+    renderBenchmark(benchmark, redline);
+  } catch (e) {
+    showError(`Benchmark failed: ${e.message}`);
+  } finally {
+    hideLoader();
+  }
+}
+
 // ─── RENDER RISK ────────────────────────────────────────────────────────────
 function renderRiskResults(data) {
   state.risks = data.risks || [];
@@ -1481,6 +1520,7 @@ $("exportBtn").addEventListener("click", () => {
 // ─── BENCHMARK + REDLINE ───────────────────────────────────────────────────
 benchmarkBtn.addEventListener("click", async () => {
   hideError();
+  if (state.tab === "file" && state.file) { await benchmarkFile(state.file); return; }
   const text = clauseInput.value.trim();
   if (text.length < 30) return showError("Please enter at least 30 characters to benchmark.");
   const clauseType = $("clauseTypeSelect").value;
