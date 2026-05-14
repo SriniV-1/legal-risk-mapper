@@ -1,8 +1,12 @@
 {
-  "outputDirectory": "frontend",
-  "buildCommand": null,
-  "installCommand": null,
+  "buildCommand": "cd frontend-react && npm install && npm run build",
+  "outputDirectory": "frontend-react/dist",
   "framework": null,
+  "installCommand": null,
+  "rewrites": [
+    { "source": "/app", "destination": "/index.html" },
+    { "source": "/app/(.*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

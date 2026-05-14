@@ -142,7 +142,7 @@ The Supabase schema has three tables: `contracts` (id, company, form_type, filed
 | Database        | Supabase PostgreSQL + pgvector, IVFFlat index                                                       |
 | NLP             | spaCy en_core_web_sm (clause segmentation), MiniLM-L6-v2 (embeddings)                              |
 | PDF Extraction  | PyMuPDF (MuPDF bindings)                                                                            |
-| Frontend        | Vanilla HTML/CSS/JS, no framework, Vercel static hosting                                            |
+| Frontend        | React 18 + Vite + Tailwind CSS, React Router 6, Vercel static hosting                              |
 | Deployment      | Docker on Hugging Face Spaces (backend, free CPU tier)                                              |
 | CI              | GitHub Actions, pytest on push and PR                                                               |
 
@@ -231,7 +231,13 @@ set -a; source .env; set +a
 python -m uvicorn backend.main:app --reload
 ```
 
-Open `frontend/index.html` in a browser, or serve with `python -m http.server 3000` from `frontend/`.
+Start the frontend dev server:
+
+```bash
+cd frontend-react && npm install && npm run dev
+```
+
+The app will be available at `http://localhost:5173`. Set `VITE_API_BASE_URL` in `frontend-react/.env` to point at your backend (see `.env.example`).
 
 **Run tests:**
 
@@ -301,10 +307,20 @@ legal-risk-mapper/
 │   ├── test_extraction.py           # Prompt coverage, schema registry, grounding rules
 │   ├── test_risk_analyzer.py        # Risk detection and severity scoring
 │   └── test_schemas.py              # Pydantic schema validation and constraints
+├── frontend-react/                  # React 18 + Vite + Tailwind frontend
+│   ├── src/
+│   │   ├── api/client.js            # All API calls (analyzeText, benchmarkText, etc.)
+│   │   ├── pages/Landing.jsx        # Landing page (/)
+│   │   ├── pages/AppPage.jsx        # Analysis tool (/app)
+│   │   └── components/              # RiskResults, BenchmarkResults, RedlineResults, Loader
+│   ├── .env.example                 # VITE_API_BASE_URL
+│   └── vite.config.js
 ├── frontend/
-│   ├── index.html                   # Landing page
-│   ├── app.html                     # Analysis tool — risk, benchmark, redline views
-│   └── config.js                    # window.LRM_API_BASE
+│   ├── legacy/                      # Preserved vanilla HTML/CSS frontend
+│   │   ├── index.html               # Landing page (original)
+│   │   └── app.html                 # Analysis tool (original)
+│   ├── app.js
+│   └── style.css                    # Stylesheet (not active)
 ├── deploy/
 │   ├── hf-space-readme.md           # HuggingFace Spaces metadata (YAML frontmatter)
 │   ├── ec2-bootstrap.sh             # Optional EC2 host setup script
