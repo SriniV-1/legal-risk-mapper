@@ -1,0 +1,11 @@
+backend/
+data/
+deploy/
+migrations/
+scripts/
+tests/
+requirements.txt
+Dockerfile
+railway.json
+ROADMAP.md
+frontend/
