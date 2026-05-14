@@ -8,7 +8,7 @@ import {
   benchmarkText,
   generateRedlines,
 } from "../api/client.js";
-import RiskResults from "../components/RiskResults.jsx";
+import ContractReader from "../components/ContractReader.jsx";
 import BenchmarkResults from "../components/BenchmarkResults.jsx";
 import RedlineResults from "../components/RedlineResults.jsx";
 import Loader from "../components/Loader.jsx";
@@ -64,6 +64,7 @@ export default function AppPage() {
 
   // Results
   const [riskData, setRiskData] = useState(null);
+  const [contractText, setContractText] = useState(""); // text shown in reader
   const [benchmarkData, setBenchmarkData] = useState(null);
   const [redlineData, setRedlineData] = useState(null);
   const [sevFilter, setSevFilter] = useState("all");
@@ -100,6 +101,7 @@ export default function AppPage() {
     setFile(null);
     setError(null);
     setRiskData(null);
+    setContractText("");
     setBenchmarkData(null);
     setRedlineData(null);
     setSevFilter("all");
@@ -113,13 +115,25 @@ export default function AppPage() {
       setLoading(true);
       setLoadingMsg("Running ML risk classifier…");
       let data;
+      let resolvedText = "";
       if (tab === "file" && file) {
-        data = await analyzeFile(file);
+        const name = file.name.toLowerCase();
+        if (name.endsWith(".pdf")) {
+          setLoadingMsg("Extracting text from PDF…");
+          const res = await extractText(file);
+          resolvedText = res.text || "";
+          setLoadingMsg("Running ML risk classifier…");
+          data = await analyzeText(resolvedText);
+        } else {
+          resolvedText = await file.text();
+          data = await analyzeText(resolvedText);
+        }
       } else {
-        const text = inputText.trim();
-        if (text.length < 10) { setError("Please enter at least 10 characters."); return; }
-        data = await analyzeText(text);
+        resolvedText = inputText.trim();
+        if (resolvedText.length < 10) { setError("Please enter at least 10 characters."); return; }
+        data = await analyzeText(resolvedText);
       }
+      setContractText(resolvedText);
       setRiskData(data);
       setSevFilter("all");
       setBenchmarkData(null);
@@ -322,7 +336,8 @@ export default function AppPage() {
           )}
 
           {view === "risk" && riskData && (
-            <RiskResults
+            <ContractReader
+              contractText={contractText}
               data={riskData}
               sevFilter={sevFilter}
               onFilterChange={setSevFilter}

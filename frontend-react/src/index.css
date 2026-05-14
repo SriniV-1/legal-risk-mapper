@@ -7,22 +7,23 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* ── Dark warm-gray scale ── */
-  --bg:         #0A0908;
-  --bg-alt:     #111009;
-  --surface:    #181714;
-  --surface-2:  #1E1C19;
-  --surface-3:  #252320;
+  /* ── Dark warm-gray scale — wider separation for 3D depth ── */
+  --bg:         #070605;
+  --bg-alt:     #0D0C0A;
+  --surface:    #161412;
+  --surface-2:  #1F1D1A;
+  --surface-3:  #2B2926;
+  --surface-4:  #353330;
 
   /* ── Borders ── */
-  --border:     #2A2826;
-  --border-2:   #3B3935;
-  --border-3:   #4A4845;
+  --border:     #272420;
+  --border-2:   #3A3733;
+  --border-3:   #504D49;
 
   /* ── Text ── */
-  --text:       #F2F1EF;
-  --text-2:     #A9A7A2;
-  --text-3:     #5C5A55;
+  --text:       #F4F2F0;
+  --text-2:     #ABA9A4;
+  --text-3:     #615E59;
 
   /* ── Accent (navy → brighter on dark) ── */
   --accent:     #4B7BE5;
@@ -51,11 +52,15 @@
   --danger-bg:     rgba(239, 68, 68, 0.08);
   --danger-border: rgba(239, 68, 68, 0.25);
 
-  /* ── Shadows ── */
-  --sh-xs: 0 1px 2px rgba(0,0,0,0.4);
-  --sh-sm: 0 2px 6px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.3);
-  --sh-md: 0 4px 12px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3);
-  --sh-lg: 0 8px 28px rgba(0,0,0,0.45), 0 4px 8px rgba(0,0,0,0.3);
+  /* ── Shadows — stronger for more visible depth ── */
+  --sh-xs: 0 1px 3px rgba(0,0,0,0.55);
+  --sh-sm: 0 2px 8px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4);
+  --sh-md: 0 4px 16px rgba(0,0,0,0.55), 0 2px 4px rgba(0,0,0,0.4);
+  --sh-lg: 0 8px 32px rgba(0,0,0,0.6), 0 4px 8px rgba(0,0,0,0.4);
+
+  /* ── Inset highlight — top edge light for raised card feel ── */
+  --inset-top: inset 0 1px 0 rgba(255,255,255,0.04);
+  --inset-top-strong: inset 0 1px 0 rgba(255,255,255,0.08);
 
   /* ── Typography ── */
   --display: 'Playfair Display', Georgia, serif;
@@ -629,6 +634,7 @@ footer {
   background: var(--surface);
   display: flex;
   flex-direction: column;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.4);
 }
 .panel-section {
   border-bottom: 1px solid var(--border);
@@ -848,7 +854,7 @@ footer {
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 24px;
-  box-shadow: var(--sh-sm);
+  box-shadow: var(--sh-sm), var(--inset-top);
 }
 .card-header {
   display: flex;
@@ -983,6 +989,7 @@ footer {
   border-radius: 3px;
   overflow: hidden;
   animation: fadeInCard 0.2s ease forwards;
+  box-shadow: var(--sh-xs), var(--inset-top);
 }
 @keyframes fadeInCard {
   from { opacity: 0; transform: translateY(4px); }
@@ -999,6 +1006,7 @@ footer {
   padding: 11px 14px;
   background: var(--surface-2);
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.25);
 }
 .sev-badge {
   font-size: 10px;
@@ -1374,4 +1382,165 @@ footer {
   .pipeline-grid { grid-template-columns: repeat(2, 1fr); }
   .landing-nav { padding: 0 24px; }
   .section-wrap { padding: 0 24px; }
+}
+
+/* ═══════════════════════════════════════════
+   CONTRACT READER
+   ═══════════════════════════════════════════ */
+.cr-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ─── Summary bar (reuses card + overall-row) ─── */
+
+/* ─── Contract body ─── */
+.cr-body {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  box-shadow: var(--sh-sm), var(--inset-top);
+  overflow: hidden;
+}
+.cr-body-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.25);
+}
+.cr-body-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.cr-filter-row {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+/* ─── Paragraphs ─── */
+.cr-paragraphs {
+  padding: 20px 0;
+}
+.cr-para-block {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  position: relative;
+}
+.cr-margin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 3px;
+  gap: 4px;
+  min-height: 100%;
+}
+.cr-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+  border: 1.5px solid transparent;
+}
+.cr-dot:hover { transform: scale(1.3); }
+.cr-dot.high   { background: var(--high);  border-color: var(--high-border); box-shadow: 0 0 0 2px var(--high-bg); }
+.cr-dot.medium { background: var(--med);   border-color: var(--med-border);  box-shadow: 0 0 0 2px var(--med-bg); }
+.cr-dot.low    { background: var(--low);   border-color: var(--low-border);  box-shadow: 0 0 0 2px var(--low-bg); }
+.cr-dot.active { transform: scale(1.25); }
+.cr-dot.high.active   { box-shadow: 0 0 0 3px var(--high-bg), 0 0 6px rgba(239,68,68,0.4); }
+.cr-dot.medium.active { box-shadow: 0 0 0 3px var(--med-bg),  0 0 6px rgba(245,158,11,0.4); }
+.cr-dot.low.active    { box-shadow: 0 0 0 3px var(--low-bg),  0 0 6px rgba(34,197,94,0.4); }
+
+.cr-para-right {
+  display: flex;
+  flex-direction: column;
+  padding-right: 24px;
+}
+.cr-para-text {
+  font-size: 13.5px;
+  color: var(--text-2);
+  line-height: 1.75;
+  padding: 6px 0 8px;
+  transition: color 0.15s;
+}
+.cr-para-text.has-risk { color: var(--text); }
+
+/* ─── Inline expanded risk panel ─── */
+.cr-expanded {
+  margin: 4px 0 12px;
+  border: 1px solid var(--border-2);
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--surface-2);
+  box-shadow: var(--sh-sm);
+  animation: fadeInCard 0.15s ease forwards;
+}
+.cr-expanded-risk {
+  border-bottom: 1px solid var(--border);
+}
+.cr-expanded-risk:last-child { border-bottom: none; }
+.cr-exp-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--surface-3);
+  border-bottom: 1px solid var(--border);
+}
+.cr-exp-body {
+  padding: 10px 14px;
+}
+.cr-exp-snippet {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--text-3);
+  margin-bottom: 6px;
+  line-height: 1.55;
+  padding-left: 10px;
+  border-left: 2px solid var(--border-2);
+}
+.cr-exp-explanation {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.cr-exp-conf {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-3);
+}
+.cr-exp-conf-track { flex: 1; height: 3px; background: var(--surface-4); border-radius: 2px; overflow: hidden; max-width: 100px; }
+.cr-exp-conf-fill  { height: 100%; background: var(--accent-mid); border-radius: 2px; }
+
+/* ─── Fallback unmatched risks ─── */
+.cr-fallback {
+  margin: 8px 24px 20px 36px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--surface-2);
+  box-shadow: var(--sh-xs);
+}
+.cr-fallback-header {
+  padding: 10px 14px;
+  background: var(--surface-3);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
 }
