@@ -289,29 +289,28 @@ export default function ContractReader({ contractText, data, sevFilter, onFilter
               );
             })}
 
-            {/* ── Fallback: unmatched risks ── */}
-            {unmatchedRisks.filter(isVisible).length > 0 && (
-              <div className="cr-fallback">
-                <div className="cr-fallback-header">
-                  Additional Risks — location not pinpointed in text
-                </div>
-                <div className="cr-expanded">
-                  {unmatchedRisks.filter(isVisible).map((rIdx) => {
-                    const key = `fallback-${rIdx}`;
-                    return (
-                      <InlineRisk
-                        key={rIdx}
-                        risk={risks[rIdx]}
-                        onClose={() => {}}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>
+
+      {/* ── Fallback: unmatched risks — outside the white paper ── */}
+      {unmatchedRisks.filter(isVisible).length > 0 && (
+        <div className="card" style={{ marginTop: "12px" }}>
+          <div className="card-header">
+            <span className="card-title" style={{ fontSize: "13px" }}>Additional Risks</span>
+            <span style={{ fontSize: "12px", color: "var(--text-3)", marginLeft: "6px" }}>location not pinpointed in text</span>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {unmatchedRisks.filter(isVisible).map((rIdx) => (
+              <InlineRisk
+                key={rIdx}
+                risk={risks[rIdx]}
+                onClose={() => {}}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

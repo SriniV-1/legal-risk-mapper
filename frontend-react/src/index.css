@@ -1593,24 +1593,6 @@ footer {
 .cr-exp-conf-fill  { height: 100%; background: var(--accent-mid); border-radius: 2px; }
 
 /* ─── Fallback unmatched risks ─── */
-.cr-fallback {
-  margin: 8px 32px 24px 36px;
-  border: 1px solid var(--border-2);
-  border-radius: 6px;
-  overflow: hidden;
-  background: var(--surface-2);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 1px 4px rgba(0,0,0,0.2);
-}
-.cr-fallback-header {
-  padding: 10px 14px;
-  background: var(--surface-3);
-  border-bottom: 1px solid var(--border);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-3);
-}
 
 /* ═══════════════════════════════════════════
    SKELETON / LOADING
