@@ -51,13 +51,14 @@ function findParaIndex(paragraphs, snippet) {
 
 function InlineRisk({ risk, onClose }) {
   const sev = risk.severity || "Low";
+  const sevLower = sev.toLowerCase();
   const sources = new Set(risk.sources || []);
   const confirmed = sources.has("regex") && sources.has("semantic");
   const conf = Math.min(100, Math.round(risk.score || 0));
 
   return (
-    <div className="cr-expanded-risk">
-      <div className="cr-exp-header">
+    <div className={`cr-expanded-risk ${sevLower}`}>
+      <div className={`cr-exp-header ${sevLower}`}>
         <span className={`sev-badge ${sev}`}>{sev}</span>
         <span className="risk-type">{risk.risk_type}</span>
         <div className="src-chips">
@@ -201,15 +202,18 @@ export default function ContractReader({ contractText, data, sevFilter, onFilter
           <FileTextIcon />
           <span className="cr-body-title">Contract Text</span>
           <div className="cr-filter-row">
-            {["all", "High", "Medium", "Low"].map((f) => (
-              <button
-                key={f}
-                className={`filter-chip${sevFilter === f ? " active" : ""}`}
-                onClick={() => { onFilterChange(f); setExpandedKey(null); }}
-              >
-                {f === "all" ? "All" : f}
-              </button>
-            ))}
+            {["all", "High", "Medium", "Low"].map((f) => {
+              const activeClass = sevFilter === f ? ` active-${f.toLowerCase()}` : "";
+              return (
+                <button
+                  key={f}
+                  className={`filter-chip${activeClass}`}
+                  onClick={() => { onFilterChange(f); setExpandedKey(null); }}
+                >
+                  {f === "all" ? "All" : f}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -223,8 +227,26 @@ export default function ContractReader({ contractText, data, sevFilter, onFilter
               const visibleRiskIdxs = paraRisks[pIdx].filter(isVisible);
               const hasRisk = visibleRiskIdxs.length > 0;
 
+              const activeRiskIdx = visibleRiskIdxs
+                .map(rIdx => ({ rIdx, key: `${pIdx}-${rIdx}` }))
+                .find(x => x.key === expandedKey)?.rIdx;
+              const highlightSev = activeRiskIdx != null
+                ? (risks[activeRiskIdx].severity || "Low").toLowerCase()
+                : null;
+              const paraStyle = highlightSev
+                ? {
+                    borderLeft: `2px solid var(--${highlightSev})`,
+                    background: highlightSev === "high"
+                      ? "rgba(239,68,68,0.04)"
+                      : highlightSev === "medium"
+                        ? "rgba(245,158,11,0.04)"
+                        : "rgba(34,197,94,0.04)",
+                    transition: "background 0.2s ease, border-color 0.2s ease",
+                  }
+                : { transition: "background 0.2s ease, border-color 0.2s ease" };
+
               return (
-                <div key={pIdx} className="cr-para-block">
+                <div key={pIdx} className="cr-para-block" style={paraStyle}>
                   {/* Left margin — dots */}
                   <div className="cr-margin">
                     {visibleRiskIdxs

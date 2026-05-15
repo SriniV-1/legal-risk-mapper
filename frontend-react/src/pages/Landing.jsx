@@ -44,7 +44,7 @@ export default function Landing() {
       <nav className="landing-nav">
         <a href="/" className="nav-logo">ALRM</a>
         <div style={{ flex: 1 }} />
-        <span className="nav-label">Automated Legal Risk Monitor</span>
+        <span className="nav-label nav-label-hide-mobile">Automated Legal Risk Monitor</span>
         <Link to="/app" className="nav-cta">
           Launch App
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -78,7 +78,7 @@ export default function Landing() {
             </div>
 
             {/* Preview widget */}
-            <div>
+            <div className="hero-preview-hide-mobile">
               <div className="preview-widget">
                 <div className="pw-bar">
                   <div className="pw-dot" />

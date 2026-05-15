@@ -1,5 +1,15 @@
 import { useState } from "react";
 
+function DownloadIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+  );
+}
+
 function CopyIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -82,14 +92,49 @@ function RedlineItem({ suggestion, index }) {
   );
 }
 
-export default function RedlineResults({ data }) {
+export default function RedlineResults({ data, loading }) {
+  const [exported, setExported] = useState(false);
+
+  if (loading || !data) {
+    return (
+      <div className="card">
+        <div className="card-header">
+          <GitIcon />
+          <span className="card-title">Redline Suggestions</span>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div className="skeleton" style={{ height: "52px", borderRadius: "7px" }} />
+          <div className="skeleton" style={{ height: "120px", borderRadius: "7px" }} />
+          <div className="skeleton" style={{ height: "120px", borderRadius: "7px" }} />
+        </div>
+      </div>
+    );
+  }
+
   const suggestions = data.suggestions || [];
+
+  function exportJson() {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const a = Object.assign(document.createElement("a"), {
+      href: URL.createObjectURL(blob),
+      download: "alrm_redline.json",
+    });
+    a.click();
+    URL.revokeObjectURL(a.href);
+    setExported(true);
+    setTimeout(() => setExported(false), 1500);
+  }
 
   return (
     <div className="card">
       <div className="card-header">
         <GitIcon />
         <span className="card-title">Redline Suggestions</span>
+        <div className="card-header-spacer" />
+        <button className="btn-export" onClick={exportJson}>
+          {exported ? <CheckIcon /> : <DownloadIcon />}
+          {exported ? "Exported" : "Export JSON"}
+        </button>
       </div>
 
       {data.summary && (

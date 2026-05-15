@@ -53,13 +53,16 @@ function Icon({ name, size = 14 }) {
 }
 
 export default function AppPage() {
-  const [health, setHealth] = useState(null); // null | { status: "ok"|"err", label: string }
+  const [health, setHealth] = useState(null); // null | { status: "ok"|"err", label: string, version: string }
+  const [dismissed, setDismissed] = useState(false);
   const [tab, setTab] = useState("text");
   const [inputText, setInputText] = useState("");
   const [file, setFile] = useState(null);
   const [dragging, setDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState("");
+  const [benchmarkLoading, setBenchmarkLoading] = useState(false);
+  const [redlineLoading, setRedlineLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Results
@@ -70,13 +73,15 @@ export default function AppPage() {
   const [sevFilter, setSevFilter] = useState("all");
   const [view, setView] = useState("placeholder"); // "placeholder" | "risk" | "benchmark"
 
+  const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+
   const fileInputRef = useRef(null);
   const mainRef = useRef(null);
 
   useEffect(() => {
     checkHealth()
-      .then((d) => setHealth({ status: "ok", label: `v${d.version || "?"} · online` }))
-      .catch(() => setHealth({ status: "err", label: "Backend offline" }));
+      .then((d) => setHealth({ status: "ok", label: `v${d.version || "?"} · online`, version: d.version || "?" }))
+      .catch(() => setHealth({ status: "err", label: "Backend offline", version: null }));
   }, []);
 
   function loadSample(key) {
@@ -104,9 +109,34 @@ export default function AppPage() {
     setContractText("");
     setBenchmarkData(null);
     setRedlineData(null);
+    setBenchmarkLoading(false);
+    setRedlineLoading(false);
     setSevFilter("all");
     setView("placeholder");
     if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  async function handleAnalyzeSample(key) {
+    const text = SAMPLES[key].text;
+    setInputText(text);
+    setTab("text");
+    setError(null);
+    try {
+      setLoading(true);
+      setLoadingMsg("Running ML risk classifier…");
+      const data = await analyzeText(text);
+      setContractText(text);
+      setRiskData(data);
+      setSevFilter("all");
+      setBenchmarkData(null);
+      setRedlineData(null);
+      setView("risk");
+      mainRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (e) {
+      setError(`Analysis failed: ${e.message}`);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleAnalyze() {
@@ -151,9 +181,9 @@ export default function AppPage() {
     setError(null);
     let text = "";
     try {
+      // Extract text (fast step — use full-screen loader briefly)
       setLoading(true);
       setLoadingMsg("Preparing text…");
-
       if (tab === "file" && file) {
         if (file.name.toLowerCase().endsWith(".pdf")) {
           setLoadingMsg("Extracting text from PDF…");
@@ -165,27 +195,34 @@ export default function AppPage() {
       } else {
         text = inputText.trim();
       }
+      setLoading(false);
 
       if (text.trim().length < 30) {
         setError("Please enter at least 30 characters to benchmark.");
         return;
       }
 
-      setLoadingMsg("Benchmarking against SEC EDGAR corpus…");
-      const bench = await benchmarkText(text, "auto");
-
-      setLoadingMsg(`Generating ${bench.clause_type.replace(/_/g, " ")} redlines…`);
-      const redlines = await generateRedlines(text, bench.clause_type);
-
-      setBenchmarkData(bench);
-      setRedlineData(redlines);
+      // Switch to benchmark view and show skeleton
+      setBenchmarkData(null);
+      setRedlineData(null);
       setRiskData(null);
       setView("benchmark");
       mainRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+
+      setBenchmarkLoading(true);
+      const bench = await benchmarkText(text, "auto");
+      setBenchmarkData(bench);
+      setBenchmarkLoading(false);
+
+      setRedlineLoading(true);
+      const redlines = await generateRedlines(text, bench.clause_type);
+      setRedlineData(redlines);
+      setRedlineLoading(false);
     } catch (e) {
-      setError(`Benchmark failed: ${e.message}`);
-    } finally {
       setLoading(false);
+      setBenchmarkLoading(false);
+      setRedlineLoading(false);
+      setError(`Benchmark failed: ${e.message}`);
     }
   }
 
@@ -202,14 +239,36 @@ export default function AppPage() {
         <div className="header-divider" />
         <span className="header-title">Analysis</span>
         <div className="header-spacer" />
-        <div className="health-indicator">
-          <span className={`health-dot${health ? ` ${health.status}` : ""}`} />
-          <span>{health ? health.label : "Checking…"}</span>
+        <div className="health-wrapper">
+          <div className="health-indicator">
+            <span className={`health-dot${health ? ` ${health.status}` : ""}`} />
+            <span>{health ? health.label : "Checking…"}</span>
+          </div>
+          <div className="health-tooltip">
+            <strong>API</strong> {apiBase}<br />
+            <strong>Version</strong> {health?.version || "—"}<br />
+            <strong>Status</strong> {health?.status === "ok" ? "Online" : health?.status === "err" ? "Offline" : "Checking…"}
+          </div>
         </div>
       </header>
 
+      {/* OFFLINE BANNER */}
+      {health?.status === "err" && !dismissed && (
+        <div className="offline-banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          Backend is offline — analysis requests will fail. The API may be sleeping on Hugging Face (cold start ~30s).
+          <button className="offline-banner-dismiss" onClick={() => setDismissed(true)}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      )}
+
       {/* LAYOUT */}
-      <div className="app-layout">
+      <div className="app-layout" style={health?.status === "err" && !dismissed ? { marginTop: "44px" } : {}}>
         {/* SIDEBAR */}
         <aside className="sidebar">
           {/* TABS */}
@@ -323,14 +382,42 @@ export default function AppPage() {
         <main className="main-content" ref={mainRef}>
           {view === "placeholder" && (
             <div className="card">
-              <div className="placeholder">
-                <div className="placeholder-icon">
-                  <Icon name="scale" size={22} />
+              <div className="card-header">
+                <Icon name="scale" size={15} />
+                <span className="card-title">Get Started</span>
+              </div>
+              <div className="guide-steps">
+                <div className="guide-step">
+                  <div className="guide-step-num">01</div>
+                  <div className="guide-step-icon">
+                    <Icon name="file-text" size={18} />
+                  </div>
+                  <div className="guide-step-label">Paste a contract clause or upload a .pdf, .txt, or .md file</div>
                 </div>
-                <div className="placeholder-title">No analysis yet</div>
-                <p className="placeholder-hint">
-                  Paste a contract clause or upload a file, then click Analyze Risk or Benchmark.
-                </p>
+                <div className="guide-step">
+                  <div className="guide-step-num">02</div>
+                  <div className="guide-step-icon">
+                    <Icon name="search" size={18} />
+                  </div>
+                  <div className="guide-step-label">Click Analyze Risk to classify risks across five categories</div>
+                </div>
+                <div className="guide-step">
+                  <div className="guide-step-num">03</div>
+                  <div className="guide-step-icon">
+                    <Icon name="bar-chart-2" size={18} />
+                  </div>
+                  <div className="guide-step-label">Click Benchmark to compare against 116 real SEC EDGAR filings</div>
+                </div>
+              </div>
+              <div className="guide-actions">
+                <button className="guide-link" onClick={() => handleAnalyzeSample("contract")}>
+                  <Icon name="file-text" size={13} />
+                  Try Sample: SaaS Agreement
+                </button>
+                <button className="guide-link" onClick={() => handleAnalyzeSample("privacy")}>
+                  <Icon name="file-text" size={13} />
+                  Try Sample: Privacy Policy
+                </button>
               </div>
             </div>
           )}
@@ -344,10 +431,10 @@ export default function AppPage() {
             />
           )}
 
-          {view === "benchmark" && benchmarkData && (
+          {view === "benchmark" && (benchmarkData || benchmarkLoading) && (
             <>
-              <BenchmarkResults data={benchmarkData} />
-              {redlineData && <RedlineResults data={redlineData} />}
+              <BenchmarkResults data={benchmarkData} loading={benchmarkLoading} />
+              {(redlineData || redlineLoading) && <RedlineResults data={redlineData} loading={redlineLoading} />}
             </>
           )}
         </main>

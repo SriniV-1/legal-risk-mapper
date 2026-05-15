@@ -142,7 +142,7 @@ The Supabase schema has three tables: `contracts` (id, company, form_type, filed
 | Database        | Supabase PostgreSQL + pgvector, IVFFlat index                                                       |
 | NLP             | spaCy en_core_web_sm (clause segmentation), MiniLM-L6-v2 (embeddings)                              |
 | PDF Extraction  | PyMuPDF (MuPDF bindings)                                                                            |
-| Frontend        | React 18 + Vite + Tailwind CSS, React Router 6, Vercel static hosting                              |
+| Frontend        | Custom CSS (CSS variables, dark warm-gray design system), React Router 6, Vercel static hosting    |
 | Deployment      | Docker on Hugging Face Spaces (backend, free CPU tier)                                              |
 | CI              | GitHub Actions, pytest on push and PR                                                               |
 

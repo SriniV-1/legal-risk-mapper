@@ -106,7 +106,44 @@ function BarChartIcon() {
   );
 }
 
-export default function BenchmarkResults({ data }) {
+function computePercentile(ext, type, dists) {
+  const cfg = DIST_CFG[type] || DIST_CFG.liability;
+  const contributions = [];
+  Object.entries(dists).forEach(([field, dist]) => {
+    if (!dist.total || dist.value_counts?.length || !cfg.L[field]) return;
+    const uv = cfg.G(ext, field);
+    if (typeof uv !== "boolean") return;
+    const pct = dist.true_pct / 100;
+    contributions.push(uv ? pct : 1 - pct);
+  });
+  if (!contributions.length) return 50;
+  return Math.round(contributions.reduce((a, b) => a + b, 0) / contributions.length * 100);
+}
+
+export default function BenchmarkResults({ data, loading }) {
+  if (loading || !data) {
+    return (
+      <div className="card">
+        <div className="card-header">
+          <BarChartIcon />
+          <span className="card-title">Benchmark</span>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div className="skeleton" style={{ height: "80px", borderRadius: "7px" }} />
+          <div className="skeleton" style={{ height: "40px" }} />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: "8px" }}>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="skeleton" style={{ height: "52px", borderRadius: "3px" }} />
+            ))}
+          </div>
+          <div className="skeleton" style={{ height: "20px", width: "60%" }} />
+          <div className="skeleton" style={{ height: "16px" }} />
+          <div className="skeleton" style={{ height: "16px", width: "80%" }} />
+        </div>
+      </div>
+    );
+  }
+
   const type = data.clause_type || "liability";
   const typeLabel = type.replace(/_/g, " ");
   const ext = data.user_extraction;
@@ -133,6 +170,14 @@ export default function BenchmarkResults({ data }) {
       return { field, dist, uv, pct, label: cfg.L[field] };
     });
 
+  const percentile = computePercentile(ext, type, dists);
+  const verdictClass = percentile >= 60 ? "favorable" : percentile >= 40 ? "neutral" : "unfavorable";
+  const verdictText = percentile >= 60
+    ? `Your clause includes more protections than ${percentile}% of comparable market contracts.`
+    : percentile >= 40
+      ? `Your clause is broadly in line with market norms — some gaps remain.`
+      : `Your clause lacks protections present in ${100 - percentile}% of comparable market contracts.`;
+
   return (
     <div className="card">
       <div className="card-header">
@@ -141,6 +186,16 @@ export default function BenchmarkResults({ data }) {
         <span style={{ fontSize: "12px", color: "var(--text-3)", marginLeft: "4px" }}>
           {typeLabel} · {data.sample_size} similar clauses
         </span>
+      </div>
+
+      {/* Verdict */}
+      <div className={`verdict-card ${verdictClass}`}>
+        <span className={`verdict-number ${verdictClass}`}>{percentile}<span style={{ fontSize: "22px" }}>%</span></span>
+        <div className="verdict-right">
+          <div className="verdict-label">Market Percentile</div>
+          <div className="verdict-interpretation">{verdictText}</div>
+        </div>
+        <span className="verdict-type-badge">{typeLabel}</span>
       </div>
 
       {/* Stats */}
