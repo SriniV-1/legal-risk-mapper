@@ -223,6 +223,11 @@ export default function AppPage() {
       setBenchmarkLoading(false);
       setRedlineLoading(false);
       setError(`Benchmark failed: ${e.message}`);
+      // If benchmark data never arrived, leave main area in a usable state
+      setBenchmarkData((prev) => {
+        if (!prev) setView("placeholder");
+        return prev;
+      });
     }
   }
 
@@ -356,7 +361,7 @@ export default function AppPage() {
             <div className="btn-row">
               <button
                 className="btn btn-primary"
-                disabled={loading}
+                disabled={loading || benchmarkLoading || redlineLoading}
                 onClick={handleAnalyze}
               >
                 <Icon name="search" size={14} />
@@ -364,7 +369,7 @@ export default function AppPage() {
               </button>
               <button
                 className="btn btn-secondary"
-                disabled={loading}
+                disabled={loading || benchmarkLoading || redlineLoading}
                 onClick={handleBenchmark}
               >
                 <Icon name="bar-chart-2" size={14} />
