@@ -248,8 +248,11 @@ export default function BenchmarkResults({ data, loading }) {
                 <div className="dist-track">
                   <div className="dist-fill" style={{ width: `${pct}%` }} />
                 </div>
-                {uv === true && (
+                {uv === true && dist.true_pct > 0 && (
                   <span className="dist-user-tag has">You have this</span>
+                )}
+                {uv === true && dist.true_pct === 0 && (
+                  <span className="dist-user-tag outlier">You have this · not in market sample</span>
                 )}
                 {uv === false && (
                   <span className="dist-user-tag lacks">You lack this</span>

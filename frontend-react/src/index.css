@@ -1215,8 +1215,9 @@ footer {
   padding: 3px 8px;
   border-radius: 2px;
 }
-.dist-user-tag.has   { background: var(--low-bg);  color: var(--low-ink);  border: 1px solid var(--low-border);  }
-.dist-user-tag.lacks { background: var(--high-bg); color: var(--high-ink); border: 1px solid var(--high-border); }
+.dist-user-tag.has     { background: var(--low-bg);   color: var(--low-ink);  border: 1px solid var(--low-border);  }
+.dist-user-tag.lacks   { background: var(--high-bg);  color: var(--high-ink); border: 1px solid var(--high-border); }
+.dist-user-tag.outlier { background: var(--med-bg);   color: var(--med-ink);  border: 1px solid var(--med-border);  }
 
 /* ─── CITED EXAMPLES ─── */
 .cited-list { display: flex; flex-direction: column; gap: 10px; }
