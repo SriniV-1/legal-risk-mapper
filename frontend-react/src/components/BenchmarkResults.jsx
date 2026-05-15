@@ -165,7 +165,9 @@ export default function BenchmarkResults({ data, loading }) {
   const distRows = Object.entries(dists)
     .filter(([k, v]) => v.total > 0 && !v.value_counts?.length && cfg.L[k])
     .map(([field, dist]) => {
-      const uv = cfg.G(ext, field);
+      const raw = cfg.G(ext, field);
+      // null from the LLM means "not found / not applicable" → treat as false
+      const uv = raw === null ? false : raw;
       const pct = Math.max(dist.true_pct, 2);
       return { field, dist, uv, pct, label: cfg.L[field] };
     });
