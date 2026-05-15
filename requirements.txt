@@ -33,8 +33,7 @@ gunicorn>=22.0.0              # production WSGI/ASGI server for Railway
 # Priority: claude-* model → Anthropic; GROQ_API_KEY set → Groq; else → Ollama local
 # Groq (recommended free option): set GROQ_API_KEY. Sign up at console.groq.com (no credit card).
 #   LRM_EXTRACTION_MODEL=llama-3.1-8b-instant
-groq>=0.9.0                   # Groq SDK (free cloud inference, Llama 3.1 8B)
-anthropic>=0.25.0             # Anthropic SDK (optional — enables claude-* models)
+groq>=0.9.0                   # Groq SDK (free cloud inference, Llama 3.3 70B)
 
 # ── PDF support ───────────────────────────────────────────────────────────────
 pymupdf>=1.24.0               # fast PDF text extraction (MuPDF bindings)

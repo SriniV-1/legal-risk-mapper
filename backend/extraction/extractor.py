@@ -4,9 +4,8 @@ LLM-Based Clause Extractor
 Extracts structured fields from contract clauses using a pluggable LLM backend.
 
 LLM routing (priority order):
-  1. ANTHROPIC_API_KEY + claude-* model  → Anthropic API
-  2. GROQ_API_KEY set                    → Groq free API (llama-3.1-8b-instant)
-  3. fallback                            → Ollama local (llama3.1:8b)
+  1. GROQ_API_KEY set  → Groq free API (llama-3.3-70b-versatile)
+  2. fallback          → Ollama local (llama3.1:8b)
 
 Each extractor call:
   1. Takes raw clause text + clause type
@@ -38,10 +37,6 @@ import os
 
 OLLAMA_BASE_URL = "http://localhost:11434"
 DEFAULT_MODEL = os.environ.get("LRM_EXTRACTION_MODEL", "llama3.1:8b")
-
-# Set LRM_EXTRACTION_MODEL=claude-haiku-4-5-20251001 (or any claude-* model)
-# to use Anthropic API instead of Ollama. Requires ANTHROPIC_API_KEY env var.
-_USE_ANTHROPIC = DEFAULT_MODEL.startswith("claude-")
 
 # ── Extraction prompts ───────────────────────────────────────────────────────
 
@@ -418,31 +413,6 @@ def _call_ollama(
     return resp.json()["response"]
 
 
-def _call_anthropic(
-    prompt: str,
-    model: str = "claude-haiku-4-5-20251001",
-    max_tokens: int = 2000,
-) -> str:
-    """Call Anthropic API and return the response text. Requires ANTHROPIC_API_KEY."""
-    try:
-        import anthropic
-    except ImportError:
-        raise RuntimeError(
-            "anthropic package not installed. Run: pip install anthropic"
-        )
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        raise RuntimeError("ANTHROPIC_API_KEY environment variable not set")
-
-    client = anthropic.Anthropic(api_key=api_key)
-    message = client.messages.create(
-        model=model,
-        max_tokens=max_tokens,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return message.content[0].text
-
-
 def _call_groq(
     prompt: str,
     model: str = "llama-3.3-70b-versatile",
@@ -477,15 +447,12 @@ def _call_llm(
     model: str = DEFAULT_MODEL,
     max_tokens: int = 2000,
 ) -> str:
-    """Route to the appropriate LLM backend based on model name and available keys.
+    """Route to the appropriate LLM backend based on available keys.
 
     Priority:
-      1. claude-*  → Anthropic API (requires ANTHROPIC_API_KEY)
-      2. GROQ_API_KEY set → Groq API (free, no credit card)
-      3. fallback  → Ollama local (requires Ollama running)
+      1. GROQ_API_KEY set → Groq API (free, no credit card)
+      2. fallback         → Ollama local (requires Ollama running)
     """
-    if model.startswith("claude-"):
-        return _call_anthropic(prompt, model=model, max_tokens=max_tokens)
     if os.environ.get("GROQ_API_KEY"):
         groq_model = "llama-3.3-70b-versatile" if model == DEFAULT_MODEL else model
         return _call_groq(prompt, model=groq_model, max_tokens=max_tokens)
@@ -542,7 +509,7 @@ def extract_clause(
     Args:
         clause_text: Raw clause text to extract from.
         clause_type: Category of clause (determines schema + prompt).
-        model: Ollama model name (llama3.1:8b) or Anthropic model (claude-*).
+        model: Ollama model name (llama3.1:8b) or Groq model name.
                Defaults to LRM_EXTRACTION_MODEL env var, or llama3.1:8b.
         max_retries: Number of retry attempts on failure.
 
