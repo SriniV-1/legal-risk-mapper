@@ -235,12 +235,12 @@ export default function ContractReader({ contractText, data, sevFilter, onFilter
                 : null;
               const paraStyle = highlightSev
                 ? {
-                    borderLeft: `2px solid var(--${highlightSev})`,
+                    borderLeft: `3px solid var(--${highlightSev})`,
                     background: highlightSev === "high"
-                      ? "rgba(239,68,68,0.04)"
+                      ? "rgba(239,68,68,0.08)"
                       : highlightSev === "medium"
-                        ? "rgba(245,158,11,0.04)"
-                        : "rgba(34,197,94,0.04)",
+                        ? "rgba(245,158,11,0.08)"
+                        : "rgba(34,197,94,0.08)",
                     transition: "background 0.2s ease, border-color 0.2s ease",
                   }
                 : { transition: "background 0.2s ease, border-color 0.2s ease" };
