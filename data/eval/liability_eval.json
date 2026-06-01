@@ -65,7 +65,7 @@
         "has_cap": false,
         "cap_type": null
       },
-      "is_mutual": true,
+      "is_mutual": false,
       "has_carve_outs": false,
       "carve_outs": [],
       "consequential_damages": {
@@ -141,7 +141,7 @@
         "has_cap": false,
         "cap_type": null
       },
-      "is_mutual": true,
+      "is_mutual": false,
       "has_carve_outs": false,
       "carve_outs": [],
       "consequential_damages": {
@@ -797,6 +797,842 @@
       },
       "has_indemnification": false,
       "has_warranty_disclaimer": true
+    }
+  },
+  {
+    "id": 90001,
+    "contract_id": "synth_001",
+    "text": "LIMITATION OF LIABILITY. IN NO EVENT SHALL EITHER PARTY'S AGGREGATE LIABILITY ARISING OUT OF OR RELATED TO THIS AGREEMENT EXCEED THE TOTAL AMOUNTS PAID OR PAYABLE BY CUSTOMER DURING THE TWELVE (12) MONTH PERIOD IMMEDIATELY PRECEDING THE EVENT GIVING RISE TO SUCH CLAIM. THE FOREGOING LIMITATION SHALL NOT APPLY TO (A) EITHER PARTY'S BREACH OF ITS CONFIDENTIALITY OBLIGATIONS, (B) EITHER PARTY'S INDEMNIFICATION OBLIGATIONS, OR (C) CLAIMS ARISING FROM A PARTY'S GROSS NEGLIGENCE OR WILLFUL MISCONDUCT.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "fees_paid_period"
+      },
+      "is_mutual": true,
+      "has_carve_outs": true,
+      "carve_outs": ["confidentiality", "indemnification", "gross negligence", "willful misconduct"],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": true,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90002,
+    "contract_id": "synth_002",
+    "text": "DISCLAIMER OF WARRANTIES. THE PLATFORM AND ALL SERVICES PROVIDED HEREUNDER ARE PROVIDED \"AS IS\" AND \"AS AVAILABLE\" WITHOUT WARRANTY OF ANY KIND. PROVIDER HEREBY DISCLAIMS ALL WARRANTIES, WHETHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, INCLUDING WITHOUT LIMITATION ALL IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": true
+    }
+  },
+  {
+    "id": 90003,
+    "contract_id": "synth_003",
+    "text": "Warranty Period. Vendor warrants that the Equipment shall be free from defects in materials and workmanship for a period of twelve (12) months from the date of delivery (the \"Warranty Period\"). Vendor's sole obligation under this warranty shall be, at Vendor's option, to repair or replace the defective Equipment. This warranty shall not apply to damage resulting from misuse, neglect, accident, or unauthorized modification.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90004,
+    "contract_id": "synth_004",
+    "text": "Neither party shall be liable to the other for any indirect, incidental, special, consequential, or punitive damages arising out of or relating to this Agreement, regardless of whether such damages are based on contract, tort, strict liability, or any other theory, even if the party has been advised of the possibility of such damages. This exclusion shall not apply to damages arising from a party's breach of its obligations under Section 7 (Confidentiality) or Section 9 (Intellectual Property).",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": true,
+      "has_carve_outs": true,
+      "carve_outs": ["confidentiality", "intellectual property"],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90005,
+    "contract_id": "synth_005",
+    "text": "Contractor represents and warrants that: (a) it has the legal right and authority to enter into this Agreement; (b) all Services will be performed in a professional and workmanlike manner consistent with generally accepted industry standards; (c) it possesses the necessary qualifications, licenses, and permits required to perform the Services; and (d) the deliverables will conform to the specifications set forth in each Statement of Work.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90006,
+    "contract_id": "synth_006",
+    "text": "Cap on Liability. Provider's total cumulative liability to Customer for all claims arising under or in connection with this Agreement shall not exceed an amount equal to two (2) times the total fees actually paid by Customer to Provider during the twelve (12) month period immediately preceding the first event giving rise to liability. This limitation applies regardless of the form of action, whether in contract, tort (including negligence), strict liability, or otherwise.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "multiple_of_fees"
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90007,
+    "contract_id": "synth_007",
+    "text": "EXCEPT FOR CLAIMS ARISING FROM (I) A PARTY'S INDEMNIFICATION OBLIGATIONS UNDER SECTION 11, (II) A PARTY'S BREACH OF SECTION 8 (CONFIDENTIALITY), OR (III) A PARTY'S WILLFUL MISCONDUCT OR FRAUD, EACH PARTY'S AGGREGATE LIABILITY TO THE OTHER PARTY FOR ALL CLAIMS ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT SHALL NOT EXCEED ONE MILLION DOLLARS ($1,000,000). IN NO EVENT SHALL EITHER PARTY BE LIABLE TO THE OTHER PARTY FOR ANY LOST PROFITS, LOST SAVINGS, OR INCIDENTAL, INDIRECT, SPECIAL, OR CONSEQUENTIAL DAMAGES, WHETHER OR NOT FORESEEABLE.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "fixed_amount"
+      },
+      "is_mutual": true,
+      "has_carve_outs": true,
+      "carve_outs": ["indemnification", "confidentiality", "willful misconduct", "fraud"],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": true,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90008,
+    "contract_id": "synth_008",
+    "text": "THE SOFTWARE IS PROVIDED \"AS IS\" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. THE LICENSOR DOES NOT WARRANT THAT THE SOFTWARE WILL BE ERROR-FREE OR THAT ACCESS THERETO WILL BE CONTINUOUS OR UNINTERRUPTED. LICENSOR'S TOTAL LIABILITY UNDER THIS AGREEMENT SHALL NOT EXCEED THE LICENSE FEES PAID BY LICENSEE IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "fees_paid_period"
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": true
+    }
+  },
+  {
+    "id": 90009,
+    "contract_id": "synth_009",
+    "text": "Vendor shall indemnify, defend, and hold harmless Client and its officers, directors, employees, and agents from and against any and all losses, damages, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating to: (a) any breach by Vendor of any representation, warranty, or obligation under this Agreement; (b) any negligent or wrongful act or omission of Vendor; or (c) any claim that the deliverables infringe the intellectual property rights of a third party.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": true,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90010,
+    "contract_id": "synth_010",
+    "text": "IN NO EVENT SHALL SUPPLIER BE LIABLE TO BUYER FOR ANY CONSEQUENTIAL, INCIDENTAL, INDIRECT, SPECIAL, OR PUNITIVE DAMAGES OR LOST PROFITS, EVEN IF SUPPLIER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. SUPPLIER'S MAXIMUM LIABILITY FOR DAMAGES ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT SHALL BE LIMITED TO THE LESSER OF (A) THE AMOUNT OF THE PURCHASE ORDER GIVING RISE TO THE CLAIM OR (B) FIVE HUNDRED THOUSAND DOLLARS ($500,000).",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "other"
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90011,
+    "contract_id": "synth_011",
+    "text": "Each party acknowledges that the other party's liability under this Agreement shall be limited as follows: (a) each party's total aggregate liability shall not exceed the fees paid under the applicable Statement of Work during the preceding twenty-four (24) months; (b) neither party shall be liable for any indirect, consequential, or special damages; provided, however, that the limitations set forth in clauses (a) and (b) shall not apply to (i) either party's obligations under Section 12 (Indemnification), (ii) either party's gross negligence or willful misconduct, or (iii) either party's breach of Section 10 (Data Protection).",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "fees_paid_period"
+      },
+      "is_mutual": true,
+      "has_carve_outs": true,
+      "carve_outs": ["indemnification", "gross negligence", "willful misconduct", "data protection"],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": true,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90012,
+    "contract_id": "synth_012",
+    "text": "Limitation of Warranties. Vendor's warranty obligations hereunder shall not exceed the repair or replacement of defective products during the warranty period. In no event shall Vendor's warranty liability exceed the purchase price of the specific product giving rise to the warranty claim. Customer acknowledges that the warranty set forth in Section 5.1 is the sole and exclusive warranty provided by Vendor with respect to the products.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "other"
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90013,
+    "contract_id": "synth_013",
+    "text": "THE SERVICES ARE PROVIDED ON AN \"AS IS\" AND \"AS AVAILABLE\" BASIS. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, PROVIDER DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. PROVIDER DOES NOT WARRANT THAT THE SERVICES WILL BE UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE. NO ADVICE OR INFORMATION, WHETHER ORAL OR WRITTEN, OBTAINED FROM PROVIDER SHALL CREATE ANY WARRANTY NOT EXPRESSLY STATED HEREIN.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": true
+    }
+  },
+  {
+    "id": 90014,
+    "contract_id": "synth_014",
+    "text": "The parties agree that any dispute arising out of or in connection with this Agreement shall be resolved through binding arbitration. Each party represents and warrants that it has full corporate power and authority to execute, deliver, and perform its obligations under this Agreement. The prevailing party in any arbitration or litigation shall be entitled to recover its reasonable attorneys' fees and costs.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90015,
+    "contract_id": "synth_015",
+    "text": "Consultant shall not be liable to Company for any damages in excess of the fees actually paid by Company to Consultant under the applicable Statement of Work during the six (6) months preceding the date on which the claim arose. The foregoing cap on liability shall not apply to claims arising from Consultant's breach of its confidentiality obligations under Section 7 or from Consultant's gross negligence, willful misconduct, or fraud.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "fees_paid_period"
+      },
+      "is_mutual": false,
+      "has_carve_outs": true,
+      "carve_outs": ["confidentiality", "gross negligence", "willful misconduct", "fraud"],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90016,
+    "contract_id": "synth_016",
+    "text": "Each party shall indemnify, defend, and hold harmless the other party from and against any and all third-party claims, damages, losses, and expenses (including reasonable attorneys' fees) arising from the indemnifying party's breach of this Agreement or negligent acts or omissions. Neither party shall be liable for indirect, incidental, or consequential damages of any kind.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": true,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": true,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90017,
+    "contract_id": "synth_017",
+    "text": "EXCEPT FOR OBLIGATIONS UNDER SECTION 5 (CONFIDENTIALITY), NEITHER PARTY SHALL BE LIABLE TO THE OTHER FOR ANY SPECIAL, INDIRECT, INCIDENTAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF REVENUE, LOSS OF PROFITS, LOSS OF BUSINESS, OR LOSS OF DATA, ARISING FROM OR IN CONNECTION WITH THIS AGREEMENT, REGARDLESS OF THE CAUSE OF ACTION OR THE THEORY OF LIABILITY.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": true,
+      "has_carve_outs": true,
+      "carve_outs": ["confidentiality"],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90018,
+    "contract_id": "synth_018",
+    "text": "Service Provider shall not be liable for any failure or delay in performing its obligations under this Agreement where such failure or delay results from Force Majeure events including, without limitation, acts of God, fire, flood, earthquake, pandemic, war, terrorism, or governmental action. Service Provider shall notify Customer promptly of any Force Majeure event and shall use commercially reasonable efforts to mitigate the effects of such event.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90019,
+    "contract_id": "synth_019",
+    "text": "NOTWITHSTANDING ANYTHING TO THE CONTRARY IN THIS AGREEMENT, IN NO EVENT SHALL THE AGGREGATE LIABILITY OF EITHER PARTY EXCEED FIVE MILLION DOLLARS ($5,000,000). THIS LIMITATION SHALL NOT APPLY TO: (A) LIABILITY ARISING FROM A PARTY'S WILLFUL BREACH OF SECTION 8 (CONFIDENTIALITY); (B) LIABILITY FOR DEATH OR PERSONAL INJURY CAUSED BY NEGLIGENCE; (C) LIABILITY FOR FRAUD OR FRAUDULENT MISREPRESENTATION; OR (D) ANY LIABILITY THAT CANNOT BE LIMITED BY APPLICABLE LAW.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "fixed_amount"
+      },
+      "is_mutual": true,
+      "has_carve_outs": true,
+      "carve_outs": ["confidentiality", "death or personal injury", "fraud"],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90020,
+    "contract_id": "synth_020",
+    "text": "Subject to the exclusions set forth in Section 9.3, Licensor's total liability to Licensee for all claims arising under or related to this Agreement, whether in contract, tort, or otherwise, shall not exceed the aggregate license fees actually paid by Licensee to Licensor during the twelve (12) month period immediately preceding the first event giving rise to liability. Except as provided in Section 9.3, neither party shall be liable to the other for any consequential, indirect, special, incidental, or exemplary damages. Section 9.3 Exclusions. The limitations in Sections 9.1 and 9.2 shall not apply to: (a) claims arising from IP infringement; (b) indemnification obligations under Section 10; or (c) willful misconduct or gross negligence.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "fees_paid_period"
+      },
+      "is_mutual": true,
+      "has_carve_outs": true,
+      "carve_outs": ["IP infringement", "indemnification", "willful misconduct", "gross negligence"],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": true,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90021,
+    "contract_id": "synth_021",
+    "text": "The Company makes no representation or warranty, express or implied, regarding the suitability, reliability, availability, timeliness, or accuracy of the Services. The Services are provided \"as is\" without warranty of any kind. The Company hereby disclaims all warranties and conditions with regard to the Services, including all implied warranties of merchantability, fitness for a particular purpose, title, and non-infringement. In no event shall the Company be liable to Customer for any amount in excess of the fees paid by Customer under this Agreement during the six (6) months preceding the event giving rise to such liability.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "fees_paid_period"
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": true
+    }
+  },
+  {
+    "id": 90022,
+    "contract_id": "synth_022",
+    "text": "Each party hereby agrees to indemnify, defend, and hold harmless the other party and its affiliates, officers, directors, employees, and agents from and against any and all claims, damages, losses, liabilities, costs, and expenses arising from the indemnifying party's material breach of this Agreement. Notwithstanding the foregoing, neither party's aggregate liability under this Section 8 shall exceed three (3) times the annual fees paid or payable under this Agreement.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "multiple_of_fees"
+      },
+      "is_mutual": true,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": true,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90023,
+    "contract_id": "synth_023",
+    "text": "Client acknowledges that Provider's warranties under this Agreement are limited to those expressly stated in Section 4.1. Provider's warranty period for software defects shall not exceed ninety (90) days from the date of acceptance. Client's exclusive remedy for breach of warranty shall be re-performance of the defective Services at no additional charge. Provider makes no warranty regarding third-party components integrated into the solution.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90024,
+    "contract_id": "synth_024",
+    "text": "Customer shall not be liable to Vendor for any indirect, incidental, or consequential damages. Vendor's total liability to Customer under this Agreement shall not exceed the total fees paid by Customer under this Agreement. The foregoing limitations shall not apply to Vendor's indemnification obligations under Section 11 or to damages arising from Vendor's willful misconduct.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "other"
+      },
+      "is_mutual": false,
+      "has_carve_outs": true,
+      "carve_outs": ["indemnification", "willful misconduct"],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": true,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90025,
+    "contract_id": "synth_025",
+    "text": "The parties acknowledge and agree that Subcontractor's obligations under this Agreement are subject to the terms and conditions negotiated between the parties, except as otherwise provided herein. Nothing in this Section shall limit Subcontractor's liability for damages arising from its failure to comply with applicable laws and regulations.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90026,
+    "contract_id": "synth_026",
+    "text": "EACH PARTY'S TOTAL AGGREGATE LIABILITY FOR ALL CLAIMS ARISING UNDER THIS AGREEMENT SHALL NOT EXCEED THE GREATER OF (A) THREE MILLION DOLLARS ($3,000,000) OR (B) THE TOTAL FEES PAID UNDER THIS AGREEMENT DURING THE TWENTY-FOUR (24) MONTHS PRIOR TO THE CLAIM. NOTWITHSTANDING THE FOREGOING, NEITHER PARTY'S LIABILITY FOR BREACHES OF ARTICLE 6 (DATA PROTECTION AND SECURITY) SHALL BE SUBJECT TO THIS CAP. EACH PARTY DISCLAIMS ALL LIABILITY FOR CONSEQUENTIAL, SPECIAL, INCIDENTAL, AND INDIRECT DAMAGES.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "other"
+      },
+      "is_mutual": true,
+      "has_carve_outs": true,
+      "carve_outs": ["data protection"],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90027,
+    "contract_id": "synth_027",
+    "text": "TO THE FULLEST EXTENT PERMITTED BY LAW, ALL SERVICES AND DELIVERABLES ARE PROVIDED WITHOUT WARRANTY OF ANY KIND. PROVIDER EXPRESSLY DISCLAIMS ALL WARRANTIES, WHETHER EXPRESS, IMPLIED, OR STATUTORY, INCLUDING ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. CUSTOMER ASSUMES ALL RISK AS TO THE QUALITY AND PERFORMANCE OF THE SERVICES.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": true
+    }
+  },
+  {
+    "id": 90028,
+    "contract_id": "synth_028",
+    "text": "Mutual Indemnification. Each party (as \"Indemnifying Party\") shall indemnify, defend, and hold harmless the other party (as \"Indemnified Party\") from and against all claims, liabilities, damages, losses, and expenses (including reasonable legal fees) arising from: (a) the Indemnifying Party's breach of any representation or warranty in this Agreement; (b) the Indemnifying Party's negligent acts or omissions; or (c) any claim that materials provided by the Indemnifying Party infringe the intellectual property rights of a third party.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": true,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90029,
+    "contract_id": "synth_029",
+    "text": "Contractor's aggregate liability to Client for all damages arising out of or related to this Agreement, whether based on contract, tort, or any other legal theory, shall not exceed the total fees paid by Client to Contractor under the Statement of Work from which such claim arises.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "other"
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90030,
+    "contract_id": "synth_030",
+    "text": "EXCEPT FOR WILLFUL MISCONDUCT, FRAUD, OR BREACH OF CONFIDENTIALITY OBLIGATIONS, COMPANY SHALL NOT BE LIABLE TO CUSTOMER FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR EXEMPLARY DAMAGES, INCLUDING BUT NOT LIMITED TO DAMAGES FOR LOSS OF PROFITS, GOODWILL, USE, DATA, OR OTHER INTANGIBLE LOSSES, ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": true,
+      "carve_outs": ["willful misconduct", "fraud", "confidentiality"],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90031,
+    "contract_id": "synth_031",
+    "text": "The API and all related documentation are provided \"as is\" and without any warranty of any kind, whether express or implied. Provider makes no warranties regarding the API's suitability for Customer's particular use case, the accuracy of any data retrieved through the API, or the continuous availability of the API endpoints. Customer assumes sole responsibility for determining whether the API is fit for Customer's intended purposes.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": true
+    }
+  },
+  {
+    "id": 90032,
+    "contract_id": "synth_032",
+    "text": "In no event will Provider be liable for damages of any kind, including without limitation, direct, indirect, special, consequential, or punitive damages, arising from or relating to the use of or inability to use the Services, even if Provider has been advised of the possibility of such damages. The total liability of Provider under this Agreement shall in no event exceed one hundred dollars ($100). The services are provided without warranty of any kind, express or implied, including without limitation warranties of merchantability or fitness for a particular purpose.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "fixed_amount"
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": true
+    }
+  },
+  {
+    "id": 90033,
+    "contract_id": "synth_033",
+    "text": "Both parties agree to use commercially reasonable efforts to resolve any dispute arising under this Agreement through good faith negotiation. If the parties are unable to resolve a dispute within thirty (30) days, either party may submit the dispute to binding arbitration. Each party shall bear its own costs and expenses in connection with such arbitration, provided that the prevailing party shall be entitled to recover its reasonable attorneys' fees.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90034,
+    "contract_id": "synth_034",
+    "text": "Vendor acknowledges that it shall be liable for any and all damages, including direct, indirect, and consequential damages, arising from its failure to comply with the data security requirements set forth in Exhibit B. Vendor agrees to indemnify and hold harmless Customer against all losses arising from any data breach caused by Vendor's negligence or failure to implement the required security measures.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": true,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90035,
+    "contract_id": "synth_035",
+    "text": "NEITHER PARTY SHALL BE LIABLE TO THE OTHER FOR ANY LOST PROFITS, LOST REVENUE, LOST SAVINGS, LOSS OF USE, LOSS OF DATA, OR COST OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL, EXEMPLARY, OR PUNITIVE DAMAGES, REGARDLESS OF THE FORM OF ACTION, WHETHER IN CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY, OR OTHERWISE, EVEN IF INFORMED OF THE POSSIBILITY OF SUCH DAMAGES IN ADVANCE.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": true,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90036,
+    "contract_id": "synth_036",
+    "text": "Limitation of Remedies. Client's sole and exclusive remedy for any breach of warranty by Provider shall be, at Provider's option: (a) re-performance of the non-conforming Services at no additional charge to Client; or (b) a refund of the fees paid for the non-conforming Services. Provider's warranty shall apply only to Services performed by Provider's own employees and shall not extend to third-party products or services.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90037,
+    "contract_id": "synth_037",
+    "text": "Except for claims arising from (i) a breach of Section 5 (Confidentiality), (ii) a party's indemnification obligations under Section 10, or (iii) a party's willful misconduct, each party's maximum aggregate liability arising out of or in connection with this Agreement shall be limited to the total fees paid by Customer to Provider in the twelve (12) months immediately preceding the claim. Neither party shall be liable to the other for loss of profits or any indirect or consequential loss. The foregoing limitations and exclusions shall not apply to either party's indemnification obligations or to damages arising from willful misconduct.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "fees_paid_period"
+      },
+      "is_mutual": true,
+      "has_carve_outs": true,
+      "carve_outs": ["confidentiality", "indemnification", "willful misconduct"],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": true,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90038,
+    "contract_id": "synth_038",
+    "text": "PROVIDER MAKES NO WARRANTY, EXPRESS OR IMPLIED, WITH RESPECT TO THE SERVICES, INCLUDING ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. ALL SERVICES AND MATERIALS ARE PROVIDED \"AS IS.\" PROVIDER FURTHER DISCLAIMS ANY WARRANTY THAT THE SERVICES WILL MEET CUSTOMER'S REQUIREMENTS OR THAT THE OPERATION OF THE SERVICES WILL BE UNINTERRUPTED OR ERROR-FREE. Provider shall indemnify and hold harmless Customer from any third-party claims arising from Provider's infringement of intellectual property rights.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": true,
+      "has_warranty_disclaimer": true
+    }
+  },
+  {
+    "id": 90039,
+    "contract_id": "synth_039",
+    "text": "Maximum Liability. Contractor's total liability to Client for all causes of action arising under this Agreement, whether in contract, tort, or otherwise, shall in no event exceed Two Hundred Fifty Thousand Dollars ($250,000) per incident. This per-incident cap shall not apply to damages arising from Contractor's gross negligence, willful misconduct, or breach of the non-disclosure provisions of Section 12.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "per_incident"
+      },
+      "is_mutual": false,
+      "has_carve_outs": true,
+      "carve_outs": ["gross negligence", "willful misconduct", "confidentiality"],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90040,
+    "contract_id": "synth_040",
+    "text": "Each party warrants to the other that: (a) it is duly organized and validly existing under the laws of its jurisdiction of incorporation; (b) it has full power and authority to enter into and perform its obligations under this Agreement; (c) the execution and delivery of this Agreement has been duly authorized; and (d) this Agreement constitutes a legal, valid, and binding obligation enforceable in accordance with its terms.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90041,
+    "contract_id": "synth_041",
+    "text": "Exclusion of Certain Damages. Provider shall not be liable to Client for any special, indirect, incidental, consequential, or punitive damages (including lost profits, lost revenue, or loss of business opportunity) arising out of or related to this Agreement, regardless of the cause of action or theory of liability. Provider's total aggregate liability under this Agreement shall not exceed the amount of fees paid by Client during the prior twelve (12) months. Notwithstanding the foregoing, these limitations shall not apply to Provider's obligations to indemnify Client under Section 14 or to damages arising from Provider's fraud or willful misconduct.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "fees_paid_period"
+      },
+      "is_mutual": false,
+      "has_carve_outs": true,
+      "carve_outs": ["indemnification", "fraud", "willful misconduct"],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": true,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90042,
+    "contract_id": "synth_042",
+    "text": "Table of Contents\n\n1. Definitions..........................................................................1\n2. Scope of Services...................................................................3\n3. Payment Terms.......................................................................5\n4. Representations and Warranties......................................................7\n5. Limitation of Liability.............................................................9\n6. Indemnification....................................................................11\n7. Confidentiality....................................................................13\n8. Termination........................................................................15\n9. General Provisions.................................................................17",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": false,
+        "cap_type": null
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
+    }
+  },
+  {
+    "id": 90043,
+    "contract_id": "synth_043",
+    "text": "Except as expressly provided in this Agreement, the Platform and all data, information, and materials therein are provided on an \"as is\" and \"as available\" basis without warranty of any kind. To the maximum extent permitted by law, Platform Provider disclaims all warranties, conditions, or representations, whether express, implied, or statutory, including without limitation any implied warranties of merchantability, fitness for a particular purpose, and non-infringement. Additionally, Platform Provider's total liability for any and all claims under this Agreement shall not exceed the fees actually paid by Client in the twelve (12) month period preceding the claim.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "fees_paid_period"
+      },
+      "is_mutual": false,
+      "has_carve_outs": false,
+      "carve_outs": [],
+      "consequential_damages": {
+        "excluded": false
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": true
+    }
+  },
+  {
+    "id": 90044,
+    "contract_id": "synth_044",
+    "text": "Supplier shall not be liable to Purchaser for any claim, whether in contract, tort, or otherwise, in excess of the purchase price of the specific goods or services giving rise to such claim. In no event shall either party be liable to the other for incidental, consequential, special, or indirect damages of any nature. The foregoing limitation of liability shall not apply to Supplier's breach of its warranty obligations in Section 4 or to claims arising from Supplier's gross negligence or willful misconduct.",
+    "ground_truth": {
+      "liability_cap": {
+        "has_cap": true,
+        "cap_type": "other"
+      },
+      "is_mutual": false,
+      "has_carve_outs": true,
+      "carve_outs": ["warranty", "gross negligence", "willful misconduct"],
+      "consequential_damages": {
+        "excluded": true
+      },
+      "has_indemnification": false,
+      "has_warranty_disclaimer": false
     }
   }
 ]
