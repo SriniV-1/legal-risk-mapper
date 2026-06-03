@@ -26,6 +26,7 @@ from backend.models.schemas import (
     AnalyzeRequest, AnalyzeResponse, HealthResponse, ReadyResponse, RiskItem
 )
 from backend.services.risk_analyzer import analyze_risks, compute_overall_risk
+from backend.services.cache import cache_get, cache_set, cache_clear, cache_stats, _text_hash
 from backend.benchmarking.schemas import BenchmarkResult
 from backend.redline.schemas import RedlineResult
 
@@ -116,7 +117,7 @@ def _build_response(risks: list, document_title: Optional[str]) -> AnalyzeRespon
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
 
-@app.get("/health", response_model=HealthResponse, tags=["Meta"])
+@app.get("/health", tags=["Meta"])
 def health_check():
     """Service liveness check. Reports whether the semantic layer is active."""
     from backend.models import embeddings
@@ -128,11 +129,19 @@ def health_check():
         engine_parts.append("spaCy clause segmentation")
     except ImportError:
         pass
-    return HealthResponse(
-        status="ok",
-        version="2.0.0",
-        nlp_engine=" + ".join(engine_parts),
-    )
+    return JSONResponse(content={
+        "status": "ok",
+        "version": "2.0.0",
+        "nlp_engine": " + ".join(engine_parts),
+        "cache": cache_stats(),
+    })
+
+
+@app.post("/cache/clear", tags=["Meta"])
+def clear_cache():
+    """Clear the analysis cache. Returns the number of evicted entries."""
+    evicted = cache_clear()
+    return {"evicted": evicted}
 
 
 @app.get("/ready", response_model=ReadyResponse, tags=["Meta"])
@@ -223,10 +232,19 @@ def analyze_text(request: Request, body: AnalyzeRequest):
     Analyze raw text for legal risks.
     Returns categorized risks with severity scores and explanations.
     """
+    text_hash = _text_hash(body.text)
+    cached = cache_get(text_hash)
+    if cached is not None:
+        logger.info(f"Cache HIT | title={body.document_title!r} | hash={text_hash[:12]}")
+        return JSONResponse(content=cached, headers={"X-Cache": "HIT"})
+
     logger.info(f"Analyzing text | title={body.document_title!r} | chars={len(body.text)}")
     try:
         risks = analyze_risks(body.text)
-        return _build_response(risks, body.document_title)
+        response = _build_response(risks, body.document_title)
+        result_dict = response.model_dump(mode="json")
+        cache_set(text_hash, result_dict)
+        return JSONResponse(content=result_dict, headers={"X-Cache": "MISS"})
     except Exception as e:
         logger.exception("Analysis failed")
         raise HTTPException(status_code=500, detail=f"Analysis error: {str(e)}")
