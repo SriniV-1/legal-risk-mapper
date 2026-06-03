@@ -29,6 +29,9 @@ httpx>=0.27.0                 # async HTTP client for FastAPI TestClient
 slowapi>=0.1.9                # rate limiting for FastAPI (built on `limits`)
 gunicorn>=22.0.0              # production WSGI/ASGI server for Railway
 
+# ── Observability ─────────────────────────────────────────────────────────
+prometheus_client>=0.20.0     # Prometheus metrics exposition
+
 # ── LLM providers ─────────────────────────────────────────────────────────────
 # Priority: claude-* model → Anthropic; GROQ_API_KEY set → Groq; else → Ollama local
 # Groq (recommended free option): set GROQ_API_KEY. Sign up at console.groq.com (no credit card).
