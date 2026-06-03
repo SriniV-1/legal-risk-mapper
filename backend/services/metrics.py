@@ -86,11 +86,17 @@ def record_analysis(
 
     # Per-risk counters
     for risk in risks:
-        severity = risk.severity
+        # Support both dict and object access patterns
+        if isinstance(risk, dict):
+            severity = risk.get("severity", "Unknown")
+            category = risk.get("risk_type", "Unknown")
+        else:
+            severity = risk.severity
+            category = risk.risk_type
         # severity may be an enum — normalise to its value string
         if hasattr(severity, "value"):
             severity = severity.value
-        risk_detections.labels(category=risk.risk_type, severity=severity).inc()
+        risk_detections.labels(category=category, severity=severity).inc()
 
     # Clauses processed — count each risk as one clause
     clauses_processed.inc(len(risks))

@@ -27,6 +27,8 @@ from backend.models.schemas import (
 )
 from backend.services.risk_analyzer import analyze_risks, compute_overall_risk
 from backend.services.cache import cache_get, cache_set, cache_clear, cache_stats, _text_hash
+from backend.services.metrics import record_analysis, record_error
+from backend.routers.metrics_router import metrics_router
 from backend.benchmarking.schemas import BenchmarkResult
 from backend.redline.schemas import RedlineResult
 
@@ -84,6 +86,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(metrics_router)
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -239,14 +243,18 @@ def analyze_text(request: Request, body: AnalyzeRequest):
         return JSONResponse(content=cached, headers={"X-Cache": "HIT"})
 
     logger.info(f"Analyzing text | title={body.document_title!r} | chars={len(body.text)}")
+    import time as _time
+    t0 = _time.monotonic()
     try:
         risks = analyze_risks(body.text)
         response = _build_response(risks, body.document_title)
         result_dict = response.model_dump(mode="json")
         cache_set(text_hash, result_dict)
+        record_analysis(_time.monotonic() - t0, risks, cache_hit=False)
         return JSONResponse(content=result_dict, headers={"X-Cache": "MISS"})
     except Exception as e:
         logger.exception("Analysis failed")
+        record_error()
         raise HTTPException(status_code=500, detail=f"Analysis error: {str(e)}")
 
 
