@@ -54,3 +54,8 @@ class HealthResponse(BaseModel):
     status: str
     version: str
     nlp_engine: str
+
+
+class ReadyResponse(BaseModel):
+    ready: bool
+    checks: Dict[str, str]

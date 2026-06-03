@@ -23,7 +23,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
 from backend.models.schemas import (
-    AnalyzeRequest, AnalyzeResponse, HealthResponse, RiskItem
+    AnalyzeRequest, AnalyzeResponse, HealthResponse, ReadyResponse, RiskItem
 )
 from backend.services.risk_analyzer import analyze_risks, compute_overall_risk
 from backend.benchmarking.schemas import BenchmarkResult
@@ -133,6 +133,50 @@ def health_check():
         version="2.0.0",
         nlp_engine=" + ".join(engine_parts),
     )
+
+
+@app.get("/ready", response_model=ReadyResponse, tags=["Meta"])
+def readiness_check():
+    """Deep readiness check — probes core dependencies."""
+    checks: dict[str, str] = {}
+
+    # 1. Semantic layer (sentence-transformers)
+    try:
+        from backend.models import embeddings
+        checks["semantic"] = "ok" if embeddings.is_available() else "unavailable"
+    except Exception:
+        checks["semantic"] = "unavailable"
+
+    # 2. spaCy model
+    try:
+        import spacy
+        spacy.load("en_core_web_sm")
+        checks["spacy"] = "ok"
+    except Exception:
+        checks["spacy"] = "unavailable"
+
+    # 3. ML risk classifier
+    try:
+        from backend.services.risk_classifier import is_available as clf_available
+        checks["risk_classifier"] = "ok" if clf_available() else "unavailable"
+    except Exception:
+        checks["risk_classifier"] = "unavailable"
+
+    # 4. Supabase (optional — does not affect readiness)
+    try:
+        from backend.corpus.db import _get_client
+        _get_client()
+        checks["supabase"] = "ok"
+    except Exception:
+        checks["supabase"] = "unavailable"
+
+    # Core services: semantic + spaCy must be up
+    ready = checks.get("semantic") == "ok" and checks.get("spacy") == "ok"
+    response = ReadyResponse(ready=ready, checks=checks)
+
+    if ready:
+        return response
+    return JSONResponse(status_code=503, content=response.model_dump())
 
 
 @app.get("/corpus/stats", tags=["Meta"])
