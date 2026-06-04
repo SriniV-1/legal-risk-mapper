@@ -30,6 +30,7 @@ from backend.extraction.schemas import (
     EXTRACTION_SCHEMAS, LiabilityExtraction, TerminationExtraction,
     PaymentExtraction, ConfidentialityExtraction, IPExtraction, GoverningLawExtraction,
 )
+from backend.services.circuit_breaker import groq_breaker, CircuitOpenError
 
 log = logging.getLogger(__name__)
 
@@ -541,7 +542,7 @@ def extract_clause(
     for attempt in range(max_retries):
         try:
             start = time.monotonic()
-            raw_response = _call_llm(prompt, model=model)
+            raw_response = groq_breaker.call(_call_llm, prompt, model=model)
             elapsed = time.monotonic() - start
 
             data = _extract_json(raw_response)
@@ -552,6 +553,13 @@ def extract_clause(
                 attempt + 1, elapsed, clause_type,
             )
             return result
+
+        except CircuitOpenError:
+            log.warning(
+                "Circuit breaker OPEN for LLM service — skipping extraction for %s",
+                clause_type,
+            )
+            return None
 
         except (requests.RequestException, ValueError, ValidationError) as e:
             log.warning(

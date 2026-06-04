@@ -20,6 +20,7 @@ from backend.extraction.extractor import (
     extract_liability, extract_termination, extract_payment,
     extract_confidentiality, extract_ip, extract_governing_law,
 )
+from backend.services.circuit_breaker import groq_breaker, CircuitOpenError
 
 log = logging.getLogger(__name__)
 
@@ -89,12 +90,17 @@ def benchmark_clause(
     user_extraction = None
     extractor_fn = _extractors.get(clause_type)
     if extractor_fn:
-        ext = extractor_fn(clause_text)
-        if ext:
-            user_extraction = ext.model_dump()
-            log.info("User clause extraction succeeded")
-        else:
-            log.warning("User clause extraction failed — benchmarking without user extraction")
+        try:
+            ext = extractor_fn(clause_text)
+            if ext:
+                user_extraction = ext.model_dump()
+                log.info("User clause extraction succeeded")
+            else:
+                log.warning("User clause extraction failed — benchmarking without user extraction")
+        except CircuitOpenError:
+            log.warning(
+                "Circuit breaker OPEN — skipping user clause extraction for benchmarking"
+            )
 
     # Step 2: Retrieve similar clauses from EDGAR corpus
     retrieved = retrieve_similar(
