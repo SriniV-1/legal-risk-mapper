@@ -9,9 +9,12 @@ Endpoints:
 import io
 import logging
 import os
+import sys
 from collections import Counter
 from contextlib import asynccontextmanager
 from typing import Optional
+
+import structlog
 
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Request, Security
 from fastapi.middleware.cors import CORSMiddleware
@@ -88,6 +91,22 @@ app.add_middleware(
 )
 
 app.include_router(metrics_router)
+
+# Structured logging + request tracing
+from backend.middleware.trace import TraceMiddleware  # noqa: E402
+app.add_middleware(TraceMiddleware)
+
+# Configure structlog for JSON output
+structlog.configure(
+    processors=[
+        structlog.stdlib.add_log_level,
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.JSONRenderer(),
+    ],
+    wrapper_class=structlog.stdlib.BoundLogger,
+    logger_factory=structlog.PrintLoggerFactory(),
+    cache_logger_on_first_use=True,
+)
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────

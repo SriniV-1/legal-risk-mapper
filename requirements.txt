@@ -31,6 +31,7 @@ gunicorn>=22.0.0              # production WSGI/ASGI server for Railway
 
 # ── Observability ─────────────────────────────────────────────────────────
 prometheus_client>=0.20.0     # Prometheus metrics exposition
+structlog>=24.1.0             # structured JSON logging with request tracing
 
 # ── LLM providers ─────────────────────────────────────────────────────────────
 # Priority: claude-* model → Anthropic; GROQ_API_KEY set → Groq; else → Ollama local
