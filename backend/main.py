@@ -31,6 +31,7 @@ from backend.models.schemas import (
 from backend.services.risk_analyzer import analyze_risks, compute_overall_risk
 from backend.services.cache import cache_get, cache_set, cache_clear, cache_stats, _text_hash
 from backend.services.metrics import record_analysis, record_error
+from backend.services.circuit_breaker import groq_breaker
 from backend.routers.metrics_router import metrics_router
 from backend.benchmarking.schemas import BenchmarkResult
 from backend.redline.schemas import RedlineResult
@@ -157,6 +158,9 @@ def health_check():
         "version": "2.0.0",
         "nlp_engine": " + ".join(engine_parts),
         "cache": cache_stats(),
+        "circuit_breaker": {
+            "llm": groq_breaker.status(),
+        },
     })
 
 
@@ -297,8 +301,11 @@ def _extract_text_from_upload(filename: str, content: bytes) -> str:
         return content.decode("latin-1")
 
 
+_MAX_UPLOAD_BYTES = 10 * 1024 * 1024  # 10 MB
+
+
 @app.post("/analyze/upload", response_model=AnalyzeResponse, tags=["Analysis"])
-@limiter.limit("30/minute")
+@limiter.limit("10/minute")
 async def analyze_upload(
     request: Request,
     file: UploadFile = File(...),
@@ -307,15 +314,56 @@ async def analyze_upload(
     """
     Analyze an uploaded file (.txt, .md, or .pdf) for legal risks.
     PDF text is extracted with PyMuPDF.
+
+    Hardening:
+      - 10 MB file size limit (HTTP 413)
+      - MIME / magic-byte validation (HTTP 400)
+      - Stricter rate limit: 10 requests/minute
     """
     allowed = (".txt", ".md", ".pdf")
-    if not file.filename.lower().endswith(allowed):
+    fname_lower = file.filename.lower() if file.filename else ""
+    if not fname_lower.endswith(allowed):
         raise HTTPException(
             status_code=400,
             detail="Only .txt, .md, and .pdf files are supported."
         )
 
     content = await file.read()
+
+    # ── Audit log every upload attempt ────────────────────────────────────
+    client_ip = request.client.host if request.client else "unknown"
+    logger.info(
+        "Upload received | filename=%s | size=%d | content_type=%s | client_ip=%s",
+        file.filename, len(content), file.content_type, client_ip,
+    )
+
+    # ── File size limit ───────────────────────────────────────────────────
+    if len(content) > _MAX_UPLOAD_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail=f"File too large ({len(content)} bytes). Maximum allowed is {_MAX_UPLOAD_BYTES} bytes (10 MB).",
+        )
+
+    # ── MIME / content validation ─────────────────────────────────────────
+    if fname_lower.endswith(".pdf"):
+        if not content.startswith(b"%PDF"):
+            raise HTTPException(
+                status_code=400,
+                detail="File does not appear to be a valid PDF (missing %PDF header).",
+            )
+    else:
+        # .txt / .md — must be decodable as UTF-8 or Latin-1 text
+        try:
+            content.decode("utf-8")
+        except UnicodeDecodeError:
+            try:
+                content.decode("latin-1")
+            except UnicodeDecodeError:
+                raise HTTPException(
+                    status_code=400,
+                    detail="File content is not valid text (UTF-8 or Latin-1).",
+                )
+
     text = _extract_text_from_upload(file.filename, content)
 
     if len(text.strip()) < 10:
