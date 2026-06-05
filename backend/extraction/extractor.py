@@ -13,6 +13,7 @@ import logging
 import os
 import re
 import time
+import uuid
 from typing import Optional
 
 import requests
@@ -115,6 +116,126 @@ def _extract_json(text: str) -> dict:
     raise ValueError(f"Could not extract valid JSON from response: {text[:200]}...")
 
 
+# ── Prompt Injection Defense ────────────────────────────────────────────────
+
+# Regex patterns that indicate possible prompt injection attempts
+_INJECTION_PATTERNS = [
+    (r"ignore\s+previous", "ignore_previous"),
+    (r"ignore\s+all", "ignore_all"),
+    (r"disregard", "disregard"),
+    (r"system\s+prompt", "system_prompt"),
+    (r"new\s+instructions", "new_instructions"),
+    (r"forget\s+(?:your|all|everything)", "forget"),
+    (r"you\s+are\s+now", "you_are_now"),
+    (r"act\s+as", "act_as"),
+    (r"pretend\s+you", "pretend_you"),
+]
+
+# Zero-width and control characters to strip
+_CONTROL_CHAR_RE = re.compile(
+    r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f"
+    r"\u200b\u200c\u200d\u2060\ufeff]"
+)
+
+# Prompt template fragments that should never appear in extraction output
+_PROMPT_FRAGMENTS = [
+    "CRITICAL RULES",
+    "SCHEMA:",
+    "WORKED EXAMPLES",
+    "You are a precise legal contract analyst",
+    "IMPORTANT — REASONING STEP",
+    "CANARY_TOKEN_",
+]
+
+
+def _strip_control_chars(text: str) -> str:
+    """Remove control characters and zero-width characters from input text."""
+    return _CONTROL_CHAR_RE.sub("", text)
+
+
+def _detect_injection_patterns(text: str) -> list[str]:
+    """Detect prompt injection patterns in text. Returns list of matched pattern names."""
+    matches = []
+    for pattern, name in _INJECTION_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            matches.append(name)
+    return matches
+
+
+def _sanitize_input(text: str) -> str:
+    """Sanitize user-provided clause text before sending to LLM.
+
+    Strips control characters, detects injection patterns (logging warnings),
+    and returns the cleaned text. Does NOT block the request.
+    """
+    cleaned = _strip_control_chars(text)
+
+    injections = _detect_injection_patterns(cleaned)
+    if injections:
+        log.warning(
+            "Prompt injection patterns detected in input: %s",
+            ", ".join(injections),
+        )
+
+    return cleaned
+
+
+def _validate_output(
+    data: dict,
+    original_text: str,
+    schema_cls: type,
+    system_prompt: str,
+) -> dict:
+    """Validate LLM extraction output for security issues.
+
+    - Verifies source_text fields are substrings of original input
+    - Checks for prompt template fragments in output values
+    - Removes unexpected top-level keys
+    Returns the (possibly modified) data dict.
+    """
+    # --- Check for unexpected top-level keys ---
+    expected_keys = set(schema_cls.model_fields.keys())
+    unexpected = set(data.keys()) - expected_keys
+    if unexpected:
+        log.warning("Unexpected keys in extraction output: %s", unexpected)
+        for key in unexpected:
+            data.pop(key)
+
+    # --- Recursively validate string values ---
+    def _walk(obj: dict | list, path: str = "") -> None:
+        if isinstance(obj, dict):
+            for key, value in list(obj.items()):
+                full_key = f"{path}.{key}" if path else key
+
+                if isinstance(value, str) and value:
+                    # Check source_text fields are substrings of original input
+                    if key.endswith("_source_text") and value not in original_text:
+                        log.warning(
+                            "source_text not found in original input: %s = %r",
+                            full_key, value[:80],
+                        )
+                        obj[key] = None
+
+                    # Check for prompt template fragments
+                    for fragment in _PROMPT_FRAGMENTS:
+                        if fragment in value:
+                            log.warning(
+                                "Prompt fragment detected in output field %s: %r",
+                                full_key, fragment,
+                            )
+                            break
+
+                elif isinstance(value, (dict, list)):
+                    _walk(value, full_key)
+        elif isinstance(obj, list):
+            for i, item in enumerate(obj):
+                if isinstance(item, (dict, list)):
+                    _walk(item, f"{path}[{i}]")
+
+    _walk(data)
+    return data
+
+
 # ── Extraction ───────────────────────────────────────────────────────────────
 
 def extract_clause(
@@ -124,17 +245,39 @@ def extract_clause(
     """Extract structured fields from a clause using the LLM.
 
     Returns a Pydantic model instance with extracted fields, or None on failure.
+    Applies input sanitization, canary token validation, and output validation.
     """
+    # --- Input sanitization ---
+    sanitized_text = _sanitize_input(clause_text)
+
     prompt_config = get_prompt(clause_type)
     schema_cls = EXTRACTION_SCHEMAS[clause_type]
-    prompt = prompt_config.format(clause_text=clause_text)
+    prompt = prompt_config.format(clause_text=sanitized_text)
+
+    # --- Canary token injection ---
+    canary = f"CANARY_TOKEN_{uuid.uuid4().hex}"
+    prompt = f"[SECURITY: {canary}]\n" + prompt
 
     for attempt in range(max_retries):
         try:
             start = time.monotonic()
             raw_response = groq_breaker.call(_call_llm, prompt, model=model)
             elapsed = time.monotonic() - start
+
+            # --- Canary token validation ---
+            if canary in raw_response:
+                log.warning(
+                    "Canary token detected in LLM response — possible prompt leak "
+                    "(clause_type=%s)", clause_type,
+                )
+
             data = _extract_json(raw_response)
+
+            # --- Output validation ---
+            data = _validate_output(
+                data, clause_text, schema_cls, prompt_config.system_prompt,
+            )
+
             result = schema_cls.model_validate(data)
             log.debug("Extraction succeeded (attempt %d, %.1fs): %s",
                       attempt + 1, elapsed, clause_type)
