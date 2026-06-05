@@ -40,5 +40,12 @@ structlog>=24.1.0             # structured JSON logging with request tracing
 #   LRM_EXTRACTION_MODEL=llama-3.1-8b-instant
 groq>=0.9.0                   # Groq SDK (free cloud inference, Llama 3.3 70B)
 
+# ── Authentication ────────────────────────────────────────────────────────────
+python-jose[cryptography]>=3.3.0  # JWT token creation/validation (HS256)
+passlib[bcrypt]>=1.7.4            # password hashing with bcrypt (passlib wrapper)
+bcrypt>=4.0.0                     # direct bcrypt for password hashing
+
 # ── PDF support ───────────────────────────────────────────────────────────────
 pymupdf>=1.24.0               # fast PDF text extraction (MuPDF bindings)
+pytesseract>=0.3.10           # OCR fallback for scanned PDFs (requires Tesseract)
+pdf2image>=1.16.0             # convert PDF pages to images for OCR (requires poppler)

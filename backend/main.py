@@ -16,10 +16,9 @@ from typing import Optional
 
 import structlog
 
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Request, Security
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi.security import APIKeyHeader
 from pydantic import BaseModel, Field
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -33,6 +32,9 @@ from backend.services.cache import cache_get, cache_set, cache_clear, cache_stat
 from backend.services.metrics import record_analysis, record_error
 from backend.services.circuit_breaker import groq_breaker
 from backend.routers.metrics_router import metrics_router
+from backend.routers.auth_router import auth_router
+from backend.routers.compare_router import compare_router
+from backend.auth.middleware import get_current_user, require_role
 from backend.benchmarking.schemas import BenchmarkResult
 from backend.redline.schemas import RedlineResult
 
@@ -42,20 +44,6 @@ logger = logging.getLogger("lrm")
 
 # ── Rate Limiting ────────────────────────────────────────────────────────────
 limiter = Limiter(key_func=get_remote_address)
-
-# ── API Key Auth ─────────────────────────────────────────────────────────────
-# If LRM_API_KEY is set, /benchmark and /redline require X-API-Key header.
-# If not set, auth is disabled (local dev mode).
-_API_KEY = os.environ.get("LRM_API_KEY")
-_api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
-
-
-async def _verify_api_key(api_key: Optional[str] = Security(_api_key_header)):
-    """Validate API key if one is configured. No-op in dev mode."""
-    if _API_KEY is None:
-        return  # Auth disabled — dev mode
-    if api_key != _API_KEY:
-        raise HTTPException(status_code=403, detail="Invalid or missing API key")
 
 
 # ── Lifespan (startup/shutdown) ────────────────────────────────────────────────
@@ -92,6 +80,8 @@ app.add_middleware(
 )
 
 app.include_router(metrics_router)
+app.include_router(auth_router)
+app.include_router(compare_router)
 
 # Structured logging + request tracing
 from backend.middleware.trace import TraceMiddleware  # noqa: E402
@@ -164,7 +154,7 @@ def health_check():
     })
 
 
-@app.post("/cache/clear", tags=["Meta"])
+@app.post("/cache/clear", tags=["Meta"], dependencies=[Depends(require_role("admin"))])
 def clear_cache():
     """Clear the analysis cache. Returns the number of evicted entries."""
     evicted = cache_clear()
@@ -252,7 +242,8 @@ def corpus_stats():
         raise HTTPException(status_code=500, detail=f"Stats unavailable: {e}")
 
 
-@app.post("/analyze", response_model=AnalyzeResponse, tags=["Analysis"])
+@app.post("/analyze", response_model=AnalyzeResponse, tags=["Analysis"],
+           dependencies=[Depends(get_current_user)])
 @limiter.limit("30/minute")
 def analyze_text(request: Request, body: AnalyzeRequest):
     """
@@ -281,30 +272,32 @@ def analyze_text(request: Request, body: AnalyzeRequest):
         raise HTTPException(status_code=500, detail=f"Analysis error: {str(e)}")
 
 
-def _extract_text_from_upload(filename: str, content: bytes) -> str:
-    """Extract plain text from an uploaded file (txt, md, or pdf)."""
+def _extract_text_from_upload(filename: str, content: bytes) -> tuple[str, str]:
+    """Extract plain text from an uploaded file (txt, md, or pdf).
+
+    Returns:
+        (text, extraction_method) where method is "digital", "ocr", or "text".
+    """
     if filename.lower().endswith(".pdf"):
         try:
-            import pymupdf  # fitz
-            doc = pymupdf.open(stream=content, filetype="pdf")
-            pages = [page.get_text() for page in doc]
-            doc.close()
-            return "\n\n".join(pages)
+            from backend.services.ocr import extract_text_from_pdf
+            return extract_text_from_pdf(content)
         except Exception as e:
             raise HTTPException(
                 status_code=400,
                 detail=f"Could not extract text from PDF: {e}. Try saving as .txt."
             )
     try:
-        return content.decode("utf-8")
+        return content.decode("utf-8"), "text"
     except UnicodeDecodeError:
-        return content.decode("latin-1")
+        return content.decode("latin-1"), "text"
 
 
 _MAX_UPLOAD_BYTES = 10 * 1024 * 1024  # 10 MB
 
 
-@app.post("/analyze/upload", response_model=AnalyzeResponse, tags=["Analysis"])
+@app.post("/analyze/upload", response_model=AnalyzeResponse, tags=["Analysis"],
+           dependencies=[Depends(get_current_user)])
 @limiter.limit("10/minute")
 async def analyze_upload(
     request: Request,
@@ -364,17 +357,21 @@ async def analyze_upload(
                     detail="File content is not valid text (UTF-8 or Latin-1).",
                 )
 
-    text = _extract_text_from_upload(file.filename, content)
+    text, extraction_method = _extract_text_from_upload(file.filename, content)
 
     if len(text.strip()) < 10:
         raise HTTPException(status_code=400, detail="Uploaded file appears to be empty or too short.")
 
     title = document_title or file.filename
-    logger.info(f"Analyzing uploaded file | title={title!r} | chars={len(text)}")
+    logger.info(f"Analyzing uploaded file | title={title!r} | chars={len(text)} | method={extraction_method}")
 
     try:
         risks = analyze_risks(text)
-        return _build_response(risks, title)
+        response = _build_response(risks, title)
+        return JSONResponse(
+            content=response.model_dump(mode="json"),
+            headers={"X-Extraction-Method": extraction_method},
+        )
     except Exception as e:
         logger.exception("Upload analysis failed")
         raise HTTPException(status_code=500, detail=f"Analysis error: {str(e)}")
@@ -391,10 +388,10 @@ async def extract_text(
     if not file.filename.lower().endswith(allowed):
         raise HTTPException(status_code=400, detail="Only .txt, .md, and .pdf files are supported.")
     content = await file.read()
-    text = _extract_text_from_upload(file.filename, content)
+    text, extraction_method = _extract_text_from_upload(file.filename, content)
     if len(text.strip()) < 10:
         raise HTTPException(status_code=400, detail="File appears empty or too short.")
-    return {"text": text, "char_count": len(text)}
+    return {"text": text, "char_count": len(text), "extraction_method": extraction_method}
 
 
 def _resolve_clause_type(text: str, requested: str) -> str:
@@ -421,7 +418,7 @@ class BenchmarkRequest(BaseModel):
 
 
 @app.post("/benchmark", response_model=BenchmarkResult, tags=["Benchmarking"],
-           dependencies=[Security(_verify_api_key)])
+           dependencies=[Depends(require_role("pro"))])
 @limiter.limit("10/minute")
 def benchmark_clause(request: Request, body: BenchmarkRequest):
     """
@@ -450,7 +447,7 @@ class RedlineRequest(BaseModel):
 
 
 @app.post("/redline", response_model=RedlineResult, tags=["Redline"],
-           dependencies=[Security(_verify_api_key)])
+           dependencies=[Depends(require_role("pro"))])
 @limiter.limit("10/minute")
 def generate_redlines(request: Request, body: RedlineRequest):
     """
