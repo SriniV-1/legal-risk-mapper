@@ -25,7 +25,7 @@ Graceful degradation:
   • If spaCy unavailable → regex sentence splitter fallback
 """
 import logging
-from typing import List, Dict, Tuple
+from typing import List, Dict, Optional, Set, Tuple
 
 from backend.utils.text_utils import clean_text, deduplicate_risks
 from backend.services import semantic_analyzer
@@ -34,6 +34,9 @@ from backend.services.explanation_engine import generate_explanation
 from backend.services.rules_engine import RISK_RULES, scan as regex_scan
 
 logger = logging.getLogger("lrm.analyzer")
+
+# Valid layer names for the ablation / selective-layer parameter
+VALID_LAYERS = {"regex", "ml", "semantic", "merge"}
 
 # Severity escalation: if multiple high-weight matches cluster in a sentence
 SEVERITY_ORDER = {"Low": 1, "Medium": 2, "High": 3}
@@ -296,9 +299,30 @@ def _classify_clauses_ml(clauses: List[str]) -> List[Dict]:
     return ml_risks
 
 
-def analyze_risks(text: str) -> List[Dict]:
+def analyze_risks(
+    text: str,
+    layers: Optional[List[str]] = None,
+) -> List[Dict]:
     """
     Main HYBRID analysis pipeline.
+
+    Args:
+        text: Contract text to analyze.
+        layers: Optional list of pipeline layers to activate.  When ``None``
+            (the default) every layer runs — fully backward compatible.
+            Valid layer names: ``"regex"``, ``"ml"``, ``"semantic"``, ``"merge"``.
+            The ``"merge"`` layer controls hybrid merging + cross-category
+            escalation; without it primary and semantic risks are simply
+            concatenated.
+
+    Supported configurations (for ablation studies):
+        ["regex"]                  — regex only
+        ["ml"]                     — ML classifier only
+        ["semantic"]               — semantic similarity only
+        ["regex", "ml"]            — regex + ML (no semantic)
+        ["regex", "semantic"]      — regex + semantic
+        ["ml", "semantic"]         — ML + semantic
+        ["regex", "ml", "semantic", "merge"]  — full pipeline (default)
 
     Steps:
       1. Clean input
@@ -313,6 +337,17 @@ def analyze_risks(text: str) -> List[Dict]:
 
     Returns a list of risk dicts ready for the API response.
     """
+    # ── Resolve active layers ────────────────────────────────────────────
+    if layers is None:
+        active: Set[str] = {"regex", "ml", "semantic", "merge"}
+    else:
+        unknown = set(layers) - VALID_LAYERS
+        if unknown:
+            raise ValueError(
+                f"Invalid layer(s): {unknown}. Valid layers: {sorted(VALID_LAYERS)}"
+            )
+        active = set(layers)
+
     text = clean_text(text)
 
     # Step 1: Clause segmentation
@@ -320,25 +355,55 @@ def analyze_risks(text: str) -> List[Dict]:
     if not clauses:
         return []
 
-    # Step 2: Primary detection — ML classifier (preferred) or regex fallback
-    if risk_classifier.is_available():
-        logger.info("Using ML classifier for risk detection")
-        primary_risks = _classify_clauses_ml(clauses)
+    # Step 2: Primary detection — selected layers only
+    #
+    # When `layers` was None (default / production), ML is *preferred*
+    # and regex is the fallback — identical to the original pipeline.
+    # When `layers` is explicitly provided (ablation mode), each named
+    # layer runs independently: ["regex", "ml"] means BOTH run.
+    primary_risks: List[Dict] = []
+    use_ml = "ml" in active
+    use_regex = "regex" in active
+    explicit_layers = layers is not None  # ablation mode
+
+    if explicit_layers:
+        # Ablation mode: run each requested layer independently
+        if use_ml:
+            if risk_classifier.is_available():
+                logger.info("Using ML classifier for risk detection")
+                primary_risks.extend(_classify_clauses_ml(clauses))
+            else:
+                logger.info("ML classifier unavailable — skipping ML layer")
+        if use_regex:
+            logger.info("Using regex rules for risk detection")
+            primary_risks.extend(regex_scan(clauses))
     else:
-        logger.info("ML classifier unavailable — falling back to regex rules")
-        primary_risks = regex_scan(clauses)
+        # Production mode: ML preferred, regex as fallback (original behavior)
+        if risk_classifier.is_available():
+            logger.info("Using ML classifier for risk detection")
+            primary_risks.extend(_classify_clauses_ml(clauses))
+        else:
+            logger.info("ML classifier unavailable — falling back to regex rules")
+            primary_risks.extend(regex_scan(clauses))
 
-    # Step 3: Semantic scan (may return [] if embeddings unavailable)
-    semantic_risks = semantic_analyzer.semantic_analyze(clauses)
+    # Step 3: Semantic scan (only if layer enabled)
+    semantic_risks: List[Dict] = []
+    if "semantic" in active:
+        semantic_risks = semantic_analyzer.semantic_analyze(clauses)
 
-    # Step 4: Hybrid merge (works identically whether primary is ML or regex)
-    merged = _merge_regex_and_semantic(primary_risks, semantic_risks)
+    # Step 4: Hybrid merge (only when "merge" layer active + both sides present)
+    if "merge" in active and primary_risks and semantic_risks:
+        merged = _merge_regex_and_semantic(primary_risks, semantic_risks)
+    else:
+        # No merge — concatenate whatever we have
+        merged = primary_risks + semantic_risks
 
     # Step 5: Snippet-similarity dedup (safety net across clauses)
     merged = deduplicate_risks(merged)
 
-    # Step 6: Cross-category severity escalation (tags `_escalated`)
-    merged = _escalate_cross_category(merged)
+    # Step 6: Cross-category severity escalation (only with merge layer)
+    if "merge" in active:
+        merged = _escalate_cross_category(merged)
 
     # Step 7: Finalize unified 0–100 scoring + feature decomposition
     for r in merged:
