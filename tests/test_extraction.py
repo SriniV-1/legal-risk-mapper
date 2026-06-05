@@ -5,10 +5,10 @@ Does NOT require Ollama (tests structure, not LLM inference).
 import pytest
 
 from backend.extraction.extractor import (
-    _PROMPTS,
     extract_liability, extract_termination, extract_payment,
     extract_confidentiality, extract_ip, extract_governing_law,
 )
+from backend.extraction.prompt_registry import get_prompt, list_clause_types
 from backend.extraction.schemas import EXTRACTION_SCHEMAS
 
 
@@ -17,21 +17,28 @@ class TestExtractorRegistry:
 
     def test_all_types_have_prompts(self):
         for clause_type in EXTRACTION_SCHEMAS:
-            assert clause_type in _PROMPTS, f"Missing prompt for {clause_type}"
+            cfg = get_prompt(clause_type)
+            assert cfg is not None, f"Missing prompt for {clause_type}"
 
     def test_prompts_are_non_empty(self):
-        for clause_type, prompt in _PROMPTS.items():
-            assert len(prompt) > 100, f"Prompt for {clause_type} is suspiciously short"
+        for clause_type in list_clause_types():
+            cfg = get_prompt(clause_type)
+            full_prompt = cfg.system_prompt + cfg.user_prompt_template
+            assert len(full_prompt) > 100, f"Prompt for {clause_type} is suspiciously short"
 
     def test_prompts_mention_json(self):
-        for clause_type, prompt in _PROMPTS.items():
-            assert "json" in prompt.lower() or "JSON" in prompt, (
+        for clause_type in list_clause_types():
+            cfg = get_prompt(clause_type)
+            full_prompt = cfg.system_prompt + cfg.user_prompt_template
+            assert "json" in full_prompt.lower() or "JSON" in full_prompt, (
                 f"Prompt for {clause_type} should instruct JSON output"
             )
 
     def test_prompts_mention_source_text(self):
-        for clause_type, prompt in _PROMPTS.items():
-            assert "source_text" in prompt.lower() or "source text" in prompt.lower(), (
+        for clause_type in list_clause_types():
+            cfg = get_prompt(clause_type)
+            full_prompt = cfg.system_prompt + cfg.user_prompt_template
+            assert "source_text" in full_prompt.lower() or "source text" in full_prompt.lower(), (
                 f"Prompt for {clause_type} should require source_text grounding"
             )
 
