@@ -67,3 +67,12 @@ export async function generateRedlines(text, clauseType) {
   });
   return handleResponse(res);
 }
+
+export async function compareContracts(contracts, clauseType) {
+  const res = await fetch(`${API_BASE}/compare`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ contracts, clause_type: clauseType }),
+  });
+  return handleResponse(res);
+}

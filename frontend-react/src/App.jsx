@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing.jsx";
 import AppPage from "./pages/AppPage.jsx";
+import ComparePage from "./pages/ComparePage.jsx";
 
 export default function App() {
   return (
@@ -8,6 +9,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/app" element={<AppPage />} />
+        <Route path="/compare" element={<ComparePage />} />
       </Routes>
     </BrowserRouter>
   );
