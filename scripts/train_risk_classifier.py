@@ -40,6 +40,64 @@ CATEGORIES = [
 
 SEVERITY_CLASSES = ["None", "Low", "Medium", "High"]
 
+CALIBRATION_DATA_PATH = PROJECT_ROOT / "data" / "models" / "calibration_data.json"
+
+
+def compute_ece(y_true, y_prob, n_bins=10):
+    """
+    Compute Expected Calibration Error (ECE).
+
+    For each confidence bucket, measures the gap between predicted confidence
+    and actual accuracy, weighted by the number of samples in each bucket.
+
+    Args:
+        y_true: array of true class indices (int)
+        y_prob: array of predicted probability vectors (n_samples, n_classes)
+        n_bins: number of equal-width bins from 0 to 1
+
+    Returns:
+        ece: float, the expected calibration error
+        bucket_data: list of dicts with per-bucket stats
+    """
+    # Get predicted class and its confidence
+    predicted_classes = np.argmax(y_prob, axis=1)
+    confidences = np.max(y_prob, axis=1)
+    accuracies = (predicted_classes == y_true).astype(float)
+
+    bin_boundaries = np.linspace(0.0, 1.0, n_bins + 1)
+    ece = 0.0
+    bucket_data = []
+
+    for i in range(n_bins):
+        lo, hi = bin_boundaries[i], bin_boundaries[i + 1]
+        mask = (confidences > lo) & (confidences <= hi)
+        count = mask.sum()
+
+        if count == 0:
+            bucket_data.append({
+                "bin": f"{lo:.1f}-{hi:.1f}",
+                "count": 0,
+                "avg_confidence": 0.0,
+                "avg_accuracy": 0.0,
+                "gap": 0.0,
+            })
+            continue
+
+        avg_conf = confidences[mask].mean()
+        avg_acc = accuracies[mask].mean()
+        gap = abs(avg_acc - avg_conf)
+        ece += gap * (count / len(confidences))
+
+        bucket_data.append({
+            "bin": f"{lo:.1f}-{hi:.1f}",
+            "count": int(count),
+            "avg_confidence": round(float(avg_conf), 4),
+            "avg_accuracy": round(float(avg_acc), 4),
+            "gap": round(float(gap), 4),
+        })
+
+    return round(float(ece), 4), bucket_data
+
 
 def load_dataset():
     """Load the training dataset and extract texts + label matrices."""
@@ -83,6 +141,7 @@ def train_and_evaluate(X, y_matrix, test_size=0.2, seed=42):
     """
     from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
     from sklearn.linear_model import LogisticRegression
+    from sklearn.calibration import CalibratedClassifierCV
     from sklearn.preprocessing import LabelEncoder
     from sklearn.metrics import classification_report, f1_score
 
@@ -128,14 +187,15 @@ def train_and_evaluate(X, y_matrix, test_size=0.2, seed=42):
 
         log.info(f"  Best C={best_c} (CV macro F1={best_cv_score:.3f})")
 
-        # Train final classifier with best C on full training set
-        clf = LogisticRegression(
+        # Train final classifier with best C, wrapped in Platt scaling
+        base_clf = LogisticRegression(
             max_iter=2000,
             C=best_c,
             class_weight="balanced",
             random_state=seed,
             solver="lbfgs",
         )
+        clf = CalibratedClassifierCV(base_clf, method="sigmoid", cv=5)
         clf.fit(X_train, y_enc_train)
 
         # Evaluate on held-out test set
@@ -177,6 +237,44 @@ def train_and_evaluate(X, y_matrix, test_size=0.2, seed=42):
 
         classifiers[cat] = clf
         encoders[cat] = le
+
+    # ── Compute calibration data across all categories ──
+    calibration_info = {}
+    all_y_true = []
+    all_y_prob = []
+
+    for i, cat in enumerate(CATEGORIES):
+        clf = classifiers[cat]
+        le = encoders[cat]
+        y_enc_test = le.transform(y_test[:, i])
+        y_prob = clf.predict_proba(X_test)
+
+        cat_ece, cat_buckets = compute_ece(y_enc_test, y_prob)
+        calibration_info[cat] = {
+            "ece": cat_ece,
+            "buckets": cat_buckets,
+        }
+        log.info(f"  {cat} ECE: {cat_ece:.4f}")
+
+        all_y_true.append(y_enc_test)
+        all_y_prob.append(y_prob)
+
+    # Overall ECE (concatenated across categories)
+    concat_y_true = np.concatenate(all_y_true)
+    concat_y_prob = np.concatenate(all_y_prob)
+    overall_ece, overall_buckets = compute_ece(concat_y_true, concat_y_prob)
+
+    calibration_info["overall"] = {
+        "ece": overall_ece,
+        "buckets": overall_buckets,
+    }
+    log.info(f"  Overall ECE: {overall_ece:.4f}")
+
+    # Save calibration data
+    CALIBRATION_DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(CALIBRATION_DATA_PATH, "w") as f:
+        json.dump(calibration_info, f, indent=2)
+    log.info(f"Calibration data saved to {CALIBRATION_DATA_PATH}")
 
     return classifiers, encoders, metrics, (X_train, X_test, y_train, y_test)
 
@@ -348,7 +446,8 @@ def save_model(classifiers, encoders, metrics):
         "categories": CATEGORIES,
         "severity_classes": SEVERITY_CLASSES,
         "metrics": metrics,
-        "version": "1.0",
+        "version": "2.0",
+        "calibrated": True,
     }
 
     with open(MODEL_PATH, "wb") as f:

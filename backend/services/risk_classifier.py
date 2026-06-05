@@ -100,12 +100,15 @@ def classify_clause(text: str) -> List[Dict]:
     if embedding is None:
         return []
 
+    is_calibrated = bool(bundle.get("calibrated", False))
+
     results = []
     for cat in bundle["categories"]:
         clf = bundle["classifiers"][cat]
         le = bundle["encoders"][cat]
 
         # Get probability distribution over severity classes
+        # (calibrated automatically if model was trained with CalibratedClassifierCV)
         probs = clf.predict_proba(embedding)[0]
         classes = le.classes_
 
@@ -133,6 +136,7 @@ def classify_clause(text: str) -> List[Dict]:
             "confidence": round(confidence, 3),
             "risk_probability": round(risk_prob, 3),
             "severity_probs": {k: round(v, 3) for k, v in prob_dict.items()},
+            "calibrated": is_calibrated,
         })
 
     return results
@@ -156,6 +160,8 @@ def classify_clauses_batch(texts: List[str]) -> List[List[Dict]]:
     embeddings = emb.encode(texts, normalize=True)
     if embeddings is None:
         return [[] for _ in texts]
+
+    is_calibrated = bool(bundle.get("calibrated", False))
 
     all_results = []
     for i, text in enumerate(texts):
@@ -189,6 +195,7 @@ def classify_clauses_batch(texts: List[str]) -> List[List[Dict]]:
                 "confidence": round(confidence, 3),
                 "risk_probability": round(risk_prob, 3),
                 "severity_probs": {k: round(v, 3) for k, v in prob_dict.items()},
+                "calibrated": is_calibrated,
             })
 
         all_results.append(results)

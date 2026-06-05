@@ -235,6 +235,30 @@ def run_comparison():
     print(f"  Avg ML latency:      {sum(r['ml_time_ms'] for r in results) / len(results):.0f} ms")
     print(f"  Avg regex latency:   {sum(r['regex_time_ms'] for r in results) / len(results):.0f} ms")
 
+    # ── Calibration metrics ──
+    calibration_path = Path(__file__).resolve().parent.parent / "data" / "models" / "calibration_data.json"
+    if calibration_path.exists():
+        print(f"\n{'─' * 70}")
+        print("CALIBRATION METRICS (from training)")
+        print(f"{'─' * 70}")
+        with open(calibration_path) as f:
+            cal_data = json.load(f)
+
+        for key in sorted(cal_data.keys()):
+            entry = cal_data[key]
+            ece = entry.get("ece", "N/A")
+            print(f"  {key:30s}  ECE = {ece}")
+
+        # Reliability diagram data (per-bucket)
+        if "overall" in cal_data and "buckets" in cal_data["overall"]:
+            print(f"\n  Reliability diagram (overall):")
+            print(f"  {'Bin':>10s}  {'Count':>6s}  {'Avg Conf':>9s}  {'Avg Acc':>8s}  {'Gap':>6s}")
+            for b in cal_data["overall"]["buckets"]:
+                if b["count"] > 0:
+                    print(f"  {b['bin']:>10s}  {b['count']:>6d}  {b['avg_confidence']:>9.4f}  {b['avg_accuracy']:>8.4f}  {b['gap']:>6.4f}")
+    else:
+        print("\n  Calibration data not found. Run training to generate.")
+
     # Save results
     out_path = Path(__file__).resolve().parent.parent / "data" / "classifier_eval.json"
     with open(out_path, "w") as f:
