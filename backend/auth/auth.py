@@ -17,6 +17,12 @@ JWT_SECRET = os.environ.get("JWT_SECRET", "dev-secret-change-me")
 JWT_ALGORITHM = "HS256"
 TOKEN_EXPIRE_SECONDS = 3600  # 1 hour
 
+if JWT_SECRET == "dev-secret-change-me":
+    import logging as _logging
+    _logging.getLogger("alrm.auth").warning(
+        "JWT_SECRET is using the default value. Set JWT_SECRET env var in production."
+    )
+
 # ── In-memory user store ────────────────────────────────────────────────────
 # Maps user_id -> {"user_id", "email", "hashed_password", "role"}
 _users: dict[str, dict] = {}
