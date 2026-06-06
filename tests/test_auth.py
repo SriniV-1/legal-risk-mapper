@@ -288,3 +288,16 @@ class TestProtectedEndpoints:
     def test_cache_clear_requires_auth(self):
         r = client.post("/cache/clear")
         assert r.status_code == 401
+
+    def test_compare_requires_auth(self):
+        r = client.post(
+            "/compare",
+            json={
+                "contracts": [
+                    {"name": "A", "text": "x" * 50},
+                    {"name": "B", "text": "y" * 50},
+                ],
+                "clause_type": "liability",
+            },
+        )
+        assert r.status_code == 401

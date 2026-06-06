@@ -3,16 +3,18 @@ Compare Router
 ──────────────
 POST /compare — compare 2-5 contract clauses side by side.
 """
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from backend.comparison.schemas import CompareRequest, CompareResponse
 from backend.comparison.comparator import compare_contracts
 from backend.extraction.schemas import EXTRACTION_SCHEMAS
+from backend.auth.middleware import get_current_user
 
 compare_router = APIRouter()
 
 
-@compare_router.post("/compare", response_model=CompareResponse, tags=["Comparison"])
+@compare_router.post("/compare", response_model=CompareResponse, tags=["Comparison"],
+                     dependencies=[Depends(get_current_user)])
 def compare_clauses(body: CompareRequest):
     """
     Compare 2-5 contract clauses of the same type.
