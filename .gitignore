@@ -11,3 +11,6 @@ data/corpus_raw/
 data/*.log
 .DS_Store
 *.pkl
+.claude/
+.env.local
+frontend-react/.env.local
