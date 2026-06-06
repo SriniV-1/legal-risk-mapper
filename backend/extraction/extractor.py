@@ -4,7 +4,10 @@ LLM-Based Clause Extractor
 Extracts structured fields from contract clauses using a pluggable LLM backend.
 Prompts are loaded from backend.extraction.prompts via the prompt registry.
 
-LLM routing: GROQ_API_KEY → Groq (llama-3.3-70b-versatile), else Ollama local.
+LLM routing:
+  LLM_BACKEND=finetuned → local LoRA adapter (models/lora_adapter/)
+  GROQ_API_KEY set       → Groq (llama-3.3-70b-versatile)
+  default                → Ollama local
 """
 from __future__ import annotations
 
@@ -71,6 +74,76 @@ def _call_groq(
         max_tokens=max_tokens, temperature=0,
     )
     return response.choices[0].message.content
+
+
+def _call_finetuned(
+    prompt: str, model: str = DEFAULT_MODEL, max_tokens: int = 2000,
+) -> str:
+    """Run inference using a locally-stored LoRA fine-tuned adapter.
+
+    Loads the base model + LoRA adapter from models/lora_adapter/.
+    Falls back to _call_llm if adapter weights are missing or dependencies
+    are unavailable.
+    """
+    adapter_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+        "models", "lora_adapter",
+    )
+
+    if not os.path.isdir(adapter_path):
+        log.warning(
+            "LoRA adapter not found at %s — falling back to default backend",
+            adapter_path,
+        )
+        return _call_llm(prompt, model=model, max_tokens=max_tokens)
+
+    try:
+        import torch
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        from peft import PeftModel
+    except ImportError as exc:
+        log.warning(
+            "Fine-tuned backend requires torch, transformers, peft: %s "
+            "— falling back to default backend", exc,
+        )
+        return _call_llm(prompt, model=model, max_tokens=max_tokens)
+
+    # Cache the model on the module to avoid reloading every call
+    if not hasattr(_call_finetuned, "_model"):
+        log.info("Loading fine-tuned model from %s …", adapter_path)
+
+        # Determine base model name from training config or use default
+        config_file = os.path.join(adapter_path, "training_config.json")
+        if os.path.isfile(config_file):
+            with open(config_file) as f:
+                base_model_name = json.load(f)["base_model"]
+        else:
+            base_model_name = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+
+        tokenizer = AutoTokenizer.from_pretrained(base_model_name)
+        base_model = AutoModelForCausalLM.from_pretrained(
+            base_model_name,
+            torch_dtype=torch.float16,
+            device_map="auto",
+        )
+        ft_model = PeftModel.from_pretrained(base_model, adapter_path)
+        ft_model.eval()
+        _call_finetuned._model = ft_model
+        _call_finetuned._tokenizer = tokenizer
+
+    tokenizer = _call_finetuned._tokenizer
+    ft_model = _call_finetuned._model
+
+    inputs = tokenizer(prompt, return_tensors="pt").to(ft_model.device)
+    with torch.no_grad():
+        outputs = ft_model.generate(
+            **inputs,
+            max_new_tokens=max_tokens,
+            temperature=0.1,
+            do_sample=True,
+        )
+    response = tokenizer.decode(outputs[0][inputs["input_ids"].shape[1]:], skip_special_tokens=True)
+    return response
 
 
 def _call_llm(
@@ -261,7 +334,11 @@ def extract_clause(
     for attempt in range(max_retries):
         try:
             start = time.monotonic()
-            raw_response = groq_breaker.call(_call_llm, prompt, model=model)
+            llm_backend = os.environ.get("LLM_BACKEND", "").lower()
+            if llm_backend == "finetuned":
+                raw_response = _call_finetuned(prompt, model=model)
+            else:
+                raw_response = groq_breaker.call(_call_llm, prompt, model=model)
             elapsed = time.monotonic() - start
 
             # --- Canary token validation ---
