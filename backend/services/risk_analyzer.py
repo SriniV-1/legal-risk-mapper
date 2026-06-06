@@ -74,7 +74,7 @@ CATEGORY_FEATURE_WEIGHTS: Dict[str, Dict[str, float]] = {
 
 # Base intensity (0–100) per original rule severity — the starting point for
 # that category's primary feature before evidence adjustments.
-_BASE_INTENSITY = {"Low": 32, "Medium": 58, "High": 80}
+_BASE_INTENSITY = {"Low": 32, "Medium": 58, "High": 90}
 
 
 def _score_to_severity(score: int) -> str:
