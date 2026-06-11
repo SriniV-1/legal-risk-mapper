@@ -49,13 +49,32 @@ limiter = Limiter(key_func=get_remote_address)
 # ── Lifespan (startup/shutdown) ────────────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Warm the semantic layer at startup so the first request doesn't stall."""
+    """Warm every model at startup so the FIRST real request isn't paying the
+    cold-load cost. Without this, the initial /analyze call eats the full
+    sentence-transformers load, spaCy load, classifier-pickle load, AND the
+    first torch inference (JIT) — easily 10–30s. Warming here moves all of that
+    to boot time and makes the first user request as fast as the rest."""
+    import time as _t
+    t0 = _t.monotonic()
+
+    # 1. Semantic layer (embedding model + spaCy + canonical embeddings)
     try:
         from backend.services.semantic_analyzer import warmup
         ready = warmup()
         logger.info(f"Semantic layer {'READY' if ready else 'DISABLED (regex-only mode)'}")
     except Exception as e:
         logger.warning(f"Semantic warmup failed: {e}")
+
+    # 2. ML risk classifier (pickle bundle) + a real forward pass so the
+    #    expensive first torch inference happens now, not on request #1.
+    try:
+        from backend.services.risk_analyzer import analyze_risks
+        analyze_risks("This Agreement shall be governed by the laws of the State of Delaware.")
+        logger.info("Risk classifier WARM (model loaded + first inference primed)")
+    except Exception as e:
+        logger.warning(f"Classifier warmup failed: {e}")
+
+    logger.info(f"Startup warmup complete in {_t.monotonic() - t0:.1f}s")
     yield  # application runs here
 
 
@@ -70,11 +89,20 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-_cors_origins = os.environ.get("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
+_cors_origins = [
+    o.strip() for o in
+    os.environ.get("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
+    if o.strip()
+]
+# A wildcard origin cannot be combined with credentials — the browser rejects
+# it and it would expose authenticated responses to any site. If "*" is
+# configured, drop credentials so the wildcard is at least safe for public,
+# unauthenticated use rather than silently broken.
+_allow_credentials = "*" not in _cors_origins
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_origins,
-    allow_credentials=True,
+    allow_credentials=_allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -296,6 +324,43 @@ def _extract_text_from_upload(filename: str, content: bytes) -> tuple[str, str]:
 _MAX_UPLOAD_BYTES = 10 * 1024 * 1024  # 10 MB
 
 
+def _validate_upload(filename: str, content: bytes) -> None:
+    """Shared upload guard: extension allowlist, size cap, and magic-byte check.
+
+    Raises HTTPException (400/413) on any violation. Applied before any parsing
+    so an attacker cannot trigger PDF/text decoding on an oversized or spoofed
+    payload (memory-exhaustion DoS).
+    """
+    allowed = (".txt", ".md", ".pdf")
+    fname_lower = filename.lower() if filename else ""
+    if not fname_lower.endswith(allowed):
+        raise HTTPException(status_code=400, detail="Only .txt, .md, and .pdf files are supported.")
+
+    if len(content) > _MAX_UPLOAD_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail=f"File too large ({len(content)} bytes). Maximum allowed is {_MAX_UPLOAD_BYTES} bytes (10 MB).",
+        )
+
+    if fname_lower.endswith(".pdf"):
+        if not content.startswith(b"%PDF"):
+            raise HTTPException(
+                status_code=400,
+                detail="File does not appear to be a valid PDF (missing %PDF header).",
+            )
+    else:
+        try:
+            content.decode("utf-8")
+        except UnicodeDecodeError:
+            try:
+                content.decode("latin-1")
+            except UnicodeDecodeError:
+                raise HTTPException(
+                    status_code=400,
+                    detail="File content is not valid text (UTF-8 or Latin-1).",
+                )
+
+
 @app.post("/analyze/upload", response_model=AnalyzeResponse, tags=["Analysis"],
            dependencies=[Depends(get_current_user)])
 @limiter.limit("10/minute")
@@ -313,14 +378,6 @@ async def analyze_upload(
       - MIME / magic-byte validation (HTTP 400)
       - Stricter rate limit: 10 requests/minute
     """
-    allowed = (".txt", ".md", ".pdf")
-    fname_lower = file.filename.lower() if file.filename else ""
-    if not fname_lower.endswith(allowed):
-        raise HTTPException(
-            status_code=400,
-            detail="Only .txt, .md, and .pdf files are supported."
-        )
-
     content = await file.read()
 
     # ── Audit log every upload attempt ────────────────────────────────────
@@ -330,32 +387,8 @@ async def analyze_upload(
         file.filename, len(content), file.content_type, client_ip,
     )
 
-    # ── File size limit ───────────────────────────────────────────────────
-    if len(content) > _MAX_UPLOAD_BYTES:
-        raise HTTPException(
-            status_code=413,
-            detail=f"File too large ({len(content)} bytes). Maximum allowed is {_MAX_UPLOAD_BYTES} bytes (10 MB).",
-        )
-
-    # ── MIME / content validation ─────────────────────────────────────────
-    if fname_lower.endswith(".pdf"):
-        if not content.startswith(b"%PDF"):
-            raise HTTPException(
-                status_code=400,
-                detail="File does not appear to be a valid PDF (missing %PDF header).",
-            )
-    else:
-        # .txt / .md — must be decodable as UTF-8 or Latin-1 text
-        try:
-            content.decode("utf-8")
-        except UnicodeDecodeError:
-            try:
-                content.decode("latin-1")
-            except UnicodeDecodeError:
-                raise HTTPException(
-                    status_code=400,
-                    detail="File content is not valid text (UTF-8 or Latin-1).",
-                )
+    # ── Extension allowlist, size cap, magic-byte validation ──────────────
+    _validate_upload(file.filename, content)
 
     text, extraction_method = _extract_text_from_upload(file.filename, content)
 
@@ -384,10 +417,8 @@ async def extract_text(
     file: UploadFile = File(...),
 ):
     """Extract plain text from an uploaded .txt, .md, or .pdf file."""
-    allowed = (".txt", ".md", ".pdf")
-    if not file.filename.lower().endswith(allowed):
-        raise HTTPException(status_code=400, detail="Only .txt, .md, and .pdf files are supported.")
     content = await file.read()
+    _validate_upload(file.filename, content)
     text, extraction_method = _extract_text_from_upload(file.filename, content)
     if len(text.strip()) < 10:
         raise HTTPException(status_code=400, detail="File appears empty or too short.")
@@ -410,6 +441,45 @@ def _resolve_clause_type(text: str, requested: str) -> str:
         detected = "liability"  # safest fallback
     logger.info(f"Auto-detected clause type: {detected!r}")
     return detected
+
+
+import errno as _errno
+import socket as _socket
+
+_CORPUS_CONN_HINTS = (
+    "Name or service not known", "getaddrinfo", "Could not resolve",
+    "Temporary failure in name resolution", "nodename nor servname",
+    "Failed to establish a new connection", "Max retries exceeded",
+    "Connection refused", "[Errno -2]", "[Errno -3]", "[Errno 8]",
+)
+
+
+def _is_corpus_unreachable(exc: BaseException) -> bool:
+    """True when an exception looks like the market-corpus DB (Supabase) being
+    unreachable — DNS failure, refused/timed-out connection — rather than a real
+    application bug. Walks the cause/context chain so wrapped errors are caught."""
+    seen: set[int] = set()
+    cur: BaseException | None = exc
+    while cur is not None and id(cur) not in seen:
+        seen.add(id(cur))
+        if isinstance(cur, _socket.gaierror):
+            return True
+        if isinstance(cur, OSError) and cur.errno in (
+            _errno.ENETUNREACH, _errno.ECONNREFUSED, _errno.ETIMEDOUT, -2, -3,
+        ):
+            return True
+        if any(h in str(cur) for h in _CORPUS_CONN_HINTS):
+            return True
+        cur = cur.__cause__ or cur.__context__
+    return False
+
+
+_CORPUS_DOWN_DETAIL = (
+    "Market corpus database is unreachable. The benchmark and redline features "
+    "read the EDGAR clause corpus from Supabase, and the configured SUPABASE_URL "
+    "host did not resolve. Configure a reachable Supabase project (see README → "
+    "Local Development) to enable these features. Risk analysis is unaffected."
+)
 
 
 class BenchmarkRequest(BaseModel):
@@ -438,6 +508,8 @@ def benchmark_clause(request: Request, body: BenchmarkRequest):
         return result
     except Exception as e:
         logger.exception("Benchmarking failed")
+        if _is_corpus_unreachable(e):
+            raise HTTPException(status_code=503, detail=_CORPUS_DOWN_DETAIL)
         raise HTTPException(status_code=500, detail=f"Benchmarking error: {str(e)}")
 
 
@@ -470,6 +542,8 @@ def generate_redlines(request: Request, body: RedlineRequest):
         return result
     except Exception as e:
         logger.exception("Redline generation failed")
+        if _is_corpus_unreachable(e):
+            raise HTTPException(status_code=503, detail=_CORPUS_DOWN_DETAIL)
         raise HTTPException(status_code=500, detail=f"Redline error: {str(e)}")
 
 

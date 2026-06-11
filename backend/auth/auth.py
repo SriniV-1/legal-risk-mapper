@@ -17,10 +17,20 @@ JWT_SECRET = os.environ.get("JWT_SECRET", "dev-secret-change-me")
 JWT_ALGORITHM = "HS256"
 TOKEN_EXPIRE_SECONDS = 3600  # 1 hour
 
+# Fail closed in production: a known default secret lets anyone forge admin
+# tokens, so refuse to start rather than silently sign with it. Dev and test
+# (ENVIRONMENT unset / "development" / "test") keep the convenient default.
+_ENVIRONMENT = os.environ.get("ENVIRONMENT", "development").lower()
 if JWT_SECRET == "dev-secret-change-me":
+    if _ENVIRONMENT in ("production", "prod"):
+        raise RuntimeError(
+            "JWT_SECRET must be set to a strong random value in production. "
+            'Generate one with: python -c "import secrets; print(secrets.token_urlsafe(32))"'
+        )
     import logging as _logging
     _logging.getLogger("alrm.auth").warning(
-        "JWT_SECRET is using the default value. Set JWT_SECRET env var in production."
+        "JWT_SECRET is using the insecure default value. Set JWT_SECRET env var "
+        "before deploying (ENVIRONMENT=production will refuse to start without it)."
     )
 
 # ── In-memory user store ────────────────────────────────────────────────────
