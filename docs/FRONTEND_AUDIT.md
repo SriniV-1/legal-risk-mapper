@@ -37,14 +37,21 @@ real work. Tokens existed but only for the paper palette; no dark mode at all.
 ### 4. Interaction depth
 No command palette, no keyboard shortcuts, minimal loading skeletons.
 
-## Redesign (what replaced it)
+## Outcome (what was actually built)
 
-- **Dark-first infrastructure design system** in CSS custom properties
-  (`src/styles/`): slate/graphite surfaces, single accent, severity colors
-  preserved, accessible contrast, light theme retained as a toggle.
-- **New routes**: `/evals` (interactive evaluation dashboard over real
-  measured data), `/architecture` (inspectable pipeline diagram),
-  `/overview` (60-second recruiter summary). Existing `/app` and `/compare`
-  re-skinned, functionality untouched.
-- **Command palette (⌘K)** with route + action navigation.
-- Eval metrics promoted to the landing hero with animated counters.
+The editorial-broadsheet identity was deliberately **kept** — it is
+distinctive, fits the legal subject matter, and per design direction the
+visual identity should reflect the project's purpose rather than chase a
+generic dark "infra dashboard" look. The gaps were closed *within* the
+publication concept:
+
+- **`/evals` — The Statistical Appendix**: interactive Recharts figures
+  styled as print plates (ink colors on paper, ruled captions) over the
+  real measured data — extraction F1 + grounding per clause type,
+  classifier per-category F1, retrieval MRR/NDCG/latency, 8/8 e2e runs,
+  corpus coverage — with reproduction commands.
+- **`/architecture` — The Pipeline**: six inspectable stages from intake
+  to cited redline, each with file paths and measured stats.
+- **`/overview` — The Prospectus**: the sixty-second recruiter read.
+- Shared inner-section masthead; landing masthead links all sections.
+- Existing `/app` and `/compare` untouched.
