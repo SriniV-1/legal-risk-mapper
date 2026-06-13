@@ -125,7 +125,11 @@ export default function Landing() {
         <span className="mast-rule" />
         <span className="mast-sub">The Automated Legal Risk Monitor</span>
         <span className="mast-spacer" />
-        <span className="mast-dateline">Vol. I · No. 01</span>
+        <nav className="mast-nav" aria-label="Sections">
+          <Link to="/evals">Appendix</Link>
+          <Link to="/architecture">Pipeline</Link>
+          <Link to="/overview">Prospectus</Link>
+        </nav>
         <Link to="/app" className="mast-cta">Launch the Monitor</Link>
       </header>
 

@@ -7,6 +7,9 @@ import { lazy, Suspense } from "react";
 const Landing = lazy(() => import("./pages/Landing.jsx"));
 const AppPage = lazy(() => import("./pages/AppPage.jsx"));
 const ComparePage = lazy(() => import("./pages/ComparePage.jsx"));
+const EvalsPage = lazy(() => import("./pages/EvalsPage.jsx"));
+const ArchitecturePage = lazy(() => import("./pages/ArchitecturePage.jsx"));
+const OverviewPage = lazy(() => import("./pages/OverviewPage.jsx"));
 
 export default function App() {
   return (
@@ -16,6 +19,9 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/app" element={<AppPage />} />
           <Route path="/compare" element={<ComparePage />} />
+          <Route path="/evals" element={<EvalsPage />} />
+          <Route path="/architecture" element={<ArchitecturePage />} />
+          <Route path="/overview" element={<OverviewPage />} />
         </Routes>
       </Suspense>
     </BrowserRouter>
