@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import Dossier from "../components/Dossier.jsx";
 
 const STATS = [
   { value: 116,   decimals: 0, label: "EDGAR Contracts" },
@@ -202,44 +203,8 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* ── The dossier — large stamp-cards to the deep-dive sections ── */}
-        <section className="article obs">
-          <div className="art-head">
-            <span className="art-sec">Index</span>
-            <h2 className="art-title">The rest of the file</h2>
-            <span className="art-kicker">Read deeper</span>
-          </div>
-          <div className="dossier">
-            <Link to="/evals" className="dossier-card">
-              <span className="dossier-no">№ 01 — Appendix</span>
-              <span className="dossier-title">The Statistical Appendix</span>
-              <span className="dossier-desc">
-                Every measured figure — extraction F1 and grounding, the risk
-                classifier, retrieval MRR/NDCG, and the end-to-end runs — charted,
-                with the commands to reproduce each.
-              </span>
-              <span className="dossier-go">Open the appendix <Arrow /></span>
-            </Link>
-            <Link to="/architecture" className="dossier-card">
-              <span className="dossier-no">№ 02 — Pipeline</span>
-              <span className="dossier-title">The Pipeline</span>
-              <span className="dossier-desc">
-                How a clause becomes a cited redline: six inspectable stages from
-                intake to output, each with its source-file paths and measured stats.
-              </span>
-              <span className="dossier-go">Trace the pipeline <Arrow /></span>
-            </Link>
-            <Link to="/overview" className="dossier-card">
-              <span className="dossier-no">№ 03 — Prospectus</span>
-              <span className="dossier-title">The Prospectus</span>
-              <span className="dossier-desc">
-                The sixty-second read — the problem, the hard parts, the measured
-                results, and the stack — for anyone evaluating the engineering.
-              </span>
-              <span className="dossier-go">Read the prospectus <Arrow /></span>
-            </Link>
-          </div>
-        </section>
+        {/* ── The dossier — cross-navigation to the deep-dive sections ── */}
+        <Dossier current="home" />
 
         {/* ── § I — Faculties ── */}
         <section className="article obs">

@@ -1,4 +1,5 @@
 import Masthead from "../components/Masthead.jsx";
+import Dossier from "../components/Dossier.jsx";
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ReferenceLine, LabelList, Cell,
@@ -221,6 +222,8 @@ export default function EvalsPage() {
             </div>
           </div>
         </section>
+
+        <Dossier current="appendix" />
       </div>
 
       <footer className="bs-foot">

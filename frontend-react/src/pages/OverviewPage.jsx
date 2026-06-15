@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Masthead from "../components/Masthead.jsx";
+import Dossier from "../components/Dossier.jsx";
 
 /* The Prospectus — the 60-second read for someone evaluating the
    engineering. Problem, scale, hard parts, measured results, stack. */
@@ -89,6 +90,8 @@ export default function OverviewPage() {
             <Link className="btn-stamp" to="/app">Try the Monitor</Link>
           </div>
         </section>
+
+        <Dossier current="prospectus" />
       </div>
 
       <footer className="bs-foot">

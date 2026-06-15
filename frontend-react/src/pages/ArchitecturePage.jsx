@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Masthead from "../components/Masthead.jsx";
+import Dossier from "../components/Dossier.jsx";
 
 /* The pipeline, told as the publication's production process. Each stage is
    inspectable; file paths and measured numbers are real. */
@@ -134,6 +135,8 @@ export default function ArchitecturePage() {
             </article>
           </div>
         </section>
+
+        <Dossier current="pipeline" />
       </div>
 
       <footer className="bs-foot">
