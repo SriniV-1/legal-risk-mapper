@@ -107,15 +107,18 @@ class TestBenchmarkEndpoint:
             "text": "The total aggregate liability of the Provider under this Agreement shall not exceed the total fees paid by Customer in the twelve months preceding the claim.",
             "clause_type": "liability",
         })
-        # May fail if Ollama/Supabase not running, but should not 422
-        assert r.status_code in (200, 500)
+        # A valid request must not 422. When the EDGAR corpus (Supabase) or the
+        # LLM is unreachable — as in CI — the endpoint deliberately returns 503
+        # (see _CORPUS_DOWN_DETAIL in backend/main.py); 200 when deps are up.
+        assert r.status_code in (200, 503)
 
     def test_benchmark_default_is_auto(self):
         r = client.post("/benchmark", json={
             "text": "The total aggregate liability of the Provider shall not exceed annual fees."
         })
         # No clause_type specified — defaults to "auto". Should not 422.
-        assert r.status_code in (200, 500)
+        # 503 when corpus/LLM deps are unavailable (CI), 200 otherwise.
+        assert r.status_code in (200, 503)
 
 
 class TestAutoDetection:
