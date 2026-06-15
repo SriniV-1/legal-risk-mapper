@@ -1920,3 +1920,42 @@ body {
   .pipe-summary, .pipe-detail { margin-left: 0; }
   .mast-nav { display: none; }
 }
+
+/* ── The dossier — large stamp-cards linking to the deep-dive sections.
+   Same ink-stamp language as .btn-stamp (dark fill, cream text, hard offset
+   oxblood shadow), scaled up to a card with a description. ── */
+.dossier { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.dossier-card {
+  display: flex; flex-direction: column; gap: 11px;
+  padding: 26px 24px 22px;
+  background: var(--text); color: #F6EEDD;
+  border: 1px solid var(--text);
+  box-shadow: 6px 6px 0 var(--accent);
+  text-decoration: none;
+  transition: transform 0.16s, box-shadow 0.16s, background 0.16s;
+}
+.dossier-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0 var(--accent);
+  background: var(--accent-mid);
+}
+.dossier-no {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: rgba(246, 238, 221, 0.6);
+}
+.dossier-title {
+  font-family: var(--display); font-weight: 900; font-size: 26px;
+  line-height: 1.04; letter-spacing: -0.01em;
+}
+.dossier-desc {
+  font-family: var(--sans); font-size: 13.5px; line-height: 1.6;
+  color: rgba(246, 238, 221, 0.78); flex: 1;
+}
+.dossier-go {
+  display: inline-flex; align-items: center; gap: 9px; margin-top: 4px;
+  font-family: var(--mono); font-size: 11.5px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; color: #F6EEDD;
+}
+.dossier-go svg { width: 14px; height: 14px; transition: transform 0.16s; }
+.dossier-card:hover .dossier-go svg { transform: translateX(4px); }
+@media (max-width: 900px) { .dossier { grid-template-columns: 1fr; } }
