@@ -1,5 +1,14 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
+
+// Reset scroll to the top on every route change. React Router preserves the
+// scroll position by default, so navigating from the bottom of one page (e.g.
+// the dossier cards) would otherwise land you mid-page on the next one.
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
 
 // Route-level code splitting: the landing page ships on its own and the
 // heavier analysis/compare tools load on demand, so first paint isn't blocked
@@ -14,6 +23,7 @@ const OverviewPage = lazy(() => import("./pages/OverviewPage.jsx"));
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Suspense fallback={<div className="route-fallback" aria-busy="true" />}>
         <Routes>
           <Route path="/" element={<Landing />} />
