@@ -4,8 +4,7 @@
   "outputDirectory": "frontend-react/dist",
   "framework": null,
   "rewrites": [
-    { "source": "/app", "destination": "/index.html" },
-    { "source": "/app/(.*)", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
