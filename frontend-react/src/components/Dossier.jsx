@@ -39,8 +39,13 @@ const ORDER = ["home", "appendix", "pipeline", "prospectus"];
 
 export default function Dossier({ current, heading = "The rest of the file", kicker = "Read deeper" }) {
   const shown = ORDER.filter((key) => key !== current);
+  // Plain `article` (no `obs`): this is shared navigation and must always be
+  // visible. The `obs` reveal class starts at opacity:0 and only un-hides when
+  // the IntersectionObserver in Landing's useReveal adds `.in` — which doesn't
+  // run on the inner pages, so `obs` here would leave the cards invisible but
+  // still clickable.
   return (
-    <section className="article obs">
+    <section className="article">
       <div className="art-head">
         <span className="art-sec">Index</span>
         <h2 className="art-title">{heading}</h2>
