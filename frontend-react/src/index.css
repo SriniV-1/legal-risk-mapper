@@ -1717,7 +1717,11 @@ body {
 
 /* Kinetic headline — lines slide up from a clipped baseline */
 .headline { display: block; }
-.headline .ln { display: block; overflow: hidden; }
+/* overflow:hidden masks the slide-up reveal, but with line-height 0.92 it also
+   clips glyph descenders (e.g. the italic "g" in "sign."). Give the line box a
+   little bottom room and pull the following line back up so spacing is unchanged. */
+.headline .ln { display: block; overflow: hidden; padding-bottom: 0.16em; }
+.headline .ln:not(:last-child) { margin-bottom: -0.16em; }
 .headline .ln > span {
   display: block; transform: translateY(110%);
   animation: lnUp 1s cubic-bezier(.19,1,.22,1) forwards;
