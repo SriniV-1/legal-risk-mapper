@@ -14,3 +14,4 @@ data/*.log
 .claude/
 .env.local
 frontend-react/.env.local
+ROADMAP.md
