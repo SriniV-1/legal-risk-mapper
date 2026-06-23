@@ -1,0 +1,38 @@
+name: Bug report
+description: Report a problem with ALRM
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, including what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps (and a minimal example if possible) to reproduce.
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Risk classification
+        - Structured extraction
+        - Retrieval / RAG
+        - API / backend
+        - Frontend
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Python version, OS, LLM backend (Anthropic/Groq/Ollama).
+    validations:
+      required: true
