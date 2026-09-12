@@ -123,11 +123,13 @@ The Supabase schema has three tables: `contracts` (id, company, form_type, filed
 | Clause Type     | Chunks | Extracted | Coverage |
 |-----------------|-------:|----------:|:--------:|
 | Governing Law   | 874    | 708       | 81.0%    |
+| Termination     | 1,434  | 983       | 68.5%    |
 | Liability       | 1,999  | 981       | 49.1%    |
 | Confidentiality | 2,423  | 990       | 40.9%    |
 | IP              | 656    | 18        | 2.7%     |
-| Termination     | 1,434  | 11        | 0.8%     |
 | Payment         | 2,156  | 15        | 0.7%     |
+
+(Live numbers from `GET /corpus/stats`, 2026-09-12. The endpoint is the source of truth; this table drifts.)
 
 ---
 
@@ -196,7 +198,7 @@ Swagger docs at `/docs` when running locally.
 
 **Current limitations:**
 
-The corpus extraction coverage is uneven across clause types. Governing law (81%) and liability (49%) have substantial structured extraction data; confidentiality, IP, payment, and termination have partial coverage. Benchmarking results for low-coverage types return smaller market samples and less reliable distributions than governing law and liability.
+The corpus extraction coverage is uneven across clause types. Governing law (81%), termination (69%), liability (49%) and confidentiality (41%) have substantial structured extraction data; IP and payment are barely covered (under 3%). Benchmarking results for low-coverage types return smaller market samples and less reliable distributions than governing law and liability.
 
 The corpus was extracted with Ollama 8B locally; user clauses are extracted with Groq 70B. These models have different extraction tendencies, which causes occasional cross-model inconsistencies where a field appears in the user extraction but rarely in the corpus extractions. The correct fix is to re-extract the corpus with the same model used at inference time.
 
