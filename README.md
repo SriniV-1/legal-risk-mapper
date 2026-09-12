@@ -55,7 +55,7 @@ confidence score
 
 **Pipeline 1 — Risk Classification.** Five independent binary classifiers rather than a single multi-label model because each category has different class balance, different regularization requirements (C values range from 5.0 to 10.0 across categories), and threshold tuning that needs to happen per-category. A semantic similarity layer runs in parallel using cosine distance against 30 auto-generated canonical clause embeddings (cluster centroids from training data). When both layers flag the same clause for the same category, they merge into a single boosted-confidence result. Graceful degradation: if the pkl file is missing, the system falls back to regex rules; if sentence-transformers fails to load, the semantic layer is silently disabled.
 
-**Pipeline 2 — Structured Extraction.** Each of the 6 clause types has a dedicated Pydantic schema with every factual field accompanied by a `source_text` field requiring a verbatim quote. This is not optional — it is enforced in the prompt as a critical rule and validated at the schema level. Groq's openai/gpt-oss-120b handles inference because the 8B model produces meaningful false positives on fields like `is_mutual` and `has_pre_existing_ip_carveout` where context sensitivity matters. The LLM router tries Anthropic first (if `ANTHROPIC_API_KEY` set), then Groq, then Ollama — same prompts and schemas across all backends.
+**Pipeline 2 — Structured Extraction.** Each of the 6 clause types has a dedicated Pydantic schema with every factual field accompanied by a `source_text` field requiring a verbatim quote. This is not optional — it is enforced in the prompt as a critical rule and validated at the schema level. Groq's openai/gpt-oss-120b handles inference because the 8B model produces meaningful false positives on fields like `is_mutual` and `has_pre_existing_ip_carveout` where context sensitivity matters. The LLM router uses Groq when `GROQ_API_KEY` is set and falls back to local Ollama otherwise — same prompts and schemas on both. The Groq model is selected by `LRM_GROQ_MODEL` (default `openai/gpt-oss-120b`, OpenAI's open-weights model served by Groq).
 
 **Pipeline 3 — Benchmarking.** pgvector over Pinecone because the structured extraction data already lives in Supabase — co-locating the vector index with the relational data eliminates a service dependency and enables joining on extraction results in a single query. The `match_clauses()` Postgres RPC function handles cosine similarity over 18,001 384-dim vectors using IVFFlat. Percentile calculation: for a boolean field with 73% market prevalence, a user clause that has the feature is at the 73rd percentile; one that lacks it is at the 27th percentile. Retrieval quality: MRR@5 of 0.917.
 
@@ -78,16 +78,15 @@ confidence score
 
 Regularization parameter C was cross-validated independently per category. Per-category reports (precision, recall, F1 by severity level) are stored in `data/models/risk_classifier.pkl` under the `metrics` key.
 
-### Extraction — 35 hand-labeled examples per category (42 for liability)
+### Extraction — hand-labeled evaluation sets (`data/eval/`)
 
 | Clause Type     | Core Field F1 | Success Rate | Avg Grounding Score | Eval Examples |
 |-----------------|:-------------:|:------------:|:-------------------:|:-------------:|
 | Governing Law   | 0.971         | 100%         | 1.000               | 35            |
-| Payment         | 0.941         | 100%         | 1.000               | 35            |
-| IP              | 0.921         | 100%         | 0.996               | 35            |
-| Confidentiality | 0.920         | 100%         | 0.953               | 35            |
 | Termination     | 0.881         | 94.3%        | 0.973               | 35            |
-| Liability       | 0.762         | 97.6%        | 0.975               | 42            |
+| Liability       | 0.762         | 97.6%        | 0.975               | 86*           |
+
+\* The liability set was expanded from 42 to 86 examples after these numbers were recorded; re-run `python -m backend.extraction.eval liability` to refresh them. Payment, IP, and Confidentiality extraction run in production but **do not yet have labeled evaluation sets** — no F1 is claimed for them.
 
 Grounding score measures the fraction of extracted field values where the accompanying `source_text` is a verified substring of the input clause. A grounding score below 1.0 indicates fields where the model generated a source quote that drifts from the exact contract language.
 
@@ -102,7 +101,7 @@ Grounding score measures the fraction of extracted field values where the accomp
 All evaluation code is in `scripts/` and labeled datasets are in `data/eval/`. To regenerate:
 
 ```bash
-python -m backend.extraction.eval --eval-file data/eval/liability_eval.json
+python -m backend.extraction.eval liability        # or: termination | governing_law
 python -m scripts.eval_retrieval
 python -m scripts.eval_classifier
 ```
@@ -136,31 +135,42 @@ The Supabase schema has three tables: `contracts` (id, company, form_type, filed
 
 | Layer           | Technology                                                                                          |
 |-----------------|-----------------------------------------------------------------------------------------------------|
-| Backend         | FastAPI 0.111, Gunicorn 22 + Uvicorn workers                                                        |
+| Backend         | FastAPI, Gunicorn + Uvicorn workers, slowapi rate limiting, structlog + trace IDs                   |
 | ML Classifier   | sklearn LogisticRegression (5 independent models), sentence-transformers all-MiniLM-L6-v2 (384-dim) |
 | LLM Inference   | Groq API, openai/gpt-oss-120b (extraction + redlines)                                               |
 | Database        | Supabase PostgreSQL + pgvector, IVFFlat index                                                       |
 | NLP             | spaCy en_core_web_sm (clause segmentation), MiniLM-L6-v2 (embeddings)                              |
-| PDF Extraction  | PyMuPDF (MuPDF bindings)                                                                            |
-| Frontend        | Custom CSS (CSS variables, dark warm-gray design system), React Router 6, Vercel static hosting    |
-| Deployment      | Docker on Hugging Face Spaces (backend, free CPU tier)                                              |
+| PDF Extraction  | PyMuPDF; Tesseract OCR fallback (pdf2image + pytesseract) for scanned PDFs                          |
+| Frontend        | React 18 + Vite (`frontend-react/`), custom CSS editorial design system, React Router, Vercel      |
+| Deployment      | Docker on Hugging Face Spaces (backend, free CPU tier) via `deploy/push-hf.sh`; Vercel (frontend)   |
 | CI              | GitHub Actions, pytest on push and PR                                                               |
+| Auth            | JWT (HS256) with free/pro/admin roles; public routes accept anonymous unless `LRM_REQUIRE_AUTH=1`  |
+| Observability   | `/metrics` (Prometheus), `/ready` deep checks, circuit breaker on Groq, in-memory LRU+TTL cache      |
 
 ---
 
 ## API Reference
 
-| Method | Path              | Auth             | Rate Limit | Description                               |
-|--------|-------------------|------------------|:----------:|-------------------------------------------|
-| GET    | `/health`         | None             | —          | Version and NLP engine status             |
-| GET    | `/warmup`         | None             | —          | Idempotent model preload (cold starts)    |
-| GET    | `/limits`         | None             | —          | Per-pipeline input word caps + tier quota |
-| GET    | `/corpus/stats`   | None             | —          | Live extraction coverage per clause type  |
-| POST   | `/analyze`        | None             | 30/min     | ML risk classification of raw text        |
-| POST   | `/analyze/upload` | None             | 30/min     | Upload and analyze .pdf, .txt, or .md     |
-| POST   | `/extract`        | None             | 30/min     | Extract raw text from an uploaded file    |
-| POST   | `/benchmark`      | Optional API key | 10/min     | RAG benchmarking against EDGAR corpus     |
-| POST   | `/redline`        | Optional API key | 10/min     | Benchmark then generate grounded redlines |
+Auth column: **public** = anonymous allowed by default, JWT required when `LRM_REQUIRE_AUTH=1`; **pro** = same, but a supplied token must carry role ≥ pro; **admin** = always requires an admin JWT.
+
+| Method | Path              | Auth   | Rate Limit | Description                                      |
+|--------|-------------------|--------|:----------:|--------------------------------------------------|
+| GET    | `/health`         | none   | —          | Liveness + which layers are live (`ml_classifier`, `groq_model`) |
+| GET    | `/ready`          | none   | —          | Deep readiness: semantic, spaCy, classifier, Supabase |
+| GET    | `/metrics`        | none   | —          | Prometheus exposition                            |
+| GET    | `/warmup`         | none   | —          | Idempotent model preload (cold starts)           |
+| GET    | `/limits`         | none   | —          | Per-pipeline input word caps + tier quota        |
+| GET    | `/corpus/stats`   | none   | —          | Live extraction coverage per clause type         |
+| POST   | `/auth/register`  | none   | —          | Create an account (in-memory user store)         |
+| POST   | `/auth/login`     | none   | —          | Get a JWT                                        |
+| POST   | `/auth/refresh`   | token  | —          | Refresh a JWT                                    |
+| POST   | `/analyze`        | public | 30/min     | ML risk classification of raw text (≤50,000 words) |
+| POST   | `/analyze/upload` | public | 10/min     | Upload and analyze .pdf/.txt/.md (≤10 MB, OCR fallback) |
+| POST   | `/extract`        | none   | 30/min     | Extract raw text from an uploaded file           |
+| POST   | `/compare`        | public | —          | Side-by-side risk comparison of several contracts |
+| POST   | `/benchmark`      | pro    | 10/min     | RAG benchmarking against EDGAR corpus (≤3,000 words) |
+| POST   | `/redline`        | pro    | 10/min     | Benchmark then generate grounded redlines (≤3,000 words) |
+| POST   | `/cache/clear`    | admin  | —          | Evict the analysis cache                         |
 
 Live health check: `https://sriniv-1-legal-risk-mapper.hf.space/health`
 
@@ -176,7 +186,7 @@ Swagger docs at `/docs` when running locally.
 
 **pgvector over a dedicated vector database.** The structured extraction data already lives in Supabase. Co-locating the vector index eliminates an additional service dependency, allows SQL joins between similarity search results and `structured_extractions` in a single Postgres RPC call, and avoids paying for a separate managed vector store. At 18,001 384-dim vectors, IVFFlat performs adequately with 0.243s average query latency.
 
-**Groq 70B over local Ollama 8B for user-facing inference.** The 8B model produces measurable false positives on context-sensitive fields (`is_mutual`, `has_pre_existing_ip_carveout`, `has_residuals_clause`) that show up as extraction errors against the eval sets. Groq's free tier has no GPU requirement and handles portfolio-level traffic. The LLM router (Anthropic → Groq → Ollama) means the code works in all environments without changes.
+**Groq-hosted gpt-oss-120b over local Ollama 8B for user-facing inference.** The 8B model produces measurable false positives on context-sensitive fields (`is_mutual`, `has_pre_existing_ip_carveout`, `has_residuals_clause`) that show up as extraction errors against the eval sets. Groq's free tier has no GPU requirement and handles portfolio-level traffic. The Groq → Ollama fallback means the code works with or without a cloud key. (Groq retired its Llama 3.3 line in 2026; `LRM_GROQ_MODEL` exists so the next retirement is a config change, not a code change.)
 
 **Market-grounded redlines over pure LLM legal knowledge.** The redline generator receives a structured prompt block containing field distributions from real EDGAR filings and user percentile rankings, and is explicitly constrained to cite specific statistics in every suggestion. This is more persuasive to a transactional lawyer than LLM opinion, and it is verifiable — the cited statistic traces back to real SEC filings linked in the UI.
 
@@ -192,11 +202,11 @@ The corpus was extracted with Ollama 8B locally; user clauses are extracted with
 
 Liability extraction F1 is 0.762 — the lowest category and the one with the most legal consequence. The weak fields are `consequential_excluded` (0.762 in the per-field breakdown) and `is_mutual` (which requires understanding whether both parties are subject to the same limitations). Both need more labeled examples and prompt iteration.
 
-ALRM is English-only and US law only. It does not support scanned PDFs (no OCR). The free HF Spaces tier cold-starts after inactivity with a 1–2 minute warmup. Groq's free tier allows approximately 1,000 requests per day.
+ALRM is English-only and US law only. Scanned PDFs go through a Tesseract OCR fallback, which is slower and less accurate than native text extraction. The free HF Spaces tier may sleep after inactivity; the frontend calls `/warmup` on open to overlap the 10–30s model load with the user pasting text. Groq's free tier is the binding constraint on the LLM routes (8,000 tokens/minute, ~1,000 requests/day), which is why benchmarking and redlines cap input at 3,000 words.
 
 **Planned improvements:**
 
-Iterate on the liability extraction prompt and expand the eval set to target 0.85+ F1. Add confidence calibration to the risk classifier using Platt scaling. Expand beyond SaaS MSAs to NDA templates, employment agreements, and vendor contracts.
+Iterate on the liability extraction prompt to target 0.85+ F1 on the expanded 86-example set. Build labeled eval sets for payment, IP, and confidentiality. Ship classifier calibration: `scripts/train_risk_classifier.py` already fits `CalibratedClassifierCV` (Platt scaling) and `tests/test_calibration.py` covers it, but `data/models/calibration_data.json` has not been generated. Chunk long documents by section instead of rejecting them at the word cap. Expand beyond SaaS MSAs to NDAs, employment agreements, and vendor contracts.
 
 ---
 
@@ -219,10 +229,11 @@ python -m spacy download en_core_web_sm
 | `SUPABASE_URL`          | Yes      | Supabase project URL                                                                     |
 | `SUPABASE_KEY`          | Yes      | Supabase service-role key                                                                |
 | `GROQ_API_KEY`          | Yes      | Groq API key for extraction and redlines                                                 |
-| `ANTHROPIC_API_KEY`     | No       | Use Claude for extraction (falls back to Groq)                                           |
-| `LRM_EXTRACTION_MODEL`  | No       | Override extraction model (default: `llama3.1:8b`, auto-switched to Groq when key present) |
-| `LRM_API_KEY`           | No       | Require `X-API-Key` header on `/benchmark` and `/redline`                               |
-| `CORS_ORIGINS`          | No       | Comma-separated allowed origins (default: `*`)                                           |
+| `LRM_GROQ_MODEL`        | No       | Groq model id (default `openai/gpt-oss-120b`)                                            |
+| `LRM_EXTRACTION_MODEL`  | No       | Local **Ollama** tag used when no Groq key is set (default `llama3.1:8b`)                |
+| `LRM_REQUIRE_AUTH`      | No       | `1` makes public routes require a JWT (default off — anonymous allowed)                  |
+| `JWT_SECRET`            | If auth  | HS256 signing secret; required when auth is on or `/auth/*` is used                      |
+| `CORS_ORIGINS`          | No       | Comma-separated allowed origins (default `http://localhost:5173,http://localhost:3000`)  |
 
 ```bash
 cp .env.example .env
@@ -247,18 +258,17 @@ The app will be available at `http://localhost:5173`. Set `VITE_API_BASE_URL` in
 python -m pytest tests/ -v
 ```
 
-49 tests covering schema validation, API endpoints, extraction pipeline integrity, and risk analysis. Tests stub Supabase credentials and do not require a live database.
+271 tests across 18 files: API integration, auth/JWT/roles, input limits, upload security (magic bytes, size caps), prompt-injection defenses, OCR fallback, circuit breaker, cache, metrics, calibration, ablation, comparison, schema validation, risk quality. Tests stub Supabase and do not require a live database.
 
 **Run extraction eval:**
 
 ```bash
 python -m backend.extraction.eval liability
 python -m backend.extraction.eval termination
-python -m backend.extraction.eval payment
-python -m backend.extraction.eval confidentiality
-python -m backend.extraction.eval ip
 python -m backend.extraction.eval governing_law
 ```
+
+Only these three clause types have labeled sets; the CLI has no eval for payment, confidentiality, or IP yet.
 
 ---
 
@@ -267,7 +277,10 @@ python -m backend.extraction.eval governing_law
 ```
 legal-risk-mapper/
 ├── backend/
-│   ├── main.py                      # FastAPI app — 7 endpoints, rate limiting, API key auth
+│   ├── main.py                      # FastAPI app — core routes, lifespan warmup, rate limits, CORS
+│   ├── auth/                        # JWT (HS256) auth: users, tokens, role hierarchy, LRM_REQUIRE_AUTH
+│   ├── routers/                     # auth_router (/auth/*), compare_router (/compare), metrics_router (/metrics)
+│   ├── middleware/trace.py          # request trace IDs (structlog)
 │   ├── corpus/                      # EDGAR data pipeline (one-time collection)
 │   │   ├── edgar_scraper.py         # EFTS search + EX-10 exhibit downloader
 │   │   ├── chunker.py               # Section-boundary chunking + keyword-density classifier
@@ -276,7 +289,7 @@ legal-risk-mapper/
 │   │   └── retrieval.py             # Cosine similarity search with clause type filter
 │   ├── extraction/                  # LLM structured extraction
 │   │   ├── schemas.py               # 6 Pydantic models — all fields grounded with source_text
-│   │   ├── extractor.py             # LLM router (Anthropic → Groq → Ollama) + per-type prompts
+│   │   ├── extractor.py             # LLM router (Groq → Ollama) + per-type prompts
 │   │   └── eval.py                  # Field-level precision/recall/F1 harness
 │   ├── benchmarking/                # RAG market statistics
 │   │   ├── aggregator.py            # Field distributions, percentile ranking, per-category registry
@@ -284,53 +297,53 @@ legal-risk-mapper/
 │   ├── redline/                     # Grounded suggestion generation
 │   │   ├── generator.py             # Market context formatter + LLM prompt + response parser
 │   │   └── schemas.py               # RedlineSuggestion, RedlineResult
-│   └── services/                   # ML risk classification engine
+│   ├── comparison/comparator.py     # Multi-contract side-by-side risk comparison
+│   └── services/                    # ML risk classification engine + platform services
 │       ├── risk_analyzer.py         # Full pipeline: segment → classify → semantic → merge → score
 │       ├── risk_classifier.py       # Trained model loader + inference (5 LR classifiers)
+│       ├── rules_engine.py          # Regex rule layer (fallback when the classifier is unavailable)
 │       ├── risk_knowledge_base.py   # 30 canonical clause embeddings (cluster centroids)
-│       └── semantic_analyzer.py     # Cosine similarity layer, spaCy segmentation
+│       ├── semantic_analyzer.py     # Cosine similarity layer, spaCy segmentation
+│       ├── limits.py                # Input word caps derived from the Groq free-tier token budget
+│       ├── ocr.py                   # Tesseract fallback for scanned PDFs
+│       ├── cache.py                 # In-memory LRU + TTL cache for /analyze
+│       ├── circuit_breaker.py       # Trips on repeated Groq failures; surfaced in /health
+│       └── metrics.py               # Prometheus counters/histograms
 ├── data/
 │   ├── eval/                        # Hand-labeled evaluation datasets
-│   │   ├── liability_eval.json      # 42 examples with full ground truth
-│   │   ├── termination_eval.json
-│   │   └── governing_law_eval.json
+│   │   ├── liability_eval.json      # 86 examples with full ground truth
+│   │   ├── termination_eval.json    # 35 examples
+│   │   └── governing_law_eval.json  # 35 examples
 │   └── models/
-│       ├── risk_classifier.pkl      # Trained sklearn bundle: 5 LR models + per-category metrics
+│       ├── risk_classifier.pkl      # Trained sklearn bundle: 5 LR models + per-category metrics (tracked in git — it must ship)
 │       └── canonical_clauses.json   # 30 canonical clause embeddings for semantic layer
 ├── scripts/                         # One-time training and evaluation scripts
 │   ├── run_corpus_pipeline.py       # EDGAR scrape → chunk → embed → store
 │   ├── run_batch_extraction.py      # LLM extraction over corpus chunks (resume-safe, per-type)
 │   ├── generate_training_data.py    # 617 labeled example generator
-│   ├── train_risk_classifier.py     # Train 5 LR classifiers + generate canonicals
+│   ├── train_risk_classifier.py     # Train 5 LR classifiers (+ CalibratedClassifierCV) + generate canonicals
+│   ├── ablation_study.py            # Layer ablation (regex / ML / semantic / merge)
 │   ├── eval_classifier.py           # ML vs regex comparison
 │   └── eval_retrieval.py            # MRR@5 / NDCG@5 retrieval eval
-├── tests/                           # 49 pytest tests
-│   ├── test_api.py                  # FastAPI endpoint integration tests
-│   ├── test_extraction.py           # Prompt coverage, schema registry, grounding rules
-│   ├── test_risk_analyzer.py        # Risk detection and severity scoring
-│   └── test_schemas.py              # Pydantic schema validation and constraints
-├── frontend-react/                  # React 18 + Vite + Tailwind frontend
-│   ├── src/
-│   │   ├── api/client.js            # All API calls (analyzeText, benchmarkText, etc.)
-│   │   ├── pages/Landing.jsx        # Landing page (/)
-│   │   ├── pages/AppPage.jsx        # Analysis tool (/app)
-│   │   └── components/              # RiskResults, BenchmarkResults, RedlineResults, Loader
-│   ├── .env.example                 # VITE_API_BASE_URL
-│   └── vite.config.js
-├── frontend/
-│   ├── legacy/                      # Preserved vanilla HTML/CSS frontend
-│   │   ├── index.html               # Landing page (original)
-│   │   └── app.html                 # Analysis tool (original)
-│   ├── app.js
-│   └── style.css                    # Stylesheet (not active)
+├── tests/                           # 271 pytest tests, 18 files (see "Run tests")
+├── frontend-react/                  # React 18 + Vite frontend (the live one)
+│   ├── src/api/client.js            # All API calls
+│   ├── src/pages/                   # Landing, AppPage (/app), ComparePage, EvalsPage, ArchitecturePage, OverviewPage
+│   ├── src/components/              # InputPanel, ResultsPanel, BenchmarkResults, RedlineResults, ComparisonTable, ContractReader, Dossier, Masthead, Loader, Icon
+│   ├── src/constants/limits.js      # Mirrors backend/services/limits.py so the UI and server never disagree
+│   ├── src/hooks/                   # useAnalysis, useBenchmark, useFileUpload, useWarmup
+│   └── .env.example                 # VITE_API_BASE_URL
+├── frontend/                        # Legacy vanilla HTML/JS frontend — not deployed, kept for reference
 ├── deploy/
-│   ├── hf-space-readme.md           # HuggingFace Spaces metadata (YAML frontmatter)
-│   ├── ec2-bootstrap.sh             # Optional EC2 host setup script
-│   └── start-app.sh                 # Entrypoint used by Dockerfile CMD
-├── migrations/
-│   └── 001_corpus_tables.sql        # Supabase schema — corpus_chunks, structured_extractions, embeddings
+│   ├── DEPLOYMENT.md                # HF Spaces (backend) + Vercel (frontend) walkthrough
+│   ├── push-hf.sh                   # Deploys main to the Space with the required README frontmatter
+│   ├── hf-frontmatter.md            # The YAML block HF needs at the top of README.md
+│   ├── ec2-bootstrap.sh             # Optional EC2 path — not used by the live deployment
+│   └── start-app.sh                 # Docker build + run helper for the EC2 path
+├── migrations/001_corpus_tables.sql # Supabase schema — contracts, clause_chunks, structured_extractions
 ├── Dockerfile                       # python:3.12-slim, port 7860 for HF Spaces
-├── railway.json                     # Railway deployment config (alternative to HF Spaces)
+├── railway.json                     # Railway config (alternative to HF Spaces, unused)
+├── vercel.json                      # Builds frontend-react/ and serves dist/ with SPA rewrite
 └── .github/workflows/ci.yml         # pytest on push and PR, Python 3.12
 ```
 

@@ -1,164 +1,105 @@
 # Deployment Guide
 
-**Stack (100% free, no credit card required anywhere):**
+**Live stack (all free tiers):**
 
-| Component | Platform | Cost |
-|-----------|----------|------|
-| Backend (FastAPI + ML) | Hugging Face Spaces (Docker) | Free |
-| Frontend (static HTML/JS) | Vercel | Free |
-| LLM inference | Groq free API | Free (14,400 req/day) |
-| Vector database | Supabase free tier | Free (500MB) |
+| Component | Platform | Notes |
+|-----------|----------|-------|
+| Backend (FastAPI + ML) | Hugging Face Spaces, Docker, `cpu-basic` | `https://sriniv-1-legal-risk-mapper.hf.space` |
+| Frontend (`frontend-react/`, Vite) | Vercel | `https://legal-risk-mapper.vercel.app` |
+| LLM inference | Groq free API, `openai/gpt-oss-120b` | 8,000 tokens/min, ~1,000 req/day — see `backend/services/limits.py` |
+| Vector database | Supabase free tier | pgvector, 18,001 chunks |
+
+`deploy/ec2-bootstrap.sh` and `start-app.sh` describe an **alternative** self-hosted EC2 path.
+They are not part of the live deployment. `railway.json` is likewise an unused alternative.
 
 ---
 
-## Part 1 — Get a Free Groq API Key
+## Part 1 — Groq API key
 
-Groq runs Llama 3.1 8B for free. This replaces Ollama (local) and Anthropic (paid).
-
-1. Go to https://console.groq.com
-2. Sign up with email (no credit card asked)
-3. Go to **API Keys** → **Create API Key**
-4. Copy the key (starts with `gsk_...`) — you'll need it in the next steps
+1. https://console.groq.com → sign up (no card) → **API Keys** → **Create API Key** (`gsk_...`)
+2. The model defaults to `openai/gpt-oss-120b`. Override with `LRM_GROQ_MODEL` if Groq retires it
+   (they retired the whole Llama 3.3 line in 2026; that is why this knob exists). Current
+   alternatives: `openai/gpt-oss-20b`, `qwen/qwen3.6-27b`.
 
 ---
 
 ## Part 2 — Backend on Hugging Face Spaces
 
-Hugging Face Spaces runs Docker containers for free with 16GB RAM — the right home for
-an app that loads sentence-transformers and spaCy models. Always-on, no spin-down.
+### One-time setup
 
-### Step 1: Create a Hugging Face account
+1. https://huggingface.co/new-space → SDK **Docker**, visibility **Public**, name `legal-risk-mapper`.
+2. Add the Space as a git remote and put a **write** token in the git credential helper once:
+   ```bash
+   git remote add hf https://huggingface.co/spaces/SriniV-1/Legal-risk-mapper
+   # first push prompts for a password: paste a token from https://huggingface.co/settings/tokens
+   ```
+3. **Settings → Variables and secrets:**
 
-1. Go to https://huggingface.co/join
-2. Sign up with email (free, no credit card)
+   | Name | Value | Type |
+   |------|-------|------|
+   | `SUPABASE_URL` | project URL | Secret |
+   | `SUPABASE_KEY` | service-role key | Secret |
+   | `GROQ_API_KEY` | `gsk_...` | Secret |
+   | `LRM_GROQ_MODEL` | `openai/gpt-oss-120b` (optional, this is the default) | Variable |
+   | `LRM_REQUIRE_AUTH` | leave unset — the demo serves anonymous visitors | Variable |
+   | `JWT_SECRET` | only if you turn auth on or use `/auth/*` | Secret |
+   | `CORS_ORIGINS` | `https://legal-risk-mapper.vercel.app` (optional hardening) | Variable |
 
-### Step 2: Create a new Space
+### Deploying
 
-1. Go to https://huggingface.co/new-space
-2. Settings:
-   - **Owner**: your username
-   - **Space name**: `legal-risk-mapper`
-   - **License**: MIT
-   - **SDK**: Docker
-   - **Visibility**: Public (required for free tier)
-3. Click **Create Space**
-
-This creates a git repository at `https://huggingface.co/spaces/YOUR_USERNAME/legal-risk-mapper`.
-
-### Step 3: Push your code
-
-The Space is a git repo. You'll push your project there.
-
-```bash
-cd "/Users/srini/Downloads/CS Projects/legal-risk-mapper"
-
-# Add HF Spaces as a remote (replace YOUR_USERNAME)
-git remote add hf https://huggingface.co/spaces/YOUR_USERNAME/legal-risk-mapper
-
-# HF needs a README.md with frontmatter — overwrite it for the Space
-cp deploy/hf-space-readme.md README.md
-git add README.md
-git commit -m "add HF Spaces config"
-
-# Push to HF Spaces (authenticate with HF token when prompted)
-git push hf main
-```
-
-HF will build the Docker image automatically. Build takes ~5 minutes on first push.
-Watch progress at: `https://huggingface.co/spaces/YOUR_USERNAME/legal-risk-mapper`
-
-After the build, restore your README:
-```bash
-git checkout origin/main -- README.md
-git commit -m "restore README"
-git push hf main
-```
-
-Or maintain separate branches: `main` for GitHub, `hf-deploy` for Hugging Face.
-
-### Step 4: Set environment variables in the Space
-
-In the HF Space dashboard → **Settings** → **Variables and secrets**:
-
-| Name | Value | Type |
-|------|-------|------|
-| `SUPABASE_URL` | your Supabase project URL | Secret |
-| `SUPABASE_KEY` | your Supabase service role key | Secret |
-| `GROQ_API_KEY` | your Groq API key (`gsk_...`) | Secret |
-| `LRM_GROQ_MODEL` | `openai/gpt-oss-120b` (optional — this is the default) | Variable |
-| `LRM_API_KEY` | a password you make up | Secret |
-
-`LRM_API_KEY` is optional but recommended — it gates `/benchmark` and `/redline` so
-only you can trigger LLM calls. Without it, anyone who finds the URL can use your Groq quota.
-
-### Step 5: Verify
-
-Your backend URL is: `https://YOUR_USERNAME-legal-risk-mapper.hf.space`
+HF reads the Space config from **YAML frontmatter at the top of `README.md`**. GitHub's
+README must not carry that block, so never push `main` straight to the Space. Use the script:
 
 ```bash
-curl https://YOUR_USERNAME-legal-risk-mapper.hf.space/health
-# {"status": "ok", ...}
+bash deploy/push-hf.sh
 ```
 
-Swagger docs: `https://YOUR_USERNAME-legal-risk-mapper.hf.space/docs`
+It builds a throwaway branch = `main` + `deploy/hf-frontmatter.md` prepended to the README,
+force-pushes it as the Space's `main`, and returns you to your branch. The Space rebuilds
+in ~1–2 minutes; watch https://huggingface.co/spaces/SriniV-1/Legal-risk-mapper.
+
+Why force-push: `git fetch hf` fails on this remote with a protocol error (`expected
+'acknowledgments'`), so merging is impossible. The Space holds no history of value — it is a
+deploy target, not a source of truth.
+
+### Verify
+
+```bash
+B=https://sriniv-1-legal-risk-mapper.hf.space
+curl -s $B/health | python3 -m json.tool     # expect "ml_classifier": true and a "groq_model"
+curl -s $B/ready  | python3 -m json.tool     # semantic, spacy, risk_classifier all "ok"
+```
+
+If `ml_classifier` is `false`, `data/models/risk_classifier.pkl` did not ship — the app is
+silently on regex fallback. The file is tracked in git (an explicit `!` exception to the
+`*.pkl` ignore rule); make sure it is committed.
 
 ---
 
 ## Part 3 — Frontend on Vercel
 
-### Step 1: Set your backend URL
-
-Open `frontend/config.js` and update the URL:
-
-```js
-window.LRM_API_BASE = "https://YOUR_USERNAME-legal-risk-mapper.hf.space";
-```
-
-Commit and push this to GitHub.
-
-### Step 2: Deploy to Vercel
-
-1. Go to https://vercel.com and sign up with GitHub (free, no credit card)
-2. Click **Add New Project** → select `legal-risk-mapper`
-3. Vercel auto-detects `vercel.json` → `outputDirectory: frontend`
-4. Click **Deploy**
-
-Your frontend URL will be something like `https://legal-risk-mapper.vercel.app`.
-
-### Step 3: Lock CORS to your Vercel URL (optional hardening)
-
-In HF Spaces → Settings → Variables, add:
-
-| Name | Value |
-|------|-------|
-| `CORS_ORIGINS` | `https://legal-risk-mapper.vercel.app` |
-
-This prevents other sites from calling your backend. Fine to skip for a portfolio project.
+1. https://vercel.com → **Add New Project** → import `SriniV-1/legal-risk-mapper`.
+2. `vercel.json` already configures the build: `cd frontend-react && npm run build`, output
+   `frontend-react/dist`, SPA rewrite to `index.html`.
+3. **Environment variable:** `VITE_API_BASE_URL` = `https://sriniv-1-legal-risk-mapper.hf.space`.
+   (Local dev reads the same name from `frontend-react/.env`.)
+4. Deploy. Vercel redeploys on every push to `main`.
 
 ---
 
-## Updating the App
+## Updating
 
 ```bash
-# Make your changes, then push to GitHub
-git push origin main
-
-# Also push to HF Spaces (backend changes only)
-git push hf main
-
-# Vercel redeploys automatically on GitHub push (frontend)
-# HF Spaces rebuilds automatically on push (backend)
+git push origin main       # Vercel redeploys the frontend automatically
+bash deploy/push-hf.sh     # backend — required for any change under backend/, data/, requirements.txt
 ```
+
+A frontend-only change needs only the first line; a backend change needs both.
 
 ---
 
-## Cost Summary
+## Cost
 
-Everything above is genuinely free with no hidden limits that would surprise you:
-
-- **Vercel Hobby**: free forever for personal projects, no credit card required
-- **Hugging Face Spaces (CPU free)**: free forever, 16GB RAM, 2 vCPU
-- **Groq free tier**: 14,400 requests/day, no credit card required
-- **Supabase free tier**: 500MB database, 2GB bandwidth/month
-
-The only way you'd get charged is if you intentionally upgrade to paid tiers.
+Vercel Hobby, HF Spaces `cpu-basic`, Groq free tier, and Supabase free tier are all free
+without a card. The free Space may sleep after inactivity; the frontend calls `/warmup` on
+open so the cold start overlaps with the user pasting text.
