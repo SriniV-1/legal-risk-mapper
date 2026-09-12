@@ -162,7 +162,7 @@ def _build_response(risks: list, document_title: Optional[str]) -> AnalyzeRespon
 
 @app.get("/health", tags=["Meta"])
 def health_check():
-    """Service liveness check. Reports whether the semantic layer is active."""
+    """Service liveness check. Reports which analysis layers are actually live."""
     from backend.models import embeddings
     engine_parts = ["regex", "TF-IDF"]
     if embeddings.is_available():
@@ -172,10 +172,22 @@ def health_check():
         engine_parts.append("spaCy clause segmentation")
     except ImportError:
         pass
+    # The trained classifier silently falls back to regex when its pickle is
+    # missing (this went unnoticed in production for months), and a retired
+    # Groq model id fails only on the first LLM call. Surface both here.
+    from backend.services.risk_classifier import is_available as clf_available
+    from backend.extraction.extractor import GROQ_MODEL
+    from backend.auth.middleware import auth_required
+    ml_ok = clf_available()
+    if ml_ok:
+        engine_parts.append("trained risk classifier (5x LogisticRegression)")
     return JSONResponse(content={
         "status": "ok",
-        "version": "2.0.0",
+        "version": "2.1.0",
         "nlp_engine": " + ".join(engine_parts),
+        "ml_classifier": ml_ok,
+        "groq_model": GROQ_MODEL if os.environ.get("GROQ_API_KEY") else None,
+        "auth_required": auth_required(),
         "cache": cache_stats(),
         "circuit_breaker": {
             "llm": groq_breaker.status(),
