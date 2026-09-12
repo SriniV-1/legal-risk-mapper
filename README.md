@@ -24,7 +24,7 @@ Input text / PDF upload
         ▼                ▼
 ┌──────────────┐  ┌──────────────────────────────────────┐
 │ ML Risk      │  │ LLM Structured Extraction             │
-│ Classifier   │  │ Groq llama-3.3-70b-versatile          │
+│ Classifier   │  │ Groq openai/gpt-oss-120b              │
 │ [ML]         │  │ 6 Pydantic schemas w/ source_text     │
 │              │  │ [LLM]                                 │
 │ 5 independent│  └──────────────────┬─────────────────── ┘
@@ -55,7 +55,7 @@ confidence score
 
 **Pipeline 1 — Risk Classification.** Five independent binary classifiers rather than a single multi-label model because each category has different class balance, different regularization requirements (C values range from 5.0 to 10.0 across categories), and threshold tuning that needs to happen per-category. A semantic similarity layer runs in parallel using cosine distance against 30 auto-generated canonical clause embeddings (cluster centroids from training data). When both layers flag the same clause for the same category, they merge into a single boosted-confidence result. Graceful degradation: if the pkl file is missing, the system falls back to regex rules; if sentence-transformers fails to load, the semantic layer is silently disabled.
 
-**Pipeline 2 — Structured Extraction.** Each of the 6 clause types has a dedicated Pydantic schema with every factual field accompanied by a `source_text` field requiring a verbatim quote. This is not optional — it is enforced in the prompt as a critical rule and validated at the schema level. Groq's llama-3.3-70b-versatile handles inference because the 8B model produces meaningful false positives on fields like `is_mutual` and `has_pre_existing_ip_carveout` where context sensitivity matters. The LLM router tries Anthropic first (if `ANTHROPIC_API_KEY` set), then Groq, then Ollama — same prompts and schemas across all backends.
+**Pipeline 2 — Structured Extraction.** Each of the 6 clause types has a dedicated Pydantic schema with every factual field accompanied by a `source_text` field requiring a verbatim quote. This is not optional — it is enforced in the prompt as a critical rule and validated at the schema level. Groq's openai/gpt-oss-120b handles inference because the 8B model produces meaningful false positives on fields like `is_mutual` and `has_pre_existing_ip_carveout` where context sensitivity matters. The LLM router tries Anthropic first (if `ANTHROPIC_API_KEY` set), then Groq, then Ollama — same prompts and schemas across all backends.
 
 **Pipeline 3 — Benchmarking.** pgvector over Pinecone because the structured extraction data already lives in Supabase — co-locating the vector index with the relational data eliminates a service dependency and enables joining on extraction results in a single query. The `match_clauses()` Postgres RPC function handles cosine similarity over 18,001 384-dim vectors using IVFFlat. Percentile calculation: for a boolean field with 73% market prevalence, a user clause that has the feature is at the 73rd percentile; one that lacks it is at the 27th percentile. Retrieval quality: MRR@5 of 0.917.
 
@@ -138,7 +138,7 @@ The Supabase schema has three tables: `contracts` (id, company, form_type, filed
 |-----------------|-----------------------------------------------------------------------------------------------------|
 | Backend         | FastAPI 0.111, Gunicorn 22 + Uvicorn workers                                                        |
 | ML Classifier   | sklearn LogisticRegression (5 independent models), sentence-transformers all-MiniLM-L6-v2 (384-dim) |
-| LLM Inference   | Groq API, llama-3.3-70b-versatile (extraction + redlines)                                           |
+| LLM Inference   | Groq API, openai/gpt-oss-120b (extraction + redlines)                                               |
 | Database        | Supabase PostgreSQL + pgvector, IVFFlat index                                                       |
 | NLP             | spaCy en_core_web_sm (clause segmentation), MiniLM-L6-v2 (embeddings)                              |
 | PDF Extraction  | PyMuPDF (MuPDF bindings)                                                                            |
@@ -153,6 +153,8 @@ The Supabase schema has three tables: `contracts` (id, company, form_type, filed
 | Method | Path              | Auth             | Rate Limit | Description                               |
 |--------|-------------------|------------------|:----------:|-------------------------------------------|
 | GET    | `/health`         | None             | —          | Version and NLP engine status             |
+| GET    | `/warmup`         | None             | —          | Idempotent model preload (cold starts)    |
+| GET    | `/limits`         | None             | —          | Per-pipeline input word caps + tier quota |
 | GET    | `/corpus/stats`   | None             | —          | Live extraction coverage per clause type  |
 | POST   | `/analyze`        | None             | 30/min     | ML risk classification of raw text        |
 | POST   | `/analyze/upload` | None             | 30/min     | Upload and analyze .pdf, .txt, or .md     |

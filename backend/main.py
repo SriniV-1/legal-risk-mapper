@@ -29,6 +29,7 @@ from backend.models.schemas import (
 )
 from backend.services.risk_analyzer import analyze_risks, compute_overall_risk
 from backend.services.cache import cache_get, cache_set, cache_clear, cache_stats, _text_hash
+from backend.services.limits import enforce as enforce_size, public_limits
 from backend.services.metrics import record_analysis, record_error
 from backend.services.circuit_breaker import groq_breaker
 from backend.routers.metrics_router import metrics_router
@@ -233,6 +234,58 @@ def readiness_check():
     return JSONResponse(status_code=503, content=response.model_dump())
 
 
+# ── Warmup ────────────────────────────────────────────────────────────────────
+_warm_state: dict = {"warm": False, "duration_s": None}
+
+
+@app.get("/warmup", tags=["Meta"])
+def warmup_endpoint():
+    """Idempotent model warmup. Safe (and cheap) to call on every page load.
+
+    The lifespan handler already warms models at boot, so on a server that has
+    been up for a while this returns immediately with warm=True and the frontend
+    never shows a warmup overlay. It earns its keep when the platform has
+    cold-started the container after an idle period (free-tier sleep): the first
+    call pays the sentence-transformers + spaCy + classifier load, and every call
+    after that is a no-op. The frontend fires this the moment the app opens so
+    the load overlaps with the user pasting their contract instead of landing on
+    their first Analyze click.
+    """
+    if _warm_state["warm"]:
+        return {"warm": True, "cold_start": False, "duration_s": _warm_state["duration_s"]}
+
+    import time as _time
+    t0 = _time.monotonic()
+
+    try:
+        from backend.services.semantic_analyzer import warmup as _semantic_warmup
+        _semantic_warmup()
+    except Exception as e:
+        logger.warning(f"Semantic warmup failed during /warmup: {e}")
+
+    try:
+        # A real forward pass, so the first torch inference is primed too.
+        analyze_risks("This Agreement shall be governed by the laws of the State of Delaware.")
+    except Exception as e:
+        logger.warning(f"Classifier warmup failed during /warmup: {e}")
+
+    elapsed = round(_time.monotonic() - t0, 2)
+    _warm_state["warm"] = True
+    _warm_state["duration_s"] = elapsed
+    logger.info(f"/warmup completed in {elapsed}s")
+    return {"warm": True, "cold_start": True, "duration_s": elapsed}
+
+
+@app.get("/limits", tags=["Meta"])
+def input_limits():
+    """Input size limits + the free-tier quota they're derived from.
+
+    Served rather than hardcoded in the frontend so the disclaimer text and the
+    server-side rejection can never disagree about the numbers.
+    """
+    return public_limits()
+
+
 @app.get("/corpus/stats", tags=["Meta"])
 def corpus_stats():
     """
@@ -278,6 +331,8 @@ def analyze_text(request: Request, body: AnalyzeRequest):
     Analyze raw text for legal risks.
     Returns categorized risks with severity scores and explanations.
     """
+    enforce_size(body.text, mode="local")
+
     text_hash = _text_hash(body.text)
     cached = cache_get(text_hash)
     if cached is not None:
@@ -395,6 +450,11 @@ async def analyze_upload(
     if len(text.strip()) < 10:
         raise HTTPException(status_code=400, detail="Uploaded file appears to be empty or too short.")
 
+    # The 10 MB byte cap above doesn't bound word count usefully — 10 MB of
+    # plain text is ~1.6M words. Apply the same word budget /analyze uses, and
+    # do it outside the try below so the 413 isn't swallowed into a 500.
+    enforce_size(text, mode="local")
+
     title = document_title or file.filename
     logger.info(f"Analyzing uploaded file | title={title!r} | chars={len(text)} | method={extraction_method}")
 
@@ -451,13 +511,17 @@ _CORPUS_CONN_HINTS = (
     "Temporary failure in name resolution", "nodename nor servname",
     "Failed to establish a new connection", "Max retries exceeded",
     "Connection refused", "[Errno -2]", "[Errno -3]", "[Errno 8]",
+    # Never configured at all — same user-facing situation as unreachable:
+    # the corpus dependency is unavailable, which is a 503, not a 500.
+    "SUPABASE_URL and SUPABASE_KEY must be set",
 )
 
 
 def _is_corpus_unreachable(exc: BaseException) -> bool:
     """True when an exception looks like the market-corpus DB (Supabase) being
-    unreachable — DNS failure, refused/timed-out connection — rather than a real
-    application bug. Walks the cause/context chain so wrapped errors are caught."""
+    unavailable — unset credentials, DNS failure, refused/timed-out connection —
+    rather than a real application bug. Walks the cause/context chain so wrapped
+    errors are caught."""
     seen: set[int] = set()
     cur: BaseException | None = exc
     while cur is not None and id(cur) not in seen:
@@ -476,9 +540,10 @@ def _is_corpus_unreachable(exc: BaseException) -> bool:
 
 _CORPUS_DOWN_DETAIL = (
     "Market corpus database is unreachable. The benchmark and redline features "
-    "read the EDGAR clause corpus from Supabase, and the configured SUPABASE_URL "
-    "host did not resolve. Configure a reachable Supabase project (see README → "
-    "Local Development) to enable these features. Risk analysis is unaffected."
+    "read the EDGAR clause corpus from Supabase, and SUPABASE_URL / SUPABASE_KEY "
+    "are either unset or point at a host that did not resolve. Configure a "
+    "reachable Supabase project (see README → Local Development) to enable these "
+    "features. Risk analysis is unaffected."
 )
 
 
@@ -498,6 +563,8 @@ def benchmark_clause(request: Request, body: BenchmarkRequest):
     keyword-density classification. Or specify explicitly: liability, termination,
     payment, confidentiality, ip, governing_law.
     """
+    enforce_size(body.text, mode="llm")
+
     clause_type = _resolve_clause_type(body.text, body.clause_type)
     logger.info(
         f"Benchmarking clause | type={clause_type!r} | chars={len(body.text)}"
@@ -529,6 +596,8 @@ def generate_redlines(request: Request, body: RedlineRequest):
     Runs the full pipeline: benchmark against EDGAR market data, then generate
     edit suggestions citing specific market statistics and real SEC filings.
     """
+    enforce_size(body.text, mode="llm")
+
     clause_type = _resolve_clause_type(body.text, body.clause_type)
     logger.info(
         f"Generating redlines | type={clause_type!r} | chars={len(body.text)}"

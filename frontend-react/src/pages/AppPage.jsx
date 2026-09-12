@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { checkHealth } from "../api/client.js";
+import { checkHealth, fetchLimits } from "../api/client.js";
 import useFileUpload from "../hooks/useFileUpload.js";
 import useAnalysis from "../hooks/useAnalysis.js";
 import useBenchmark from "../hooks/useBenchmark.js";
+import useWarmup from "../hooks/useWarmup.js";
+import { DEFAULT_LIMITS, checkSize } from "../constants/limits.js";
 import Loader from "../components/Loader.jsx";
 import Icon from "../components/Icon.jsx";
 import InputPanel from "../components/InputPanel.jsx";
@@ -13,8 +15,10 @@ import SAMPLES from "../constants/samples.js";
 export default function AppPage() {
   const [health, setHealth] = useState(null);
   const [dismissed, setDismissed] = useState(false);
+  const [limits, setLimits] = useState(DEFAULT_LIMITS);
   const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
+  const warm = useWarmup();
   const fileUpload = useFileUpload();
   const analysis = useAnalysis();
   const benchmark = useBenchmark({
@@ -30,21 +34,59 @@ export default function AppPage() {
     checkHealth()
       .then((d) => setHealth({ status: "ok", label: `v${d.version || "?"} · online`, version: d.version || "?" }))
       .catch(() => setHealth({ status: "err", label: "Backend offline", version: null }));
+
+    // Keep the disclaimer's numbers identical to what the server enforces.
+    fetchLimits()
+      .then(setLimits)
+      .catch(() => setLimits(DEFAULT_LIMITS));
   }, []);
+
+  /**
+   * Show the loading overlay only if the user got here before background
+   * warmup finished. When warmup is already done (the common case) this is a
+   * no-op and the run starts instantly.
+   */
+  async function ensureWarm() {
+    if (warm.status !== "warming") return;
+    analysis.setLoading(true);
+    analysis.setLoadingMsg("Warming up models (first run only)…");
+    await warm.wait();
+  }
+
+  /** Block oversized input up front instead of letting it 413/429 downstream. */
+  function blockedBySize(text, mode) {
+    const result = checkSize(text, mode, limits);
+    if (!result.ok) {
+      analysis.setError(result.message);
+      return true;
+    }
+    return false;
+  }
 
   async function handleAnalyzeSample(key) {
     fileUpload.loadSample(key, SAMPLES);
     benchmark.clearBenchmark();
+    await ensureWarm();
     await analysis.analyzeSample(SAMPLES[key].text);
   }
 
   async function handleAnalyze() {
-    if (fileUpload.tab === "text" && fileUpload.inputText.trim().length < 10) {
-      analysis.setError("Please enter at least 10 characters.");
-      return;
+    if (fileUpload.tab === "text") {
+      if (fileUpload.inputText.trim().length < 10) {
+        analysis.setError("Please enter at least 10 characters.");
+        return;
+      }
+      if (blockedBySize(fileUpload.inputText, "local")) return;
     }
     benchmark.clearBenchmark();
+    await ensureWarm();
     await analysis.analyze(fileUpload.getResolvedText);
+  }
+
+  async function handleBenchmark() {
+    if (fileUpload.tab === "text" && blockedBySize(fileUpload.inputText, "llm")) return;
+    await ensureWarm();
+    await benchmark.runBenchmark(fileUpload.getResolvedText);
   }
 
   function handleLoadSample(key) {
@@ -114,8 +156,9 @@ export default function AppPage() {
           loadSample={handleLoadSample}
           error={analysis.error}
           anyLoading={anyLoading}
+          limits={limits}
           onAnalyze={handleAnalyze}
-          onBenchmark={() => benchmark.runBenchmark(fileUpload.getResolvedText)}
+          onBenchmark={handleBenchmark}
           onClear={clearAll}
         />
 

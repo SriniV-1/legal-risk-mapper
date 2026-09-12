@@ -21,6 +21,21 @@ export async function checkHealth() {
   return handleResponse(res);
 }
 
+/**
+ * Kick the backend into a warm state. Idempotent and cheap once warm — the
+ * cost is only paid when the host has cold-started the container. Fired on app
+ * open so the model load overlaps with the user pasting their contract.
+ */
+export async function warmup() {
+  const res = await fetch(`${API_BASE}/warmup`);
+  return handleResponse(res);
+}
+
+export async function fetchLimits() {
+  const res = await fetch(`${API_BASE}/limits`);
+  return handleResponse(res);
+}
+
 export async function analyzeText(text) {
   const res = await fetch(`${API_BASE}/analyze`, {
     method: "POST",
