@@ -10,7 +10,7 @@ from backend.auth.auth import (
     create_token,
     TOKEN_EXPIRE_SECONDS,
 )
-from backend.auth.middleware import get_current_user
+from backend.auth.middleware import require_authenticated
 
 auth_router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -43,7 +43,7 @@ def login(body: UserCreate):
 
 
 @auth_router.post("/refresh", response_model=TokenResponse)
-def refresh_token(current_user: dict = Depends(get_current_user)):
+def refresh_token(current_user: dict = Depends(require_authenticated)):
     """Exchange a valid token for a fresh one with a new expiry."""
     token = create_token(
         current_user["user_id"],

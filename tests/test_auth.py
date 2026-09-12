@@ -16,8 +16,11 @@ from backend.auth.middleware import get_current_user
 
 
 @pytest.fixture(autouse=True)
-def _clear_auth_state():
-    """Reset in-memory users and remove auth bypass before each test."""
+def _clear_auth_state(monkeypatch):
+    """Reset in-memory users, remove the auth bypass, and run in auth-required
+    mode — these tests specify what LRM_REQUIRE_AUTH=1 must enforce. Public
+    (anonymous) mode is covered in TestPublicMode below."""
+    monkeypatch.setenv("LRM_REQUIRE_AUTH", "1")
     reset_users()
     app.dependency_overrides.pop(get_current_user, None)
     yield
@@ -299,5 +302,41 @@ class TestProtectedEndpoints:
                 ],
                 "clause_type": "liability",
             },
+        )
+        assert r.status_code == 401
+
+
+# ── Public mode (default): anonymous allowed below admin ─────────────────────
+
+class TestPublicMode:
+    def test_analyze_allows_anonymous_when_auth_not_required(self, monkeypatch):
+        monkeypatch.delenv("LRM_REQUIRE_AUTH", raising=False)
+        r = client.post(
+            "/analyze",
+            json={"text": "Company is not liable for any damages whatsoever under this agreement."},
+        )
+        assert r.status_code == 200
+
+    def test_pro_route_allows_anonymous_in_public_mode(self, monkeypatch):
+        monkeypatch.delenv("LRM_REQUIRE_AUTH", raising=False)
+        # /limits-style gate: /benchmark is require_role("pro"); anonymous must clear the
+        # auth layer (a downstream 500/503 from no Supabase is fine — just not 401/403).
+        r = client.post(
+            "/benchmark",
+            json={"text": "The total aggregate liability shall not exceed fees paid.", "clause_type": "liability"},
+        )
+        assert r.status_code not in (401, 403)
+
+    def test_admin_route_still_requires_token_in_public_mode(self, monkeypatch):
+        monkeypatch.delenv("LRM_REQUIRE_AUTH", raising=False)
+        r = client.post("/cache/clear")
+        assert r.status_code == 401
+
+    def test_bad_token_is_401_even_in_public_mode(self, monkeypatch):
+        monkeypatch.delenv("LRM_REQUIRE_AUTH", raising=False)
+        r = client.post(
+            "/analyze",
+            json={"text": "Company is not liable for any damages whatsoever under this agreement."},
+            headers=_auth_header("not-a-jwt"),
         )
         assert r.status_code == 401
