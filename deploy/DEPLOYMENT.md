@@ -85,7 +85,7 @@ In the HF Space dashboard → **Settings** → **Variables and secrets**:
 | `SUPABASE_URL` | your Supabase project URL | Secret |
 | `SUPABASE_KEY` | your Supabase service role key | Secret |
 | `GROQ_API_KEY` | your Groq API key (`gsk_...`) | Secret |
-| `LRM_EXTRACTION_MODEL` | `llama-3.1-8b-instant` | Variable |
+| `LRM_GROQ_MODEL` | `openai/gpt-oss-120b` (optional — this is the default) | Variable |
 | `LRM_API_KEY` | a password you make up | Secret |
 
 `LRM_API_KEY` is optional but recommended — it gates `/benchmark` and `/redline` so

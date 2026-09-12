@@ -6,7 +6,7 @@ Prompts are loaded from backend.extraction.prompts via the prompt registry.
 
 LLM routing:
   LLM_BACKEND=finetuned → local LoRA adapter (models/lora_adapter/)
-  GROQ_API_KEY set       → Groq (llama-3.3-70b-versatile)
+  GROQ_API_KEY set       → Groq (openai/gpt-oss-120b, override via LRM_GROQ_MODEL)
   default                → Ollama local
 """
 from __future__ import annotations
@@ -33,6 +33,10 @@ log = logging.getLogger(__name__)
 
 OLLAMA_BASE_URL = "http://localhost:11434"
 DEFAULT_MODEL = os.environ.get("LRM_EXTRACTION_MODEL", "llama3.1:8b")
+# Groq model for extraction/redlines. Default is Groq's recommended replacement
+# for llama-3.3-70b-versatile (deprecated, decommissioned 2026-08-16); override
+# with LRM_GROQ_MODEL (e.g. "qwen3.6-27b" for a smaller/faster option).
+GROQ_MODEL = os.environ.get("LRM_GROQ_MODEL", "openai/gpt-oss-120b")
 
 # ── LLM clients ─────────────────────────────────────────────────────────────
 
@@ -55,7 +59,7 @@ def _call_ollama(
 
 
 def _call_groq(
-    prompt: str, model: str = "llama-3.3-70b-versatile", max_tokens: int = 2000,
+    prompt: str, model: str = GROQ_MODEL, max_tokens: int = 2000,
 ) -> str:
     """Call Groq API and return the response text. Requires GROQ_API_KEY."""
     try:
@@ -151,7 +155,7 @@ def _call_llm(
 ) -> str:
     """Route to Groq (if GROQ_API_KEY set) or Ollama (fallback)."""
     if os.environ.get("GROQ_API_KEY"):
-        groq_model = "llama-3.3-70b-versatile" if model == DEFAULT_MODEL else model
+        groq_model = GROQ_MODEL if model == DEFAULT_MODEL else model
         return _call_groq(prompt, model=groq_model, max_tokens=max_tokens)
     return _call_ollama(prompt, model=model, max_tokens=max_tokens)
 
