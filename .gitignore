@@ -15,3 +15,6 @@ data/*.log
 .env.local
 frontend-react/.env.local
 ROADMAP.md
+
+# The trained risk classifier ships with the app (67KB); retrain via scripts/train_risk_classifier.py
+!data/models/risk_classifier.pkl
