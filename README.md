@@ -335,7 +335,6 @@ legal-risk-mapper/
 │   ├── src/constants/limits.js      # Mirrors backend/services/limits.py so the UI and server never disagree
 │   ├── src/hooks/                   # useAnalysis, useBenchmark, useFileUpload, useWarmup
 │   └── .env.example                 # VITE_API_BASE_URL
-├── frontend/                        # Legacy vanilla HTML/JS frontend — not deployed, kept for reference
 ├── deploy/
 │   ├── DEPLOYMENT.md                # HF Spaces (backend) + Vercel (frontend) walkthrough
 │   ├── push-hf.sh                   # Deploys main to the Space with the required README frontmatter
