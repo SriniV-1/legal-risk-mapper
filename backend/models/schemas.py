@@ -33,6 +33,7 @@ class RiskItem(BaseModel):
     semantic_similarity: Optional[float] = Field(default=None, description="Raw cosine similarity (0-1) from the semantic layer")
     semantic_match_id: Optional[str] = Field(default=None, description="ID of the canonical clause matched semantically")
     clause_index: Optional[int] = Field(default=None, description="Index of the source clause in the segmented document")
+    section: Optional[str] = None
 
 
 class AnalyzeRequest(BaseModel):

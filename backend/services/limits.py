@@ -66,14 +66,14 @@ LLM_MAX_WORDS = 3_000     # hard reject — would blow the 8k TPM window
 
 # Local-only route: risk classification. No external quota; the limit is how
 # long a user will sit waiting for CPU embedding of every clause.
-LOCAL_WARN_WORDS = 10_000
-LOCAL_MAX_WORDS = 50_000
+LOCAL_MAX_WORDS = 50_000   # per-section ceiling used by sectioned_analysis
+LOCAL_HARD_MAX_WORDS = 100_000   # whole-document cap; analysis runs section by section
 
 Mode = Literal["llm", "local"]
 
 _BUDGETS: dict[str, tuple[int, int]] = {
     "llm": (LLM_WARN_WORDS, LLM_MAX_WORDS),
-    "local": (LOCAL_WARN_WORDS, LOCAL_MAX_WORDS),
+    "local": (LOCAL_MAX_WORDS, LOCAL_HARD_MAX_WORDS),
 }
 
 
@@ -120,7 +120,7 @@ def check_size(text: str, mode: Mode = "llm") -> LimitCheck:
         else:
             message = (
                 f"Input is {words:,} words — over the {max_words:,}-word limit for "
-                f"risk analysis. Split the document and analyze it in parts."
+                f"risk analysis. That is longer than we can analyze in one go."
             )
         return LimitCheck(ok=False, level="over", words=words, estimated_tokens=tokens,
                           warn_words=warn_words, max_words=max_words, message=message)
@@ -155,7 +155,7 @@ def public_limits() -> dict:
     """Limit config for the frontend, so the UI never hardcodes a stale number."""
     return {
         "llm": {"warn_words": LLM_WARN_WORDS, "max_words": LLM_MAX_WORDS},
-        "local": {"warn_words": LOCAL_WARN_WORDS, "max_words": LOCAL_MAX_WORDS},
+        "local": {"warn_words": LOCAL_MAX_WORDS, "max_words": LOCAL_HARD_MAX_WORDS},
         "tokens_per_word": TOKENS_PER_WORD,
         "free_tier": GROQ_FREE_TIER,
     }

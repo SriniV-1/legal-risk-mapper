@@ -64,7 +64,7 @@ class TestClassification:
     def test_boundary_at_max_is_allowed(self):
         """The cap is inclusive: exactly max_words must not be rejected."""
         assert L.check_size(words(L.LLM_MAX_WORDS), "llm")["ok"] is True
-        assert L.check_size(words(L.LOCAL_MAX_WORDS), "local")["ok"] is True
+        assert L.check_size(words(L.LOCAL_HARD_MAX_WORDS), "local")["ok"] is True
 
     def test_local_budget_is_far_larger_than_llm(self):
         """Local analysis has no third-party quota, so it takes whole documents."""
@@ -72,7 +72,7 @@ class TestClassification:
         assert L.check_size(words(L.LLM_MAX_WORDS + 500), "local")["ok"] is True
 
     def test_local_over_cap(self):
-        r = L.check_size(words(L.LOCAL_MAX_WORDS + 1), "local")
+        r = L.check_size(words(L.LOCAL_HARD_MAX_WORDS + 1), "local")
         assert r["ok"] is False
         assert "risk analysis" in r["message"]
 
@@ -110,18 +110,18 @@ class TestLimitsEndpoint:
         """/limits is the single source of truth — it must not drift."""
         data = client.get("/limits").json()
         assert data["llm"]["max_words"] == L.LLM_MAX_WORDS
-        assert data["local"]["max_words"] == L.LOCAL_MAX_WORDS
+        assert data["local"]["max_words"] == L.LOCAL_HARD_MAX_WORDS
 
 
 class TestEndpointEnforcement:
     def test_analyze_rejects_oversized_text(self):
-        r = client.post("/analyze", json={"text": words(L.LOCAL_MAX_WORDS + 1)})
+        r = client.post("/analyze", json={"text": words(L.LOCAL_HARD_MAX_WORDS + 1)})
         assert r.status_code == 413
-        assert f"{L.LOCAL_MAX_WORDS:,}" in r.json()["detail"]
+        assert f"{L.LOCAL_HARD_MAX_WORDS:,}" in r.json()["detail"]
 
     def test_analyze_upload_rejects_oversized_file(self):
         """Under the 10 MB byte cap but far over the word budget."""
-        payload = words(L.LOCAL_MAX_WORDS + 1).encode()
+        payload = words(L.LOCAL_HARD_MAX_WORDS + 1).encode()
         assert len(payload) < 10 * 1024 * 1024
         r = client.post(
             "/analyze/upload",

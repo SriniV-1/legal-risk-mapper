@@ -58,6 +58,13 @@ def _call_ollama(
     return resp.json()["response"]
 
 
+try:
+    from groq import RateLimitError as GroqRateLimitError
+except ImportError:  # groq not installed: nothing can raise it
+    class GroqRateLimitError(Exception):
+        pass
+
+
 def _call_groq(
     prompt: str, model: str = GROQ_MODEL, max_tokens: int = 2000,
 ) -> str:
@@ -367,6 +374,9 @@ def extract_clause(
         except CircuitOpenError:
             log.warning("Circuit breaker OPEN — skipping extraction for %s", clause_type)
             return None
+
+        except GroqRateLimitError:
+            raise  # let the route turn this into a readable 429
 
         except (requests.RequestException, ValueError, ValidationError) as e:
             log.warning("Extraction attempt %d/%d failed for %s: %s",

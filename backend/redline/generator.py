@@ -14,7 +14,7 @@ import logging
 from typing import Optional
 
 from backend.benchmarking.schemas import BenchmarkResult
-from backend.extraction.extractor import _call_llm, _extract_json, DEFAULT_MODEL
+from backend.extraction.extractor import GroqRateLimitError, _call_llm, _extract_json, DEFAULT_MODEL
 from backend.redline.schemas import RedlineResult, RedlineSuggestion
 
 log = logging.getLogger(__name__)
@@ -246,6 +246,8 @@ def generate_redlines(
     try:
         raw_response = _call_llm(prompt, model=model, max_tokens=3000)
         data = _extract_json(raw_response)
+    except GroqRateLimitError:
+        raise
     except Exception as e:
         log.error("Redline generation failed: %s", e)
         return RedlineResult(

@@ -67,26 +67,31 @@ def deduplicate_risks(risks: list, similarity_threshold: float = 0.7) -> list:
     """
     Remove near-duplicate risks based on text snippet overlap.
     Keeps the highest-severity version.
+
+    Duplicate = Jaccard similarity of lowercase word sets >= threshold, any risk_type.
+    Word sets are computed once. Jaccard <= min(|A|,|B|)/max(|A|,|B|), so pairs whose
+    size ratio is already below the threshold are skipped (exact, output unchanged).
     """
     severity_order = {"High": 3, "Medium": 2, "Low": 1}
-    seen_snippets = []
+    seen: list[tuple[set, int]] = []
     deduped = []
 
     for risk in sorted(risks, key=lambda r: severity_order.get(r["severity"], 0), reverse=True):
-        snippet = risk["text_snippet"].lower()
+        words = set(risk["text_snippet"].lower().split())
+        n = len(words)
         is_dup = False
-        for seen in seen_snippets:
-            # Jaccard similarity on word sets
-            set_a = set(snippet.split())
-            set_b = set(seen.split())
-            if len(set_a | set_b) == 0:
+        for other, m in seen:
+            if n + m == 0:
+                continue  # both empty: old code never counted this as a duplicate
+            lo, hi = (n, m) if n < m else (m, n)
+            if hi and lo / hi < similarity_threshold:
                 continue
-            similarity = len(set_a & set_b) / len(set_a | set_b)
-            if similarity >= similarity_threshold:
+            inter = len(words & other)
+            if inter / (n + m - inter) >= similarity_threshold:
                 is_dup = True
                 break
         if not is_dup:
-            seen_snippets.append(snippet)
+            seen.append((words, n))
             deduped.append(risk)
 
     return deduped

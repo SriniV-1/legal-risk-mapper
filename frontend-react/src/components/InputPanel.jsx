@@ -127,13 +127,14 @@ export default function InputPanel({
         </div>
 
         <p className="limits-disclaimer">
-          Benchmarking and redlines run on {limits.free_tier?.model || "openai/gpt-oss-120b"} via
-          Groq's free tier ({(limits.free_tier?.tokens_per_minute ?? 8000).toLocaleString()} tokens/min,
-          {" "}{(limits.free_tier?.requests_per_day ?? 1000).toLocaleString()} requests/day), so they're
-          capped at <strong>{llmMax.toLocaleString()} words</strong> per run — roughly one clause or
-          section. Risk analysis runs locally and accepts up
-          to {(localCheck.maxWords).toLocaleString()} words. Longer contracts should be analyzed a
-          section at a time.
+          Benchmarking and redlines run on {limits.free_tier?.model || "openai/gpt-oss-120b"} through
+          Groq's free tier, which allows {(limits.free_tier?.tokens_per_minute ?? 8000).toLocaleString()} tokens
+          per minute and {(limits.free_tier?.requests_per_day ?? 1000).toLocaleString()} requests per
+          day, shared by everyone using this site. That's why each run is capped
+          at <strong>{llmMax.toLocaleString()} words</strong>, about one clause or section. If a
+          benchmark or redline fails, the shared limit is probably used up for the moment: wait about
+          a minute and try again. Risk analysis runs on our own server, isn't affected by Groq's
+          limits, and accepts up to {(localCheck.maxWords).toLocaleString()} words.
         </p>
         <button className="btn btn-ghost btn-full" onClick={onClear}>
           <Icon name="x" size={14} />

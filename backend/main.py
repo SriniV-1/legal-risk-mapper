@@ -28,7 +28,9 @@ from backend.models.schemas import (
     AnalyzeRequest, AnalyzeResponse, HealthResponse, ReadyResponse, RiskItem
 )
 from backend.services.risk_analyzer import analyze_risks, compute_overall_risk
+from backend.services.sectioned_analysis import analyze_document
 from backend.services.cache import cache_get, cache_set, cache_clear, cache_stats, _text_hash
+from backend.extraction.extractor import GroqRateLimitError
 from backend.services.limits import enforce as enforce_size, public_limits
 from backend.services.metrics import record_analysis, record_error
 from backend.services.circuit_breaker import groq_breaker
@@ -88,7 +90,15 @@ app = FastAPI(
 )
 
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+async def _rate_limited(request, exc):
+    return JSONResponse(
+        status_code=429,
+        content={"detail": "Too many requests from you in the last minute. Wait a moment and try again."},
+        headers={"Retry-After": "60"},
+    )
+
+
+app.add_exception_handler(RateLimitExceeded, _rate_limited)
 
 _cors_origins = [
     o.strip() for o in
@@ -355,7 +365,7 @@ def analyze_text(request: Request, body: AnalyzeRequest):
     import time as _time
     t0 = _time.monotonic()
     try:
-        risks = analyze_risks(body.text)
+        risks = analyze_document(body.text)
         response = _build_response(risks, body.document_title)
         result_dict = response.model_dump(mode="json")
         cache_set(text_hash, result_dict)
@@ -471,7 +481,7 @@ async def analyze_upload(
     logger.info(f"Analyzing uploaded file | title={title!r} | chars={len(text)} | method={extraction_method}")
 
     try:
-        risks = analyze_risks(text)
+        risks = analyze_document(text)
         response = _build_response(risks, title)
         return JSONResponse(
             content=response.model_dump(mode="json"),
@@ -585,11 +595,25 @@ def benchmark_clause(request: Request, body: BenchmarkRequest):
         from backend.benchmarking.benchmarker import benchmark_clause as _benchmark
         result = _benchmark(body.text, clause_type=clause_type)
         return result
+    except GroqRateLimitError as e:
+        raise _groq_busy(e)
     except Exception as e:
         logger.exception("Benchmarking failed")
         if _is_corpus_unreachable(e):
             raise HTTPException(status_code=503, detail=_CORPUS_DOWN_DETAIL)
         raise HTTPException(status_code=500, detail=f"Benchmarking error: {str(e)}")
+
+
+def _groq_busy(e: Exception) -> HTTPException:
+    try:
+        retry = str(int(float(e.response.headers["retry-after"])))
+    except Exception:
+        retry = "60"
+    return HTTPException(
+        status_code=429,
+        detail="Groq's shared free-tier limit is busy right now. Wait about a minute and try again.",
+        headers={"Retry-After": retry},
+    )
 
 
 class RedlineRequest(BaseModel):
@@ -621,6 +645,8 @@ def generate_redlines(request: Request, body: RedlineRequest):
         benchmark = _benchmark(body.text, clause_type=clause_type)
         result = _generate(body.text, benchmark)
         return result
+    except GroqRateLimitError as e:
+        raise _groq_busy(e)
     except Exception as e:
         logger.exception("Redline generation failed")
         if _is_corpus_unreachable(e):

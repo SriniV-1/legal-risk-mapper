@@ -9,7 +9,7 @@
  */
 export const DEFAULT_LIMITS = {
   llm: { warn_words: 2000, max_words: 3000 },
-  local: { warn_words: 10000, max_words: 50000 },
+  local: { warn_words: 50000, max_words: 100000 },
   tokens_per_word: 1.4,
   free_tier: {
     model: "openai/gpt-oss-120b",
@@ -51,7 +51,7 @@ export function checkSize(text, mode = "llm", limits = DEFAULT_LIMITS) {
       message:
         mode === "llm"
           ? `${words.toLocaleString()} words is over the ${maxWords.toLocaleString()}-word limit for benchmarking and redlines (free-tier cap is ${(limits.free_tier?.tokens_per_minute ?? 8000).toLocaleString()} tokens/minute; this needs ~${tokens.toLocaleString()}). Analyze one clause or section at a time.`
-          : `${words.toLocaleString()} words is over the ${maxWords.toLocaleString()}-word limit for risk analysis. Split the document and analyze it in parts.`,
+          : `${words.toLocaleString()} words is over the ${maxWords.toLocaleString()}-word limit for risk analysis. That is longer than we can analyze in one go.`,
     };
   }
 
